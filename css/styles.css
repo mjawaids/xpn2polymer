@@ -1,0 +1,94 @@
+body {
+  font-family: sans-serif;
+  background-color: #eee;
+}
+
+core-header-panel {
+  background: white;
+}
+
+core-toolbar {
+  background-color: #03A9F4;
+}
+
+.bar {
+  margin: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: #eee;
+}
+
+p {
+  margin: 20px;
+  padding: 80px 20px;
+  border-radius: 20px;
+  background-color: #eee;
+}
+
+.list-inline li {
+	list-style: none;
+	display: inline;
+	padding-left: 20%;
+}
+
+#container {
+  overflow: hidden;
+}
+
+.card {
+  position: relative;
+  height: 30px;
+  width: 230px;
+  font-size: 20px;
+  margin: 8px;
+  background-color: lightgray;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.widecard {
+	width: 480px;
+	/*height: 480px;*/
+}
+
+.bigcard {
+	height: 130px;
+	/*width: 130px;*/
+}
+
+.gray {
+	background-color: gray;
+}
+
+.response, .message, .action, .request {
+	text-decoration: underline;
+}
+
+.service, .task, .subject {
+	color: blue;
+}
+
+.redtext {
+	color: red;
+}
+
+.object {
+	color: orange;
+}
+
+.rule {
+	color: green;
+}
+
+.object, .rule {
+	text-decoration: underline;
+}
+
+.object, .rule, .subject {
+/*	transform: rotate(90deg);
+	transform-origin: left top 0;*/
+}
+
+.vertical-text {
+	transform: rotate(90deg);
+}
