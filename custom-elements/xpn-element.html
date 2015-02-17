@@ -1,0 +1,156 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+
+<polymer-element name="xpn-element">
+  <template>
+    <style>
+      .bar {
+        margin: 20px;
+        padding: 10px 20px;
+        border-radius: 20px;
+        background-color: #eee;
+      }
+      .list-inline li {
+        list-style: none;
+        display: inline;
+        padding-left: 20%;
+      }
+      .vertical-text {
+        transform: rotate(90deg);
+      }
+      .redtext {
+        color: red;
+      }
+      table {
+        width: 100%;
+      }
+      td {
+        height: 120px;
+        text-align: center;
+        border: 2px solid lightgray;
+      }
+      #mainrow > .maincol {
+        border: none;
+      }
+      tr {
+        background-color: #33CCFF;
+      }
+      #mainrow, .maincol, #ruletable tr {
+        background-color: white;
+      }
+    </style>
+    <div class="bar">
+      <ul class="list-inline">
+        <li>Bank Problem</li>
+        <li class="redtext">- V01 -</li>
+        <li>Jan van Hees</li>
+      </ul>
+    </div>
+
+    <div id="container" flex horizontal wrap around-justified layout cross-fade>
+    <table id="xpntable" class="table">
+      
+      <tr>
+        <td>?</td>
+        <td class="maincol"><core-icon-button
+            id="new-service"
+            icon="add-circle"
+            on-tap="{{addRow}}">New Service
+          </core-icon-button></td>
+        <td>?</td>
+      </tr>
+
+      <tr id="mainrow">
+        <td><core-icon-button
+            id="new-object"
+            icon="add-circle"
+            on-tap="{{addColumn}}"
+            class="vertical-text">New Object
+          </core-icon-button></td>
+        <td class="maincol">
+          <table id="ruletable">
+            <tr><td><core-icon-button
+            id="new-rule"
+            icon="add-circle"
+            on-tap="{{addRow}}">New Rule
+            </core-icon-button></td></tr>
+          </table>
+        </td>
+        <td><span class="vertical-text"><core-icon-button
+            id="new-actor"
+            icon="add-circle"
+            on-tap="{{addColumn}}"
+            class="vertical-text">New Actor
+          </core-icon-button></span></td>
+      </tr>
+
+      <tr>
+        <td>?</td>
+        <td class="maincol">
+          <core-icon-button
+            id="new-action"
+            icon="add-circle"
+            on-tap="{{addRow}}">New Action
+          </core-icon-button>
+        </td>
+        <td>?</td>
+      </tr>
+
+    </table>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      // append row to the HTML table
+      addRow: function (event, detail, sender) {
+          var pos = 0;  // set default to top. 0=top, 1=bottom
+          if(sender.id == "new-action") pos = 1;
+
+          var tbl = (sender.id == "new-rule")? this.$.ruletable : this.$.xpntable; // table reference
+          var row = tbl.insertRow( pos? -1 : ''/*tbl.rows.length*/ ),      // append table row
+              i;
+          // insert table cells to the new row
+          for (i = 0; i < tbl.rows[ pos?0:tbl.rows.length-1].cells.length; i++) {
+            cell = row.insertCell(i);
+            this.createCell(cell, '?');
+            if(this.$.mainrow.querySelector('.maincol').cellIndex == i) 
+              cell.setAttribute('class', 'maincol');
+          }
+      },
+       
+      // create DIV element and append to the table cell
+      createCell: function (cell, text, style) {
+          var cib = document.createElement('core-icon-button'), // create core-icon-button element
+              txt = document.createTextNode(text); // create text node
+          cib.appendChild(txt);                    // append text node to the CIB
+          cib.setAttribute('id', 'myid');        // set CIB id 
+          if(style) cib.setAttribute('class', style);        // set CIB class 
+          cib.setAttribute('onclick', "alert('This will open form design to enter more details.')");        // set CIB on tap attribute
+          // cib.setAttribute('className', style);    // set CIB class attribute for IE (?!)
+          cell.appendChild( cib );                   // append CIB to the table cell
+      },
+
+      // append column to the HTML table
+      addColumn: function (event, detail, sender) {
+          var pos = 0;  // set default to right. 0=right, 1=left
+          if(sender.id == "new-object") pos = 1;
+
+          var tbl = this.$.xpntable, // table reference
+              i;
+          // open loop for each row and append cell
+          for (i = 0; i < tbl.rows.length; i++) {
+            cssClass = '';
+            if(tbl.rows[i].id == 'mainrow')
+              cssClass = 'vertical-text';
+            
+            this.createCell(tbl.rows[i].insertCell( pos?0:tbl.rows[i].cells.length), '?' , cssClass);
+          }
+      },
+
+      test: function (event, detail, sender) {
+        alert('Form Design');
+      },
+    });
+  </script>
+</polymer-element>

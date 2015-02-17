@@ -25,39 +25,8 @@ p {
   background-color: #eee;
 }
 
-.list-inline li {
-	list-style: none;
-	display: inline;
-	padding-left: 20%;
-}
-
 #container {
   overflow: hidden;
-}
-
-.card {
-  position: relative;
-  height: 30px;
-  width: 230px;
-  font-size: 20px;
-  margin: 8px;
-  background-color: lightgray;
-  border-radius: 4px;
-  cursor: default;
-}
-
-.widecard {
-	width: 480px;
-	/*height: 480px;*/
-}
-
-.bigcard {
-	height: 130px;
-	/*width: 130px;*/
-}
-
-.gray {
-	background-color: gray;
 }
 
 .response, .message, .action, .request {
@@ -87,8 +56,4 @@ p {
 .object, .rule, .subject {
 /*	transform: rotate(90deg);
 	transform-origin: left top 0;*/
-}
-
-.vertical-text {
-	transform: rotate(90deg);
 }

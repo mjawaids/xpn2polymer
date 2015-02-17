@@ -9,7 +9,9 @@
 	<link rel="import" href="bower_components/core-icons/core-icons.html">
 	<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 	<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="custom-elements/xpn-element.html">
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 <!-- use fullbleed attribute to specify 
@@ -35,73 +37,7 @@
 
     </core-toolbar>
 
-    <div class="bar">
-    	<ul class="list-inline">
-    		<li>Bank Problem</li>
-    		<li class="redtext">- V01 -</li>
-    		<li>Jan van Hees</li>
-    	</ul>
-    </div>
-
-	<div id="container" flex horizontal wrap around-justified layout cross-fade>
-
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade>Datastore</span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade>Advice</span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade>Executes</span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade>ATM</span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade>Controls</span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade>Executes</span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade>Report</span></div>
-		<div class="card response" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade>Internet Banking</span></div>
-		<div class="card service" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card task" vertical center center-justified layout hero-id="1"><span cross-fade>Executes</span></div>
-
-		<div class="card bigcard object gray" vertical center center-justified layout hero-id="1"><span cross-fade class="vertical-text">Account</span></div>
-		<div class="card bigcard object gray" vertical center center-justified layout hero-id="1"><span cross-fade class="vertical-text">Client</span></div>
-		<div class="card bigcard rule gray" vertical center center-justified layout hero-id="1"><span cross-fade>Minimum Age</span></div>
-		<div class="card bigcard subject gray" vertical center center-justified layout hero-id="1"><span cross-fade class="vertical-text">Advisor</span></div>
-		<div class="card widecard bigcard subject gray" vertical center center-justified layout hero-id="1"><span cross-fade class="vertical-text">Client</span></div>
-		<!-- div class="card" vertical center center-justified layout hero-id="1"><span cross-fade></span></div -->
-
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade>Create</span></div>
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade>Delete</span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>Open Account</span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>From</span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade>Update</span></div>
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>Deposit Money</span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade>Form</span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade>Update</span></div>
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>Withdraw Money</span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade>Form</span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade>Delete</span></div>
-		<div class="card message" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>Close Account</span></div>
-		<div class="card action" vertical center center-justified layout hero-id="1"><span cross-fade>Form</span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-		<div class="card request" vertical center center-justified layout hero-id="1"><span cross-fade></span></div>
-
-	</div>
+	<xpn-element class="table"></xpn-element>
 
   </core-header-panel>
 
