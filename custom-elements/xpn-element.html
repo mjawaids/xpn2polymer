@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 <polymer-element name="xpn-element">
   <template>
@@ -17,6 +18,12 @@
       }
       .vertical-text {
         transform: rotate(90deg);
+        width: 75px; 
+        padding-left: 20px
+      }
+      .vertical-icon {
+        width: 85px; 
+        float: right;
       }
       .redtext {
         color: red;
@@ -52,46 +59,46 @@
       
       <tr>
         <td>?</td>
-        <td class="maincol"><core-icon-button
-            id="new-service"
-            icon="add-circle"
-            on-tap="{{addRow}}">New Service
-          </core-icon-button></td>
+        <td class="maincol">
+          <paper-input label="New Service"></paper-input>
+          <core-icon-button id="new-service" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
+          <core-icon-button id="del-service" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
+        </td>
         <td>?</td>
       </tr>
 
       <tr id="mainrow">
-        <td><core-icon-button
-            id="new-object"
-            icon="add-circle"
-            on-tap="{{addColumn}}"
-            class="vertical-text">New Object
-          </core-icon-button></td>
+        <td>          
+          <paper-input label="New Object" class="vertical-text"></paper-input>
+          <div class="vertical-icon">
+            <core-icon-button id="new-object" icon="check-circle" on-tap="{{addColumn}}" class="vertical-text"></core-icon-button>
+            <core-icon-button id="del-object" icon="highlight-remove" on-tap="{{deleteColumn}}" class="vertical-text"></core-icon-button>
+          </div>
+        </td>
         <td class="maincol">
           <table id="ruletable">
-            <tr><td><core-icon-button
-            id="new-rule"
-            icon="add-circle"
-            on-tap="{{addRow}}">New Rule
-            </core-icon-button></td></tr>
+            <tr><td>
+              <paper-input label="New Rule"></paper-input>
+              <core-icon-button id="new-rule" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
+              <core-icon-button id="del-rule" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
+            </td></tr>
           </table>
         </td>
-        <td><span class="vertical-text"><core-icon-button
-            id="new-actor"
-            icon="add-circle"
-            on-tap="{{addColumn}}"
-            class="vertical-text">New Actor
-          </core-icon-button></span></td>
+        <td>
+          <paper-input label="New Actor" class="vertical-text"></paper-input>
+          <div class="vertical-icon">
+            <core-icon-button id="new-actor" icon="check-circle" on-tap="{{addColumn}}" class="vertical-text"></core-icon-button>
+            <core-icon-button id="del-actor" icon="highlight-remove" on-tap="{{deleteColumn}}" class="vertical-text"></core-icon-button>
+          </div>
+        </td>
       </tr>
 
       <tr>
         <td>?</td>
         <td class="maincol">
-          <core-icon-button
-            id="new-action"
-            icon="add-circle"
-            on-tap="{{addRow}}">New Action
-          </core-icon-button>
+          <paper-input label="New Action"></paper-input>
+          <core-icon-button id="new-action" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
+          <core-icon-button id="del-action" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
         </td>
         <td>?</td>
       </tr>
@@ -113,9 +120,13 @@
           // insert table cells to the new row
           for (i = 0; i < tbl.rows[ pos?0:tbl.rows.length-1].cells.length; i++) {
             cell = row.insertCell(i);
-            this.createCell(cell, '?');
-            if(this.$.mainrow.querySelector('.maincol').cellIndex == i) 
+            
+            if(this.$.mainrow.querySelector('.maincol').cellIndex == i)  {
+              this.createMainColCell(cell);
               cell.setAttribute('class', 'maincol');
+            } else {
+              this.createCell(cell, '?');
+            }
           }
       },
        
@@ -129,6 +140,25 @@
           cib.setAttribute('onclick', "alert('This will open form design to enter more details.')");        // set CIB on tap attribute
           // cib.setAttribute('className', style);    // set CIB class attribute for IE (?!)
           cell.appendChild( cib );                   // append CIB to the table cell
+      },
+
+      // create DIV element and append to the table cell
+      createMainColCell: function (cell, text, style) {
+          var pi = document.createElement('paper-input'); // create paper-input element
+          pi.setAttribute('label', 'New Action');        // set label 
+          cell.appendChild( pi );
+          
+          var cib1 = document.createElement('core-icon-button'); // create core-icon-button element
+          cib1.setAttribute('id', 'new-action');
+          cib1.setAttribute('icon', 'check-circle');
+          cib1.setAttribute('onclick', "alert('alat mama')");
+          cell.appendChild( cib1 );
+
+          var cib2 = document.createElement('core-icon-button'); // create core-icon-button element
+          cib2.setAttribute('id', 'delete-action');
+          cib2.setAttribute('icon', 'highlight-remove');
+          cib2.setAttribute('on-tap', '{{addColumn}}');
+          cell.appendChild( cib2 );
       },
 
       // append column to the HTML table
@@ -146,10 +176,6 @@
             
             this.createCell(tbl.rows[i].insertCell( pos?0:tbl.rows[i].cells.length), '?' , cssClass);
           }
-      },
-
-      test: function (event, detail, sender) {
-        alert('Form Design');
       },
     });
   </script>
