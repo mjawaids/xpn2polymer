@@ -1,6 +1,15 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+
+<link rel="import" href="../bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-menu/core-menu.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 
 <polymer-element name="xpn-element">
   <template>
@@ -19,7 +28,7 @@
       .vertical-text {
         transform: rotate(90deg);
         width: 75px; 
-        padding-left: 20px
+        padding-left: 20px;
       }
       .vertical-icon {
         width: 85px; 
@@ -36,13 +45,13 @@
         text-align: center;
         border: 2px solid lightgray;
       }
-      #mainrow > .maincol {
+      .mainrow > .maincol {
         border: none;
       }
       tr {
         background-color: #33CCFF;
       }
-      #mainrow, .maincol, #ruletable tr {
+      .mainrow, .maincol, #ruletable tr {
         background-color: white;
       }
     </style>
@@ -54,129 +63,398 @@
       </ul>
     </div>
 
-    <div id="container" flex horizontal wrap around-justified layout cross-fade>
-    <table id="xpntable" class="table">
-      
-      <tr>
-        <td>?</td>
-        <td class="maincol">
-          <paper-input label="New Service"></paper-input>
-          <core-icon-button id="new-service" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
-          <core-icon-button id="del-service" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
-        </td>
-        <td>?</td>
-      </tr>
+    <table class="table">
+      <template repeat="{{row,gridIndex in grid}}">
 
-      <tr id="mainrow">
-        <td>          
-          <paper-input label="New Object" class="vertical-text"></paper-input>
-          <div class="vertical-icon">
-            <core-icon-button id="new-object" icon="check-circle" on-tap="{{addColumn}}" class="vertical-text"></core-icon-button>
-            <core-icon-button id="del-object" icon="highlight-remove" on-tap="{{deleteColumn}}" class="vertical-text"></core-icon-button>
-          </div>
-        </td>
-        <td class="maincol">
-          <table id="ruletable">
-            <tr><td>
-              <paper-input label="New Rule"></paper-input>
-              <core-icon-button id="new-rule" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
-              <core-icon-button id="del-rule" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
-            </td></tr>
-          </table>
-        </td>
-        <td>
-          <paper-input label="New Actor" class="vertical-text"></paper-input>
-          <div class="vertical-icon">
-            <core-icon-button id="new-actor" icon="check-circle" on-tap="{{addColumn}}" class="vertical-text"></core-icon-button>
-            <core-icon-button id="del-actor" icon="highlight-remove" on-tap="{{deleteColumn}}" class="vertical-text"></core-icon-button>
-          </div>
-        </td>
-      </tr>
+        <!-- MAIN ROW WITH OBJECTS, RULES, AND ACTORS -->
+        <template if="{{gridIndex == mainRow}}">
+          <tr class="mainrow">
+            <template repeat="{{cell,index in row}}">
+              <template if="{{cell.type == 'object'}}">
+                <td>
+                  <paper-input id="object-{{gridIndex}}-{{index}}" label="{{cell.value}}" class="vertical-text" on-input="{{updateInput}}"></paper-input>
+                  <div class="vertical-icon">
+                    <core-icon-button id="newobject-{{gridIndex}}-{{index}}" icon="check-circle" on-tap="{{addObjectCol}}" class="vertical-text"></core-icon-button>
+                    <core-icon-button id="delobject-{{gridIndex}}-{{index}}" icon="highlight-remove" on-tap="{{deleteObjectCol}}" class="vertical-text"></core-icon-button>
+                  </div>
+                </td>
+              </template>
 
-      <tr>
-        <td>?</td>
-        <td class="maincol">
-          <paper-input label="New Action"></paper-input>
-          <core-icon-button id="new-action" icon="check-circle" on-tap="{{addRow}}"></core-icon-button>
-          <core-icon-button id="del-action" icon="highlight-remove" on-tap="{{deleteRow}}"></core-icon-button>
-        </td>
-        <td>?</td>
-      </tr>
+              <template if="{{cell.type == 'rules'}}">
+                <td class="maincol">
+                  <table id="ruletable">
+                    <template repeat="{{ruleCell,indx in cell.value}}">
+                      <tr><td>
+                        <paper-input id="rule-{{indx}}" label="{{ruleCell.value}}" on-input="{{updateRule}}"></paper-input>
+                        <core-icon-button id="newrule-{{indx}}" icon="check-circle" on-tap="{{addRuleRow}}"></core-icon-button>
+                        <core-icon-button id="delrule-{{indx}}" icon="highlight-remove" on-tap="{{deleteRuleRow}}"></core-icon-button>
+                      </td></tr>
+                    </template>
+                  </table>
+                </td>
+              </template>
 
+              <template if="{{cell.type == 'actor'}}">
+                <td>
+                  <paper-input id="actor-{{gridIndex}}-{{index}}" label="{{cell.value}}" class="vertical-text" on-input="{{updateInput}}"></paper-input>
+                  <div class="vertical-icon">
+                    <core-icon-button id="newactor-{{gridIndex}}-{{index}}" icon="check-circle" on-tap="{{addActorCol}}" class="vertical-text"></core-icon-button>
+                    <core-icon-button id="delactor-{{gridIndex}}-{{index}}" icon="highlight-remove" on-tap="{{deleteActorCol}}" class="vertical-text"></core-icon-button>
+                  </div>
+                </td>
+              </template>
+            </template>
+          </tr>
+        </template>
+        <!-- END MAIN ROW -->
+
+        <!-- TOP AND BOTTOM ROWS FOR SERVICES AND ACTIONS -->
+        <template if="{{gridIndex != mainRow}}">
+          <tr>
+            <template repeat="{{cell,index in row}}">
+
+              <template if="{{cell.type == 'response'}}">
+                <td>
+                  <paper-menu-button>
+                    <paper-item>{{cell.value}}</paper-item>
+                    <paper-dropdown class="dropdown">
+                      <core-menu id="{{gridIndex}}-{{index}}" class="menu" on-core-select="{{selectResponse}}">
+                        <template repeat="{{responseList}}">
+                          <paper-item>{{}}</paper-item>
+                        </template>
+                      </core-menu>
+                    </paper-dropdown>
+                  </paper-menu-button>
+                </td>
+              </template>
+
+              <template if="{{cell.type == 'service'}}">
+                <td class="maincol">
+                  <paper-input id="service-{{gridIndex}}-{{index}}" label="{{cell.value}}" on-input="{{updateInput}}"></paper-input>
+                  <core-icon-button id="addservice-{{gridIndex}}-{{index}}" icon="check-circle" on-tap="{{addServiceRow}}"></core-icon-button>
+                  <core-icon-button id="delservice-{{gridIndex}}-{{index}}" icon="highlight-remove" on-tap="{{deleteServiceRow}}"></core-icon-button>
+                </td>
+              </template>
+
+              <template if="{{cell.type == 'task'}}">
+                <td>
+                  <paper-menu-button>
+                    <paper-item>{{cell.value}}</paper-item>
+                    <paper-dropdown class="dropdown">
+                      <core-menu id="{{gridIndex}}-{{index}}" class="menu" on-core-select="{{selectTask}}">
+                        <template repeat="{{taskList}}">
+                          <paper-item>{{}}</paper-item>
+                        </template>
+                      </core-menu>
+                    </paper-dropdown>
+                  </paper-menu-button>
+                </td>
+              </template>
+
+              <template if="{{cell.type == 'message'}}">
+                <td>
+                  <paper-menu-button>
+                    <paper-item>{{cell.value}}</paper-item>
+                    <paper-dropdown class="dropdown">
+                      <core-menu id="{{gridIndex}}-{{index}}" class="menu" on-core-select="{{selectMessage}}">
+                        <template repeat="{{messageList}}">
+                          <paper-item>{{}}</paper-item>
+                        </template>
+                      </core-menu>
+                    </paper-dropdown>
+                  </paper-menu-button>
+                </td>
+              </template>
+              
+              <template if="{{cell.type == 'action'}}">
+                <td class="maincol">
+                  <paper-input id="action-{{gridIndex}}-{{index}}" label="{{cell.value}}" on-input="{{updateInput}}"></paper-input>
+                  <core-icon-button id="newaction-{{gridIndex}}-{{index}}" icon="check-circle" on-tap="{{addActionRow}}"></core-icon-button>
+                  <core-icon-button id="delaction-{{gridIndex}}-{{index}}" icon="highlight-remove" on-tap="{{deleteActionRow}}"></core-icon-button>
+                </td>
+              </template>
+
+              <template if="{{cell.type == 'request'}}">
+                <td>
+                  <paper-menu-button>
+                    <paper-item>{{cell.value}}</paper-item>
+                    <paper-dropdown class="dropdown">
+                      <core-menu id="{{gridIndex}}-{{index}}" class="menu" on-core-select="{{selectRequest}}">
+                        <template repeat="{{requestList}}">
+                          <paper-item>{{}}</paper-item>
+                        </template>
+                      </core-menu>
+                    </paper-dropdown>
+                  </paper-menu-button>
+                </td>
+              </template>
+
+            </template>
+          </tr>
+        </template>
+        <!-- END SERVICES AND ACTIONS ROW -->
+
+      </template>
     </table>
-    </div>
   </template>
+
   <script>
     Polymer({
 
-      // append row to the HTML table
-      addRow: function (event, detail, sender) {
-          var pos = 0;  // set default to top. 0=top, 1=bottom
-          if(sender.id == "new-action") pos = 1;
+      created: function() {
+        this.responseTemplate   = {"type": "response",  "name": "r1c1",   "value": "?"};
+        this.serviceTemplate    = {"type": "service",   "name": "r1c2",   "value": "New Service"};
+        this.taskTemplate       = {"type": "task",      "name": "r1c3",   "value": "?"};
 
-          var tbl = (sender.id == "new-rule")? this.$.ruletable : this.$.xpntable; // table reference
-          var row = tbl.insertRow( pos? -1 : ''/*tbl.rows.length*/ ),      // append table row
-              i;
-          // insert table cells to the new row
-          for (i = 0; i < tbl.rows[ pos?0:tbl.rows.length-1].cells.length; i++) {
-            cell = row.insertCell(i);
-            
-            if(this.$.mainrow.querySelector('.maincol').cellIndex == i)  {
-              this.createMainColCell(cell);
-              cell.setAttribute('class', 'maincol');
-            } else {
-              this.createCell(cell, '?');
-            }
-          }
-      },
-       
-      // create DIV element and append to the table cell
-      createCell: function (cell, text, style) {
-          var cib = document.createElement('core-icon-button'), // create core-icon-button element
-              txt = document.createTextNode(text); // create text node
-          cib.appendChild(txt);                    // append text node to the CIB
-          cib.setAttribute('id', 'myid');        // set CIB id 
-          if(style) cib.setAttribute('class', style);        // set CIB class 
-          cib.setAttribute('onclick', "alert('This will open form design to enter more details.')");        // set CIB on tap attribute
-          // cib.setAttribute('className', style);    // set CIB class attribute for IE (?!)
-          cell.appendChild( cib );                   // append CIB to the table cell
-      },
+        this.objectTemplate     = {"type": "object",    "name": "r2c1",   "value": "New Object"}; 
+        this.ruleTemplate       = {"type": "rule",      "name": "r2c2",   "value": "New Rule"};
+        this.actorTemplate      = {"type": "actor",     "name": "r2c3",   "value": "New Actor"};
 
-      // create DIV element and append to the table cell
-      createMainColCell: function (cell, text, style) {
-          var pi = document.createElement('paper-input'); // create paper-input element
-          pi.setAttribute('label', 'New Action');        // set label 
-          cell.appendChild( pi );
+        this.messageTemplate    = {"type": "message",   "name": "r3c1",   "value": "?"};
+        this.actionTemplate     = {"type": "action",    "name": "r3c2",   "value": "New Action"};
+        this.requestTemplate    = {"type": "request",   "name": "r3c3",   "value": "?"};
+
+        this.rules = [ JSON.parse(JSON.stringify(this.ruleTemplate)) ];
+
+        this.grid = [
+          [ JSON.parse(JSON.stringify(this.responseTemplate)),
+            JSON.parse(JSON.stringify(this.serviceTemplate)),
+            JSON.parse(JSON.stringify(this.taskTemplate)) ],
           
-          var cib1 = document.createElement('core-icon-button'); // create core-icon-button element
-          cib1.setAttribute('id', 'new-action');
-          cib1.setAttribute('icon', 'check-circle');
-          cib1.setAttribute('onclick', "alert('alat mama')");
-          cell.appendChild( cib1 );
+          [ JSON.parse(JSON.stringify(this.objectTemplate)),
+            {"type": "rules", "value": this.rules},
+            JSON.parse(JSON.stringify(this.actorTemplate)) ],
+          
+          [ JSON.parse(JSON.stringify(this.messageTemplate)),
+            JSON.parse(JSON.stringify(this.actionTemplate)),
+            JSON.parse(JSON.stringify(this.requestTemplate)) ]
+        ];
 
-          var cib2 = document.createElement('core-icon-button'); // create core-icon-button element
-          cib2.setAttribute('id', 'delete-action');
-          cib2.setAttribute('icon', 'highlight-remove');
-          cib2.setAttribute('on-tap', '{{addColumn}}');
-          cell.appendChild( cib2 );
+        this.mainCol = 1;
+        this.mainRow = 1;
+
+        this.responseList   = ['Datastore',   'Report',     '?'];
+        this.taskList       = ['Controls',    'Executes',   '?'];
+        this.messageList    = ['Create',      'Update',     'Delete', '?'];
+        this.requestList    = ['Form',        '?'];
       },
 
-      // append column to the HTML table
-      addColumn: function (event, detail, sender) {
-          var pos = 0;  // set default to right. 0=right, 1=left
-          if(sender.id == "new-object") pos = 1;
+      selectResponse: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.grid[ rowcol[0] ][ rowcol[1] ].value = this.responseList[sender.selected];
+      },
 
-          var tbl = this.$.xpntable, // table reference
-              i;
-          // open loop for each row and append cell
-          for (i = 0; i < tbl.rows.length; i++) {
-            cssClass = '';
-            if(tbl.rows[i].id == 'mainrow')
-              cssClass = 'vertical-text';
-            
-            this.createCell(tbl.rows[i].insertCell( pos?0:tbl.rows[i].cells.length), '?' , cssClass);
+      selectTask: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.grid[ rowcol[0] ][ rowcol[1] ].value = this.taskList[sender.selected];
+      },
+
+      selectMessage: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.grid[ rowcol[0] ][ rowcol[1] ].value = this.messageList[sender.selected];
+      },
+
+      selectRequest: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.grid[ rowcol[0] ][ rowcol[1] ].value = this.requestList[sender.selected];
+      },
+
+      addRuleRow: function() {
+        this.rules.unshift( this.addRule() );
+      },
+
+      addRule: function() {
+        return JSON.parse(JSON.stringify(this.ruleTemplate));
+      },
+
+      updateRule: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.rules[ rowcol[1] ].value = sender.value;
+      },
+
+      deleteRuleRow: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        if(this.rules.length > 1) this.rules.splice( rowcol[1], 1 );
+      },
+
+      addServiceRow: function() {
+        var totalCols   = this.grid[0].length;
+
+        var responses   = this.addResponses(this.mainCol);
+        var service     = this.addService();
+        var tasks       = this.addTasks(totalCols - this.mainCol - 1);
+        
+        var newRow      = [];
+        newRow.push.apply(newRow, responses);
+        newRow.push(service);
+        newRow.push.apply(newRow, tasks);
+
+        this.grid.unshift(newRow);
+        this.mainRow++;
+      },
+
+      addResponses: function(n) {
+        var arr = [];
+
+        for(i=0; i<n; i++) {
+          var ob = JSON.parse(JSON.stringify(this.responseTemplate));
+          arr.push(ob);
+        }
+
+        return arr;
+      },
+
+      addService: function() {
+        return JSON.parse(JSON.stringify(this.serviceTemplate));
+      },
+
+      updateInput: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        this.grid[ rowcol[1] ][ rowcol[2] ].value = sender.value;
+      },
+
+      addTasks: function(n) {
+        var arr = [];
+
+        for(i=0; i<n; i++) {
+          var ob = JSON.parse(JSON.stringify(this.taskTemplate));
+          arr.push(ob);
+        }
+
+        return arr;
+      },
+
+      deleteServiceRow: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        if(this.mainRow > 1) {
+          this.grid.splice( rowcol[1], 1 );
+          this.mainRow--;
+        }
+      },
+
+      addActionRow: function() {
+        var totalCols = this.grid[0].length;
+
+        var messages  = this.addMessages(this.mainCol);
+        var action    = this.addAction();
+        var requests  = this.addRequests(totalCols - this.mainCol - 1);
+        
+        var newRow    = [];
+        newRow.push.apply(newRow, messages);
+        newRow.push(action);
+        newRow.push.apply(newRow, requests);
+
+        this.grid.push(newRow);
+      },
+
+      addMessages: function(n) {
+        var arr = [];
+
+        for(i=0; i<n; i++) {
+          var ob = JSON.parse(JSON.stringify(this.messageTemplate));
+          arr.push(ob);
+        }
+
+        return arr;
+      },
+
+      addAction: function() {
+        return JSON.parse(JSON.stringify(this.actionTemplate));
+      },
+
+      addRequests: function(n) {
+        var arr = [];
+
+        for(i=0; i<n; i++) {
+          var ob = JSON.parse(JSON.stringify(this.requestTemplate));
+          arr.push(ob);
+        }
+
+        return arr;
+      },
+
+      deleteActionRow: function(event, detail, sender) {
+        var rowcol = sender.id.split("-");
+        if(this.mainRow < this.grid.length-2) this.grid.splice( rowcol[1], 1 );        
+      },
+
+      addActorCol: function() {
+        var totalRows = this.grid.length;
+
+        for(i=0; i<totalRows; i++) {
+          if(i < this.mainRow) {
+            this.grid[i].push( this.addTask() );
+          } else if(i == this.mainRow) {
+            this.grid[i].push( this.addActor() );
+          } else if(i > this.mainRow) {
+            this.grid[i].push( this.addRequest() );
           }
+        }
       },
+
+      addTask: function() {
+        return JSON.parse(JSON.stringify(this.taskTemplate));
+      },
+
+      addActor: function() {
+        return JSON.parse(JSON.stringify(this.actorTemplate));
+      },
+
+      addRequest: function() {
+        return JSON.parse(JSON.stringify(this.requestTemplate));
+      },
+
+      deleteActorCol: function(event, detail, sender) {
+        if(this.mainCol < this.grid[0].length-2) {
+          var totalRows = this.grid.length;
+          var rowcol = sender.id.split("-");
+
+          for(i=0; i<totalRows; i++) {
+            this.grid[i].splice( rowcol[2], 1 );
+          }
+        }
+      },
+
+      addObjectCol: function() {
+        totalRows = this.grid.length;
+
+        for(i=0; i<totalRows; i++) {
+          if(i < this.mainRow) {
+            this.grid[i].unshift( this.addResponse() );
+          } else if(i == this.mainRow) {
+            this.grid[i].unshift( this.addObject() );
+          } else if(i > this.mainRow) {
+            this.grid[i].unshift( this.addMessage() );
+          }
+        }
+
+        this.mainCol++;
+      },
+
+      addResponse: function() {
+        return JSON.parse(JSON.stringify(this.responseTemplate));
+      },
+
+      addObject: function() {
+        return JSON.parse(JSON.stringify(this.objectTemplate));
+      },
+
+      addMessage: function() {
+        return JSON.parse(JSON.stringify(this.messageTemplate));
+      },
+
+      deleteObjectCol: function(event, detail, sender) {
+        if(this.mainCol > 1) {
+          var totalRows = this.grid.length;
+          var rowcol = sender.id.split("-");
+
+          for(i=0; i<totalRows; i++) {
+            this.grid[i].splice( rowcol[2], 1 );
+          }
+          this.mainCol--;
+        }
+      },
+
     });
   </script>
 </polymer-element>
