@@ -1,0 +1,21 @@
+<!--
+  Copyright (c) 2015, Muhammad Jawaid Shamshad. All rights reserved. Use of this source code
+  is governed by a BSD-style license that can be found in the LICENSE file.
+-->
+
+<!-- import polymer-element's definition -->
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="../../packages/core_elements/core_icon_button.html">
+<link rel="import" href="../../packages/paper_elements/paper_input.html">
+
+<polymer-element name="action-element" attributes="action">
+  <template>
+    <style>
+    </style>
+    <paper-input label="New Action" value="{{action.value}}"></paper-input>
+    <core-icon-button icon="check-circle" on-tap="{{addAction}}"></core-icon-button>
+    <core-icon-button icon="highlight-remove" on-tap="{{deleteAction}}"></core-icon-button>
+  </template>
+
+  <script type="application/dart" src="action-element.dart"></script>
+</polymer-element>

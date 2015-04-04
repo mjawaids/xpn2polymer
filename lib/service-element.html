@@ -1,0 +1,21 @@
+<!--
+  Copyright (c) 2015, Muhammad Jawaid Shamshad. All rights reserved. Use of this source code
+  is governed by a BSD-style license that can be found in the LICENSE file.
+-->
+
+<!-- import polymer-element's definition -->
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="../../packages/core_elements/core_icon_button.html">
+<link rel="import" href="../../packages/paper_elements/paper_input.html">
+
+<polymer-element name="service-element" attributes="service">
+  <template>
+    <style>
+    </style>
+    <paper-input label="New Service" value="{{service.value}}"></paper-input>
+    <core-icon-button icon="check-circle" on-tap="{{addService}}"></core-icon-button>
+    <core-icon-button icon="highlight-remove" on-tap="{{deleteService}}"></core-icon-button>
+  </template>
+
+  <script type="application/dart" src="service-element.dart"></script>
+</polymer-element>
