@@ -1,0 +1,13 @@
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="response-element.html">
+
+<polymer-element name="response-list">
+  <template>
+    <div template repeat="{{response in responses}}" 
+        on-deleteobject="{{deleteResponse}}" on-addobject="{{addResponse}}">
+      <response-element response="{{response}}"></response-element>
+    </div>
+  </template>
+  
+  <script type="application/dart" src="response-list.dart"></script>
+</polymer-element>

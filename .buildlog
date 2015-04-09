@@ -5806,3 +5806,1000 @@ Stack Trace:
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:131)
 build.dart finished [219 ms]
 
+---
+build.dart --machine --clean
+Unhandled exception:
+Uncaught Error: FileSystemException: Cannot open file, path = 'D:\xampp\htdocs\companyconcept\packages\polymer\default_build.dart' (OS Error: The system cannot find the file specified.
+, errno = 2)
+Stack Trace:
+#0      _File.open.<anonymous closure> (dart:io/file_impl.dart:349)
+#1      _RootZone.runUnary (dart:async/zone.dart:1155)
+#2      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:484)
+#3      _Future._propagateToListeners (dart:async/future_impl.dart:567)
+#4      _Future._completeWithValue (dart:async/future_impl.dart:358)
+#5      _Future._asyncComplete.<anonymous closure> (dart:async/future_impl.dart:412)
+#6      _asyncRunCallbackLoop (dart:async/schedule_microtask.dart:41)
+#7      _asyncRunCallback (dart:async/schedule_microtask.dart:48)
+#8      _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:84)
+#9      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:131)
+
+#0      _rootHandleUncaughtError.<anonymous closure> (dart:async/zone.dart:886)
+#1      _asyncRunCallbackLoop (dart:async/schedule_microtask.dart:41)
+#2      _asyncRunCallback (dart:async/schedule_microtask.dart:48)
+#3      _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:84)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:131)
+build.dart finished [324 ms]
+
+---
+build.dart --machine --full
+Unhandled exception:
+Uncaught Error: FileSystemException: Cannot open file, path = 'D:\xampp\htdocs\companyconcept\packages\polymer\default_build.dart' (OS Error: The system cannot find the file specified.
+, errno = 2)
+Stack Trace:
+#0      _File.open.<anonymous closure> (dart:io/file_impl.dart:349)
+#1      _RootZone.runUnary (dart:async/zone.dart:1155)
+#2      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:484)
+#3      _Future._propagateToListeners (dart:async/future_impl.dart:567)
+#4      _Future._completeWithValue (dart:async/future_impl.dart:358)
+#5      _Future._asyncComplete.<anonymous closure> (dart:async/future_impl.dart:412)
+#6      _asyncRunCallbackLoop (dart:async/schedule_microtask.dart:41)
+#7      _asyncRunCallback (dart:async/schedule_microtask.dart:48)
+#8      _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:84)
+#9      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:131)
+
+#0      _rootHandleUncaughtError.<anonymous closure> (dart:async/zone.dart:886)
+#1      _asyncRunCallbackLoop (dart:async/schedule_microtask.dart:41)
+#2      _asyncRunCallback (dart:async/schedule_microtask.dart:48)
+#3      _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:84)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:131)
+build.dart finished [317 ms]
+
+---
+build.dart --machine --changed=pubspec.lock
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.9s (2.5s awaiting secondary inputs)."}}]
+build.dart finished [5524 ms]
+
+---
+build.dart --machine --full
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.2s (2.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.2s (2.7s awaiting secondary inputs)."}}]
+build.dart finished [6813 ms]
+
+---
+build.dart --machine --clean
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+build.dart finished [3608 ms]
+
+---
+build.dart --machine --full
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [3856 ms]
+
+---
+build.dart --machine --changed=pubspec.yaml
+error: pubspec.yaml file not found.
+[{"method":"warning","params":{"file":"web/index.html","message":"couldn't find imported asset \"lib/xpn-element.html\" in package \"companyconceptdart\". See http://goo.gl/5HPeuP#polymer_1 for details.","line":39,"charStart":1696,"charEnd":1767}}]
+[{"method":"info","params":{"message":"Took 2.4s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (1.9s awaiting secondary inputs)."}}]
+[{"method":"warning","params":{"file":"web/index.html","message":"custom element with name \"xpn-element\" not found. See http://goo.gl/5HPeuP#polymer_11 for details.","line":67,"charStart":2594,"charEnd":2621}}]
+[{"method":"info","params":{"message":"Took 2.9s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.1s (2.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.2s (2.6s awaiting secondary inputs)."}}]
+build.dart finished [5039 ms]
+
+---
+build.dart --machine --changed=build\web\apple-touch-icon-precomposed.png --changed=build\web\favicon.ico --cha...
+error: pubspec.yaml file not found.
+[{"method":"warning","params":{"file":"web/index.html","message":"couldn't find imported asset \"lib/xpn-element.html\" in package \"companyconceptdart\". See http://goo.gl/5HPeuP#polymer_1 for details.","line":39,"charStart":1696,"charEnd":1767}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"warning","params":{"file":"web/index.html","message":"custom element with name \"xpn-element\" not found. See http://goo.gl/5HPeuP#polymer_11 for details.","line":67,"charStart":2594,"charEnd":2621}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+build.dart finished [3590 ms]
+
+---
+build.dart --machine --changed=web\index.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+build.dart finished [3511 ms]
+
+---
+build.dart --machine --clean
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+build.dart finished [3486 ms]
+
+---
+build.dart --machine --full
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.2s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.3s (1.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+build.dart finished [3453 ms]
+
+---
+build.dart --machine --changed=pubspec.lock
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.3s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.4s (1.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+build.dart finished [3616 ms]
+
+---
+build.dart --machine --changed=pubspec.lock
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+build.dart finished [4248 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+build.dart finished [4908 ms]
+
+---
+build.dart --machine --full
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 3.3s (2.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (3.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (2.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (3.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (2.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (3.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (2.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.5s (2.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.5s (3.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.5s (3.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.5s (4.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.6s (4.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.6s (4.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.7s (4.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.8s (4.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 4.9s (4.2s awaiting secondary inputs)."}}]
+build.dart finished [10130 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+build.dart finished [5179 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4179 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+build.dart finished [4464 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4696 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.0s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.9s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 3.0s (2.3s awaiting secondary inputs)."}}]
+build.dart finished [5323 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4271 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.9s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.9s (2.2s awaiting secondary inputs)."}}]
+build.dart finished [5088 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.0s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.4s awaiting secondary inputs)."}}]
+build.dart finished [5032 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.4s awaiting secondary inputs)."}}]
+build.dart finished [5629 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+build.dart finished [5097 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+build.dart finished [4531 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4343 ms]
+
+---
+build.dart --machine --changed=lib\object-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+build.dart finished [5110 ms]
+
+---
+build.dart --machine --changed=lib\actor-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.8s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+build.dart finished [5156 ms]
+
+---
+build.dart --machine --changed=lib\actor-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+build.dart finished [4963 ms]
+
+---
+build.dart --machine --changed=lib\actor-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+build.dart finished [5278 ms]
+
+---
+build.dart --machine --changed=lib\actor-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.0s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.4s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+build.dart finished [4731 ms]
+
+---
+build.dart --machine --changed=lib\actor-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+build.dart finished [4250 ms]
+
+---
+build.dart --machine --changed=lib\object-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+build.dart finished [4533 ms]
+
+---
+build.dart --machine --changed=lib\service-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+build.dart finished [4228 ms]
+
+---
+build.dart --machine --changed=lib\rule-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4288 ms]
+
+---
+build.dart --machine --changed=lib\middle-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.4s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.5s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+build.dart finished [4034 ms]
+
+---
+build.dart --machine --changed=lib\action-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+build.dart finished [4497 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4169 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4328 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4404 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.html
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4712 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+build.dart finished [4089 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.5s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.6s (1.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.9s awaiting secondary inputs)."}}]
+build.dart finished [4395 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.9s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.0s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+build.dart finished [4836 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 1.7s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.7s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 1.8s (1.4s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.9s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.2s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.8s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.3s (1.8s awaiting secondary inputs)."}}]
+build.dart finished [4760 ms]
+
+---
+build.dart --machine --changed=lib\xpn-element.dart
+error: pubspec.yaml file not found.
+[{"method":"info","params":{"message":"Took 2.0s (1.6s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.1s (1.7s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.5s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.1s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.6s (2.2s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.7s (2.3s awaiting secondary inputs)."}}]
+[{"method":"info","params":{"message":"Took 2.8s (2.3s awaiting secondary inputs)."}}]
+build.dart finished [4983 ms]
+
