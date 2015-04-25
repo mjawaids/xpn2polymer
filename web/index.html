@@ -10,7 +10,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="scaffolded-by" content="https://github.com/google/stagehand">
+
   <title>Company Concept</title>
 
   <!-- Add to homescreen for Chrome on Android -->
@@ -27,47 +27,20 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
   <meta name="msapplication-TileColor" content="#3372DF">
 
-  <!-- paper elements -->
-  <link rel="import" href="packages/paper_elements/roboto.html">
-  <link rel="import" href="packages/core_elements/core_toolbar.html">
-  <link rel="import" href="packages/core_elements/core_header_panel.html">
-  <link rel="import" href="packages/core_elements/core_icons.html">
-  <link rel="import" href="packages/paper_elements/paper_icon_button.html">
-  <link rel="import" href="packages/paper_elements/paper_tabs.html">
-  
-  <!-- our own custom element -->
-  <link rel="import" href="packages/companyconcept/xpn-element.html">
-
   <!-- Twitter Bootstrap and our CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- our own custom element -->
+  <link rel="import" href="packages/companyconcept/xpn-element.html">
+  
 </head>
 
 <body fullbleed vertical layout unresolved>
 
-  <core-header-panel flex>
-
-    <core-toolbar id="mainheader" class="medium-tall">
-
-      <paper-icon-button id="navicon" icon="dashboard"></paper-icon-button>
-      <span flex>Company Concepts</span>
-      <paper-icon-button id="morebutton" icon="more-vert"></paper-icon-button>
-
-      <paper-tabs class="bottom fit" selected="1">
-	    <paper-tab>IMPORT</paper-tab>
-	    <paper-tab>DEFINE</paper-tab>
-	    <paper-tab>DESIGN</paper-tab>
-	    <paper-tab>DEVELOP</paper-tab>
-	    <paper-tab>DEPLOY</paper-tab>
-	    <paper-tab>EXPORT</paper-tab>
-	  </paper-tabs>
-
-    </core-toolbar>
-
-	<xpn-element class="table"></xpn-element>
-
-  </core-header-panel>
+  <xpn-element></xpn-element>
   
-  <script type="application/dart">export 'package:polymer/init.dart';</script>
+  <script type="application/dart">export 'package:polymer/init.dart';
+  </script>
 </body>
 </html>

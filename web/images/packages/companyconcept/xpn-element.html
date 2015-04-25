@@ -6,156 +6,122 @@
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
 
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/core_elements/core_collapse.html">
-<link rel="import" href="../../packages/core_elements/core_icons.html">
-<link rel="import" href="../../packages/core_elements/core_menu.html">
+<!-- POLYMER PAPER AND CORE ELEMENTS -->
+<link rel="import" href="../../packages/paper_elements/roboto.html">
+<link rel="import" href="../../packages/core_elements/core_header_panel.html">
+<link rel="import" href="../../packages/core_elements/core_toolbar.html">
+<link rel="import" href="../../packages/core_elements/core_pages.html">
 
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
-<link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
+<link rel="import" href="../../packages/paper_elements/paper_tabs.html">
 <link rel="import" href="../../packages/paper_elements/paper_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_item.html">
 
-<!-- link rel="import" href="response-list.html" -->
-<link rel="import" href="response-element.html">
-<link rel="import" href="service-element.html">
-<link rel="import" href="task-element.html">
-
-<link rel="import" href="object-element.html">
-<link rel="import" href="rule-list.html">
-<link rel="import" href="rule-element.html">
-<link rel="import" href="actor-element.html">
-
-<link rel="import" href="message-element.html">
-<link rel="import" href="action-element.html">
-<link rel="import" href="request-element.html">
-
-<!-- link rel="import" href="corner-element.html" -->
+<link rel="import" href="define-element.html">
+<link rel="import" href="design-element.html">
 
 <polymer-element name="xpn-element">
   <template>
     <style>
+      :host {
+        display: block;
+        height: 100%;
+        margin: 0;
+        font-family: 'RobotoDraft', sans-serif;
+      }
+      
+      core-header-panel {
+        height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      core-toolbar {
+        background: #03a9f4;
+        color: white;
+      }
+      
+      #tabs {
+        width: 100%;
+        margin: 0;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        text-transform: uppercase;
+      }
+      
       .bar {
         margin: 20px;
         padding: 10px 20px;
         border-radius: 20px;
         background-color: #eee;
       }
-      .list-inline li {
-        list-style: none;
-        display: inline;
-        padding-left: 20%;
+      
+      p {
+        margin: 20px;
+        padding: 80px 20px;
+        border-radius: 20px;
+        background-color: #eee;
       }
-      /*.vertical-text {
-        transform: rotate(90deg);
-        width: 75px; 
-        padding-left: 20px;
+      
+      #container {
+        overflow: hidden;
       }
-      .vertical-icon {
-        width: 85px; 
-        float: right;
-      }*/
+      
+      .response, .message, .action, .request {
+        text-decoration: underline;
+      }
+      
+      .service, .task, .subject {
+        color: blue;
+      }
+      
       .redtext {
         color: red;
       }
-      table {
-        width: 100%;
+      
+      .object {
+        color: orange;
       }
-      td {
-        height: 120px;
-        text-align: center;
-        border: 2px solid lightgray;
+      
+      .rule {
+        color: green;
       }
-      .mainrow > .maincol {
-        border: none;
-      }
-      tr {
-        background-color: #33CCFF;
-      }
-      .mainrow, .maincol, #ruletable tr {
-        background-color: white;
+      
+      .object, .rule {
+        text-decoration: underline;
       }
     </style>
-    <div class="bar">
-      <ul class="list-inline">
-        <li>Bank Problem</li>
-        <li class="redtext">- V01 -</li>
-        <li>Jan van Hees</li>
-      </ul>
-    </div>
 
-    <table class="table" 
-          on-addservice="{{addTopRow}}"
-          on-addaction="{{addBottomRow}}"
-          on-addobject="{{addLeftCol}}"
-          on-addactor="{{addRightCol}}"
-          on-addrule="{{addRule}}"
-          
-          on-deleteservice="{{deleteTopRow}}"
-          on-deleteaction="{{deleteBottomRow}}"
-          on-deleteobject="{{deleteLeftCol}}"
-          on-deleteactor="{{deleteRightCol}}"
-          on-deleterule="{{deleteRule}}">
-      
-      <!-- TOP ROWS -->    
-      <tr template repeat="{{row in grid.topRows}}">
-      
-        <td template repeat="{{e in row.responses}}">
-          <response-element response="{{e}}"></response-element>
-        </td>
-        
-        <td class="maincol">
-          <service-element service="{{row.service}}"></service-element>
-        </td>
-        
-        <td template repeat="{{e in row.tasks}}">
-          <task-element task="{{e}}"></task-element>
-        </td>
-        
-      </tr>
-      
-      <!-- CENTER ROW -->
-      <tr class="mainrow">
-        
-        <td template repeat="{{e in grid.centerRow.objects}}">
-          <object-element obj="{{e}}"></object-element>
-        </td>
-        
-        <td class="maincol">
-          <table id="ruletable">
-            <tr template repeat="{{e in grid.centerRow.rules}}">
-              <td>
-                <rule-element rule="{{e}}"></rule-element>
-              </td>
-            </tr>
-          </table>
-        </td>
-        
-        <td template repeat="{{e in grid.centerRow.actors}}">
-          <actor-element actor="{{e}}"></actor-element>
-        </td>
-        
-      </tr>
-      
-      <!-- BOTTOM ROWS -->
-      <tr template repeat="{{row in grid.bottomRows}}">
-        
-        <td template repeat="{{e in row.messages}}">
-          <message-element message="{{e}}"></message-element>
-        </td>
-        
-        <td class="maincol">
-          <action-element action="{{row.action}}"></action-element>
-        </td>
-        
-        <td template repeat="{{e in row.requests}}">
-          <request-element request="{{e}}"></request-element>
-        </td>
-        
-      </tr>
-    </table>
+    <core-header-panel flex>
+    
+      <core-toolbar class="medium-tall">
+  
+        <paper-icon-button id="navicon" icon="dashboard"></paper-icon-button>
+        <span flex>Company Concepts</span>
+        <paper-icon-button id="morebutton" icon="more-vert"></paper-icon-button>
+  
+        <paper-tabs id="tabs" class="bottom fit" valueattr="name" selected="{{tab}}" self-end>
+          <paper-tab name="import">IMPORT</paper-tab>
+          <paper-tab name="define">DEFINE</paper-tab>
+          <paper-tab name="design">DESIGN</paper-tab>
+          <paper-tab name="develop">DEVELOP</paper-tab>
+          <paper-tab name="deploy">DEPLOY</paper-tab>
+          <paper-tab name="export">EXPORT</paper-tab>
+        </paper-tabs>
+  
+      </core-toolbar>
+  
+      <core-pages id="pages" valueattr="name" selected="{{tab}}">
+        <div name="import"><h1>This is import</h1></div>
+        <div name="define"><define-element class="table"></define-element></div>
+        <div name="design"><design-element class="table"></design-element></div>
+        <div name="develop"><h1>This is develop</h1></div>
+        <div name="deploy"><h1>This is deploy</h1></div>
+        <div name="export"><h1>This is export</h1></div>
+      </core-pages>
+  
+    </core-header-panel>
+
   </template>
 
   <script type="application/dart" src="xpn-element.dart"></script>
