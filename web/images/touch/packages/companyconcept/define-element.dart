@@ -8,7 +8,7 @@ import 'models.dart';
 /// A Polymer `<define-element>` element.
 @CustomTag('define-element')
 class DefineElement extends PolymerElement {
-  @observable Grid grid = new Grid();
+  @observable Grid grid = appGrid; //new Grid();
 
   @observable TopRow topRow = new TopRow();
   @observable CenterRow centerRow = new CenterRow();
@@ -42,7 +42,7 @@ class DefineElement extends PolymerElement {
     topRow.service = service;
     task = new Task();
     topRow.tasks.add( task );
-    grid.topRows.add(topRow);
+    appGrid.topRows.add(topRow);
     
     // center row
     centerRow = new CenterRow();
@@ -52,7 +52,7 @@ class DefineElement extends PolymerElement {
     centerRow.rules.add(rule);
     actor = new Actor();
     centerRow.actors.add( actor );
-    grid.centerRow = centerRow;
+    appGrid.centerRow = centerRow;
     
     // bottom row
     bottomRow = new BottomRow();
@@ -62,7 +62,7 @@ class DefineElement extends PolymerElement {
     bottomRow.action = action;
     request = new Request();
     bottomRow.requests.add( request );
-    grid.bottomRows.add( bottomRow );
+    appGrid.bottomRows.add( bottomRow );
   }
   
   void addTopRow(Event e, var detail, Node sender) {
@@ -72,7 +72,7 @@ class DefineElement extends PolymerElement {
     topRow = new TopRow();
     
     // Add Responses
-    for(i=0; i<grid.topRows[0].responses.length; i++) {
+    for(i=0; i<appGrid.topRows[0].responses.length; i++) {
       response = new Response();
       topRow.responses.add( response );
     }
@@ -82,13 +82,15 @@ class DefineElement extends PolymerElement {
     topRow.service = service;
     
     // Add Tasks
-    for(i=0; i<grid.topRows[0].tasks.length; i++) {
+    for(i=0; i<appGrid.topRows[0].tasks.length; i++) {
       task = new Task();
       topRow.tasks.add( task );
     }
     
-    // Add row in grid
-    grid.topRows.insert( 0, topRow );    
+    // Add row in appGrid
+    appGrid.topRows.insert( 0, topRow );
+
+    print(appGrid);
   }
   
   void deleteTopRow(Event e, var detail, Node sender) {
@@ -96,10 +98,10 @@ class DefineElement extends PolymerElement {
     
     service = detail['service'];
     
-    if(grid.topRows.length > 1)
-      for(var row in grid.topRows)
+    if(appGrid.topRows.length > 1)
+      for(var row in appGrid.topRows)
         if (row.service == service) {
-          grid.topRows.remove(row);
+          appGrid.topRows.remove(row);
           break;
         }
   }
@@ -111,7 +113,7 @@ class DefineElement extends PolymerElement {
       bottomRow = new BottomRow();
       
       // Add Messages
-      for(i=0; i<grid.bottomRows[0].messages.length; i++) {
+      for(i=0; i<appGrid.bottomRows[0].messages.length; i++) {
         message = new Message();
         bottomRow.messages.add( message );
       }
@@ -121,13 +123,15 @@ class DefineElement extends PolymerElement {
       bottomRow.action = action;
       
       // Add Requests
-      for(i=0; i<grid.bottomRows[0].requests.length; i++) {
+      for(i=0; i<appGrid.bottomRows[0].requests.length; i++) {
         request = new Request();
         bottomRow.requests.add( request );
       }
       
-      // Add row in grid
-      grid.bottomRows.add( bottomRow );
+      // Add row in appGrid
+      appGrid.bottomRows.add( bottomRow );
+      
+      print(appGrid);
   }
   
   void deleteBottomRow(Event e, var detail, Node sender) {
@@ -135,10 +139,10 @@ class DefineElement extends PolymerElement {
     
     action = detail['action'];
         
-        if(grid.bottomRows.length > 1)
-          for(var row in grid.bottomRows)
+        if(appGrid.bottomRows.length > 1)
+          for(var row in appGrid.bottomRows)
             if (row.action == action) {
-              grid.bottomRows.remove(row);
+              appGrid.bottomRows.remove(row);
               break;
             }
   }
@@ -147,7 +151,7 @@ class DefineElement extends PolymerElement {
     e.preventDefault();
 
     // Add Responses
-    for(var row in grid.topRows) {
+    for(var row in appGrid.topRows) {
       response = new Response();
       row.responses.insert(0, response);
     }
@@ -157,10 +161,12 @@ class DefineElement extends PolymerElement {
     centerRow.objects.insert(0, obj);
     
     // Add Messages
-    for(var row in grid.bottomRows) {
+    for(var row in appGrid.bottomRows) {
       message = new Message();
       row.messages.insert(0, message);
     }
+    
+    print(appGrid);
   }
   
   void deleteLeftCol(Event e, var detail, Node sender) {
@@ -168,19 +174,19 @@ class DefineElement extends PolymerElement {
     
     obj = detail['obj'];
     
-    if(grid.topRows[0].responses.length > 1) {
-      int i = grid.centerRow.objects.indexOf(obj);
+    if(appGrid.topRows[0].responses.length > 1) {
+      int i = appGrid.centerRow.objects.indexOf(obj);
       
       // Remove responses
-      for(var row in grid.topRows) {
+      for(var row in appGrid.topRows) {
         row.responses.removeAt(i);
       }
       
       // Remove object
-      grid.centerRow.objects.remove(obj);
+      appGrid.centerRow.objects.remove(obj);
 
       // Remove messages
-      for(var row in grid.bottomRows) {
+      for(var row in appGrid.bottomRows) {
         row.messages.removeAt(i);
       }
     }
@@ -190,7 +196,7 @@ class DefineElement extends PolymerElement {
     e.preventDefault();
     
     // Add Tasks
-    for(var row in grid.topRows) {
+    for(var row in appGrid.topRows) {
       task = new Task();
       row.tasks.add(task);
     }
@@ -200,10 +206,12 @@ class DefineElement extends PolymerElement {
     centerRow.actors.add(actor);
     
     // Add Requests
-    for(var row in grid.bottomRows) {
+    for(var row in appGrid.bottomRows) {
       request = new Request();
       row.requests.add(request);
     }
+    
+    print(appGrid);
   }
   
   void deleteRightCol(Event e, var detail, Node sender) {
@@ -211,19 +219,19 @@ class DefineElement extends PolymerElement {
     
     actor = detail['actor'];
         
-    if(grid.topRows[0].tasks.length > 1) {
-      int i = grid.centerRow.actors.indexOf(actor);
+    if(appGrid.topRows[0].tasks.length > 1) {
+      int i = appGrid.centerRow.actors.indexOf(actor);
       
       // Remove tasks
-      for(var row in grid.topRows) {
+      for(var row in appGrid.topRows) {
         row.tasks.removeAt(i);
       }
       
       // Remove actor
-      grid.centerRow.actors.remove(actor);
+      appGrid.centerRow.actors.remove(actor);
 
       // Remove requests
-      for(var row in grid.bottomRows) {
+      for(var row in appGrid.bottomRows) {
         row.requests.removeAt(i);
       }
     }
@@ -234,6 +242,8 @@ class DefineElement extends PolymerElement {
         
     rule = new Rule();
     centerRow.rules.add(rule);
+    
+    print(appGrid.centerRow.rules.length);
   }
   
   /**

@@ -127,3 +127,5 @@ class Grid extends Observable {
   @observable CenterRow centerRow = new CenterRow();
   @observable List<BottomRow> bottomRows = toObservable([]);
 }
+
+final appGrid = new Grid();

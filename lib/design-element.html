@@ -75,32 +75,21 @@
       </ul>
     </div>
 
-    <table class="table" 
-          on-addservice="{{addTopRow}}"
-          on-addaction="{{addBottomRow}}"
-          on-addobject="{{addLeftCol}}"
-          on-addactor="{{addRightCol}}"
-          on-addrule="{{addRule}}"
-          
-          on-deleteservice="{{deleteTopRow}}"
-          on-deleteaction="{{deleteBottomRow}}"
-          on-deleteobject="{{deleteLeftCol}}"
-          on-deleteactor="{{deleteRightCol}}"
-          on-deleterule="{{deleteRule}}">
+    <table class="table">
       
       <!-- TOP ROWS -->    
       <tr template repeat="{{row in grid.topRows}}">
       
         <td template repeat="{{e in row.responses}}">
-          <response-element response="{{e}}"></response-element>
+          <div>{{e.value}}</div>
         </td>
         
         <td class="maincol">
-          <service-element service="{{row.service}}"></service-element>
+          <div>{{row.service.value}}</div>
         </td>
         
         <td template repeat="{{e in row.tasks}}">
-          <task-element task="{{e}}"></task-element>
+          <div>{{e.value}}</div>
         </td>
         
       </tr>
@@ -109,21 +98,21 @@
       <tr class="mainrow">
         
         <td template repeat="{{e in grid.centerRow.objects}}">
-          <object-element obj="{{e}}"></object-element>
+          <div>{{e.value}}</div>
         </td>
         
         <td class="maincol">
           <table id="ruletable">
             <tr template repeat="{{e in grid.centerRow.rules}}">
               <td>
-                <rule-element rule="{{e}}"></rule-element>
+                <div>{{e.value}}</div>
               </td>
             </tr>
           </table>
         </td>
         
         <td template repeat="{{e in grid.centerRow.actors}}">
-          <actor-element actor="{{e}}"></actor-element>
+          <div>{{e.value}}</div>
         </td>
         
       </tr>
@@ -132,15 +121,15 @@
       <tr template repeat="{{row in grid.bottomRows}}">
         
         <td template repeat="{{e in row.messages}}">
-          <message-element message="{{e}}"></message-element>
+          <div>{{e.value}}</div>
         </td>
         
         <td class="maincol">
-          <action-element action="{{row.action}}"></action-element>
+          <div>{{row.action.value}}</div>
         </td>
         
         <td template repeat="{{e in row.requests}}">
-          <request-element request="{{e}}"></request-element>
+          <div>{{e.value}}</div>
         </td>
         
       </tr>
