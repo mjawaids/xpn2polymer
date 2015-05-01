@@ -8,21 +8,10 @@ import 'models.dart';
 /// A Polymer `<define-element>` element.
 @CustomTag('define-element')
 class DefineElement extends PolymerElement {
-  @observable Grid grid = appGrid; //new Grid();
-
-  @observable TopRow topRow = new TopRow();
-  @observable CenterRow centerRow = new CenterRow();
-  @observable BottomRow bottomRow = new BottomRow();
-  
-  @observable Response response = new Response();
-  @observable Service service = new Service();
-  @observable Task task = new Task();
-  @observable Obj obj = new Obj();
-  @observable Rule rule = new Rule();
-  @observable Actor actor = new Actor();
-  @observable Message message = new Message();
-  @observable Action action = new Action();
-  @observable Request request = new Request();
+  @observable Grid grid = appGrid; //needed to display on front
+  @published String mode;
+  @observable String showDialog;
+  @observable String dialogHeading;
   
   /// Constructor used to create instance of MainApp.
   DefineElement.created() : super.created() {
@@ -33,40 +22,49 @@ class DefineElement extends PolymerElement {
   //  Called when an instance of xpn-element is inserted into the DOM.
   attached() {
     super.attached();
+  }
+  
+  void design(Event e, var detail, Node sender) {
+    e.preventDefault();
     
-    // top row
-    topRow = new TopRow();
-    response = new Response();
-    topRow.responses.add( response );
-    service = new Service();
-    topRow.service = service;
-    task = new Task();
-    topRow.tasks.add( task );
-    appGrid.topRows.add(topRow);
+    showDialog = detail['model'].type;
+    dialogHeading = detail['model'].value;
+    var dialog = $['dialog'];
+    dialog.toggle();
+  }
+  
+  void add(Event e, var detail, Node sender) {
+    e.preventDefault();
     
-    // center row
-    centerRow = new CenterRow();
-    obj = new Obj();
-    centerRow.objects.add( obj );
-    rule = new Rule();
-    centerRow.rules.add(rule);
-    actor = new Actor();
-    centerRow.actors.add( actor );
-    appGrid.centerRow = centerRow;
+    if(detail['model'] is Service)      // Service - Add Top Row
+      addTopRow(e, detail, sender);
+    else if(detail['model'] is Action)  // Action - Add Bottom Row
+      addBottomRow(e, detail, sender);
+    else if(detail['model'] is Obj)     // Object - Add Left Col
+      addLeftCol(e, detail, sender);
+    else if(detail['model'] is Actor)   // Actor - Add Right Col
+      addRightCol(e, detail, sender);
+    else if(detail['model'] is Rule)    // Rule - Add Rule
+      addRule(e, detail, sender);
+  }
+  
+  void delete(Event e, var detail, Node sender) {
+    e.preventDefault();
     
-    // bottom row
-    bottomRow = new BottomRow();
-    message = new Message();
-    bottomRow.messages.add( message );
-    action = new Action();
-    bottomRow.action = action;
-    request = new Request();
-    bottomRow.requests.add( request );
-    appGrid.bottomRows.add( bottomRow );
+    if(detail['model'] is Service)      // Service - Delete Top Row
+      deleteTopRow(e, detail, sender);
+    else if(detail['model'] is Action)  // Action - Delete Bottom Row
+      deleteBottomRow(e, detail, sender);
+    else if(detail['model'] is Obj)     // Object - Delete Left Col
+      deleteLeftCol(e, detail, sender);
+    else if(detail['model'] is Actor)   // Actor - Delete Right Col
+      deleteRightCol(e, detail, sender);
+    else if(detail['model'] is Rule)    // Rule - Delete Rule
+      deleteRule(e, detail, sender);
   }
   
   void addTopRow(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     int i;
     topRow = new TopRow();
@@ -89,12 +87,10 @@ class DefineElement extends PolymerElement {
     
     // Add row in appGrid
     appGrid.topRows.insert( 0, topRow );
-
-    print(appGrid);
   }
   
   void deleteTopRow(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     service = detail['service'];
     
@@ -107,48 +103,46 @@ class DefineElement extends PolymerElement {
   }
   
   void addBottomRow(Event e, var detail, Node sender) {
-      e.preventDefault();
-
-      int i;
-      bottomRow = new BottomRow();
-      
-      // Add Messages
-      for(i=0; i<appGrid.bottomRows[0].messages.length; i++) {
-        message = new Message();
-        bottomRow.messages.add( message );
-      }
-      
-      // Add Action
-      action = new Action();
-      bottomRow.action = action;
-      
-      // Add Requests
-      for(i=0; i<appGrid.bottomRows[0].requests.length; i++) {
-        request = new Request();
-        bottomRow.requests.add( request );
-      }
-      
-      // Add row in appGrid
-      appGrid.bottomRows.add( bottomRow );
-      
-      print(appGrid);
+//      e.preventDefault();
+  
+    int i;
+    bottomRow = new BottomRow();
+    
+    // Add Messages
+    for(i=0; i<appGrid.bottomRows[0].messages.length; i++) {
+      message = new Message();
+      bottomRow.messages.add( message );
+    }
+    
+    // Add Action
+    action = new Action();
+    bottomRow.action = action;
+    
+    // Add Requests
+    for(i=0; i<appGrid.bottomRows[0].requests.length; i++) {
+      request = new Request();
+      bottomRow.requests.add( request );
+    }
+    
+    // Add row in appGrid
+    appGrid.bottomRows.add( bottomRow );
   }
   
   void deleteBottomRow(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     action = detail['action'];
         
-        if(appGrid.bottomRows.length > 1)
-          for(var row in appGrid.bottomRows)
-            if (row.action == action) {
-              appGrid.bottomRows.remove(row);
-              break;
-            }
+    if(appGrid.bottomRows.length > 1)
+      for(var row in appGrid.bottomRows)
+        if (row.action == action) {
+          appGrid.bottomRows.remove(row);
+          break;
+        }
   }
   
   void addLeftCol(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
 
     // Add Responses
     for(var row in appGrid.topRows) {
@@ -165,12 +159,10 @@ class DefineElement extends PolymerElement {
       message = new Message();
       row.messages.insert(0, message);
     }
-    
-    print(appGrid);
   }
   
   void deleteLeftCol(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     obj = detail['obj'];
     
@@ -193,7 +185,7 @@ class DefineElement extends PolymerElement {
   }
   
   void addRightCol(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     // Add Tasks
     for(var row in appGrid.topRows) {
@@ -210,12 +202,10 @@ class DefineElement extends PolymerElement {
       request = new Request();
       row.requests.add(request);
     }
-    
-    print(appGrid);
   }
   
   void deleteRightCol(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
     
     actor = detail['actor'];
         
@@ -238,21 +228,20 @@ class DefineElement extends PolymerElement {
   }
   
   void addRule(Event e, var detail, Node sender) {
-    e.preventDefault();
+//    e.preventDefault();
         
     rule = new Rule();
     centerRow.rules.add(rule);
-    
-    print(appGrid.centerRow.rules.length);
   }
   
   /**
    * 
    */
   void deleteRule(Event e, var detail, Node sender) {
-      e.preventDefault();
+//      e.preventDefault();
           
-      rule = detail['rule'];
-      centerRow.rules.remove(rule);
-    }
-} // End of XPNElement
+    rule = detail['rule'];
+    centerRow.rules.remove(rule);
+  }
+
+} // End of DefineElement

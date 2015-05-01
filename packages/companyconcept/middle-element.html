@@ -7,14 +7,24 @@
 <link rel="import" href="../../packages/polymer/polymer.html">
 <link rel="import" href="../../packages/core_elements/core_icon_button.html">
 <link rel="import" href="../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../packages/paper_elements/paper_button.html">
+<link rel="import" href="../../packages/paper_elements/paper_action_dialog.html">
 
-<polymer-element name="middle-element">
+<polymer-element name="middle-element" attributes="model mode">
   <template>
     <style>
     </style>
-    <paper-input label="New Value" value="{{model.value}}"></paper-input>
-    <core-icon-button icon="check" on-tap="{{add}}"></core-icon-button>
-    <core-icon-button icon="highlight-remove" on-tap="{{delete}}"></core-icon-button>
+    
+    <template if="{{mode == 'define'}}">
+      <paper-input label="New Value" value="{{model.value}}"></paper-input>
+      <core-icon-button icon="check" on-tap="{{add}}"></core-icon-button>
+      <core-icon-button icon="highlight-remove" on-tap="{{delete}}"></core-icon-button>
+    </template>
+    
+    <template if="{{mode == 'design' && model.value != '?'}}">
+      <paper-button transition="core-transition-center" on-tap="{{toggleDialog}}">{{model.value}}</paper-button>
+    </template>
+    
   </template>
 
   <script type="application/dart" src="middle-element.dart"></script>

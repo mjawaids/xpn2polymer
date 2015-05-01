@@ -3,13 +3,22 @@
 
 import 'models.dart';
 import 'package:polymer/polymer.dart';
+import 'dart:html';
 
 /// A Polymer `<corner-element>` element.
 @CustomTag('corner-element')
-class CornerElement extends PolymerElement {  
+class CornerElement extends PolymerElement with Observable {  
   @published Model model;
-//  List<String> get LIST => Model.LIST;
+  @published String mode;
+  
+  /// Constructor used to create instance of corner elements.
+  CornerElement.created() : super.created() {
+    polymerCreated();
+  }
+  
+  void toggleDialog(Event e, var detail, Node sender) {
+    e.preventDefault();
     
-  /// Constructor used to create instance of MainApp.
-  CornerElement.created() : super.created();
+    dispatchEvent(new CustomEvent('design', detail: {'model': model}));
+  }
 }

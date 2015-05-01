@@ -19,7 +19,10 @@
 <link rel="import" href="../../packages/paper_elements/paper_item.html">
 
 <!-- link rel="import" href="response-list.html" -->
-<link rel="import" href="response-element.html">
+<link rel="import" href="corner-element.html">
+<link rel="import" href="middle-element.html">
+
+<!-- link rel="import" href="response-element.html">
 <link rel="import" href="service-element.html">
 <link rel="import" href="task-element.html">
 
@@ -30,7 +33,9 @@
 
 <link rel="import" href="message-element.html">
 <link rel="import" href="action-element.html">
-<link rel="import" href="request-element.html">
+<link rel="import" href="request-element.html" -->
+
+<link rel="import" href="form-element.html">
 
 <polymer-element name="design-element">
   <template>
@@ -66,6 +71,9 @@
       .mainrow, .maincol, #ruletable tr {
         background-color: white;
       }
+      .vertical-text {
+        transform: rotate(90deg);
+      }
     </style>
     <div class="bar">
       <ul class="list-inline">
@@ -81,15 +89,15 @@
       <tr template repeat="{{row in grid.topRows}}">
       
         <td template repeat="{{e in row.responses}}">
-          <div>{{e.value}}</div>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
         <td class="maincol">
-          <div>{{row.service.value}}</div>
+          <middle-element model="{{row.service}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td template repeat="{{e in row.tasks}}">
-          <div>{{e.value}}</div>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
       </tr>
@@ -98,21 +106,21 @@
       <tr class="mainrow">
         
         <td template repeat="{{e in grid.centerRow.objects}}">
-          <div>{{e.value}}</div>
+          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td class="maincol">
           <table id="ruletable">
             <tr template repeat="{{e in grid.centerRow.rules}}">
               <td>
-                <div>{{e.value}}</div>
+                <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
               </td>
             </tr>
           </table>
         </td>
         
         <td template repeat="{{e in grid.centerRow.actors}}">
-          <div>{{e.value}}</div>
+          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
       </tr>
@@ -121,15 +129,17 @@
       <tr template repeat="{{row in grid.bottomRows}}">
         
         <td template repeat="{{e in row.messages}}">
-          <div>{{e.value}}</div>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
         <td class="maincol">
-          <div>{{row.action.value}}</div>
+          <middle-element model="{{row.action}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td template repeat="{{e in row.requests}}">
-          <div>{{e.value}}</div>
+          <corner-element model="{{e}}" mode="{{mode}}">
+            <form-element></form-element>
+          </corner-element>
         </td>
         
       </tr>

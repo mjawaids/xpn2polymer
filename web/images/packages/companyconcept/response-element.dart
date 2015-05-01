@@ -8,6 +8,7 @@ import 'package:polymer/polymer.dart';
 @CustomTag('response-element')
 class ResponseElement extends PolymerElement with Observable {
   @published Response response;
+  @published String mode = "define";
     
   /// Constructor used to create instance of MainApp.
   ResponseElement.created() : super.created() {

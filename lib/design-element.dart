@@ -9,6 +9,7 @@ import 'models.dart';
 @CustomTag('design-element')
 class DesignElement extends PolymerElement {
   @observable Grid grid = appGrid;
+  @observable String mode = "design";
   
   /// Constructor used to create instance of MainApp.
   DesignElement.created() : super.created() {

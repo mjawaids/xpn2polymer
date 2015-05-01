@@ -129,3 +129,17 @@ class Grid extends Observable {
 }
 
 final appGrid = new Grid();
+
+@observable TopRow topRow;// = new TopRow();
+@observable CenterRow centerRow;// = new CenterRow();
+@observable BottomRow bottomRow;// = new BottomRow();
+
+@observable Response response;// = new Response();
+@observable Service service;// = new Service();
+@observable Task task;// = new Task();
+@observable Obj obj;// = new Obj();
+@observable Rule rule;// = new Rule();
+@observable Actor actor;// = new Actor();
+@observable Message message;// = new Message();
+@observable Action action;// = new Action();
+@observable Request request;// = new Request();

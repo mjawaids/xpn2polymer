@@ -16,7 +16,7 @@
 <link rel="import" href="../../packages/paper_elements/paper_icon_button.html">
 
 <link rel="import" href="define-element.html">
-<link rel="import" href="design-element.html">
+<!-- link rel="import" href="design-element.html" -->
 
 <polymer-element name="xpn-element">
   <template>
@@ -113,8 +113,8 @@
   
       <core-pages id="pages" valueattr="name" selected="{{tab}}">
         <div name="import"><h1>This is import</h1></div>
-        <div name="define"><define-element class="table"></define-element></div>
-        <div name="design"><design-element class="table"></design-element></div>
+        <div name="define"><define-element class="table" mode="define"></define-element></div>
+        <div name="design"><define-element class="table" mode="design"></define-element></div>
         <div name="develop"><h1>This is develop</h1></div>
         <div name="deploy"><h1>This is deploy</h1></div>
         <div name="export"><h1>This is export</h1></div>

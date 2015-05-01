@@ -1,0 +1,32 @@
+<!--
+  Copyright (c) 2015, Muhammad Jawaid Shamshad. All rights reserved. Use of this source code
+  is governed by a BSD-style license that can be found in the LICENSE file.
+-->
+
+<!-- import polymer-element's definition -->
+<link rel="import" href="../../packages/polymer/polymer.html">
+<link rel="import" href="../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../packages/core_elements/core_toolbar.html">
+<link rel="import" href="../../packages/core_elements/core_icon.html">
+
+<polymer-element name="form-element">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <!-- Toolbar -->
+    <core-toolbar>
+      <span flex>Bank Problem</span>
+      <span flex>- V01 -</span>
+      <span flex>Jan van Hees</span>
+    </core-toolbar>
+    <!-- Add list of attributes -->
+    <section class="left"><h3>Heading One</h3></section>
+    <section class="right"><p>This is a Paragraph from form element!</p></section>
+
+  </template>
+  <script type="application/dart" src="form-element.dart"></script>
+</polymer-element>

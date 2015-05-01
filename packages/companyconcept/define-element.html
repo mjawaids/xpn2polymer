@@ -19,7 +19,10 @@
 <link rel="import" href="../../packages/paper_elements/paper_item.html">
 
 <!-- link rel="import" href="response-list.html" -->
-<link rel="import" href="response-element.html">
+<link rel="import" href="corner-element.html">
+<link rel="import" href="middle-element.html">
+<link rel="import" href="service-element.html">
+<!-- link rel="import" href="response-element.html">
 <link rel="import" href="service-element.html">
 <link rel="import" href="task-element.html">
 
@@ -30,11 +33,11 @@
 
 <link rel="import" href="message-element.html">
 <link rel="import" href="action-element.html">
-<link rel="import" href="request-element.html">
+<link rel="import" href="request-element.html" -->
 
-<!-- link rel="import" href="corner-element.html" -->
+<link rel="import" href="form-element.html">
 
-<polymer-element name="define-element">
+<polymer-element name="define-element" attributes="mode">
   <template>
     <style>
       .bar {
@@ -78,31 +81,23 @@
     </div>
 
     <table class="table" 
-          on-addservice="{{addTopRow}}"
-          on-addaction="{{addBottomRow}}"
-          on-addobject="{{addLeftCol}}"
-          on-addactor="{{addRightCol}}"
-          on-addrule="{{addRule}}"
-          
-          on-deleteservice="{{deleteTopRow}}"
-          on-deleteaction="{{deleteBottomRow}}"
-          on-deleteobject="{{deleteLeftCol}}"
-          on-deleteactor="{{deleteRightCol}}"
-          on-deleterule="{{deleteRule}}">
+          on-add="{{add}}"
+          on-delete="{{delete}}"
+          on-design="{{design}}">
       
       <!-- TOP ROWS -->    
       <tr template repeat="{{row in grid.topRows}}">
       
         <td template repeat="{{e in row.responses}}">
-          <response-element response="{{e}}"></response-element>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
         <td class="maincol">
-          <service-element service="{{row.service}}"></service-element>
+          <middle-element model="{{row.service}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td template repeat="{{e in row.tasks}}">
-          <task-element task="{{e}}"></task-element>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
       </tr>
@@ -111,21 +106,21 @@
       <tr class="mainrow">
         
         <td template repeat="{{e in grid.centerRow.objects}}">
-          <object-element obj="{{e}}"></object-element>
+          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td class="maincol">
           <table id="ruletable">
             <tr template repeat="{{e in grid.centerRow.rules}}">
               <td>
-                <rule-element rule="{{e}}"></rule-element>
+                <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
               </td>
             </tr>
           </table>
         </td>
         
         <td template repeat="{{e in grid.centerRow.actors}}">
-          <actor-element actor="{{e}}"></actor-element>
+          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
       </tr>
@@ -134,19 +129,79 @@
       <tr template repeat="{{row in grid.bottomRows}}">
         
         <td template repeat="{{e in row.messages}}">
-          <message-element message="{{e}}"></message-element>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
         <td class="maincol">
-          <action-element action="{{row.action}}"></action-element>
+          <middle-element model="{{row.action}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td template repeat="{{e in row.requests}}">
-          <request-element request="{{e}}"></request-element>
+          <corner-element model="{{e}}" mode="{{mode}}"></corner-element>
         </td>
         
       </tr>
     </table>
+    
+    <paper-action-dialog id="dialog" heading="{{dialogHeading}}" backdrop autoCloseDisabled layered="false" transition="core-transition-center">
+      <section>
+        <template if="{{showDialog == 'datastore'}}">
+          <!-- datastore-element></datastore-element -->
+          <p>This popup will show designs of selected element.</p> 
+        </template>
+        <template if="{{showDialog == 'report'}}">     
+          <!-- report-element></report-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'control'}}">    
+          <!-- control-element></control-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'execute'}}">    
+          <!-- execute-element></execute-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'create'}}">     
+          <!-- create-element></create-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'update'}}">     
+          <!-- update-element></update-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'delete'}}">     
+          <!-- delete-element></delete-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'request'}}">
+          <form-element></form-element>           
+        </template>
+        
+        <template if="{{showDialog == 'service'}}">       
+          <service-element></service-element>     
+        </template>
+        <template if="{{showDialog == 'obj'}}">       
+          <!-- form-element></form-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'rule'}}">       
+          <!-- form-element></form-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'actor'}}">       
+          <!-- form-element></form-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+        <template if="{{showDialog == 'action'}}">      
+          <!-- form-element></form-element -->
+          <p>This popup will show designs of selected element.</p>
+        </template>
+      </section>
+      
+      <!-- paper-button dismissive>Cancel</paper-button -->
+      <paper-button affirmative autofocus>Close</paper-button>
+    </paper-action-dialog>
+    
   </template>
 
   <script type="application/dart" src="define-element.dart"></script>

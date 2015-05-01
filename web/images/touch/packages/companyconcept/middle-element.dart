@@ -7,12 +7,21 @@ import 'package:polymer/polymer.dart';
 
 /// A Polymer `<middle-element>` element.
 @CustomTag('middle-element')
-class MiddleElement extends PolymerElement {
+class MiddleElement extends PolymerElement with Observable {
   @published Model model;
+  @published String mode;
 
   /// Constructor used to create instance of MainApp.
-  MiddleElement.created() : super.created();
+  MiddleElement.created() : super.created() {
+    polymerCreated();
+  }
   
+  void toggleDialog(Event e, var detail, Node sender) {
+    e.preventDefault();
+    
+    dispatchEvent(new CustomEvent('design', detail: {'model': model}));
+  }
+
   void add(Event event, Object detail, Node sender) {
     event.preventDefault();
       

@@ -13,10 +13,12 @@
 <link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
 <link rel="import" href="../../packages/paper_elements/paper_item.html">
 
-<polymer-element name="response-element" attributes="response">
+<polymer-element name="response-element" attributes="response mode">
   <template>
     <style>
     </style>
+    
+    <template if="{{mode == 'define'}}">
     <paper-menu-button>
       <paper-item>{{response.value}}</paper-item>
       <paper-dropdown class="dropdown">
@@ -27,6 +29,12 @@
         </core-menu>
       </paper-dropdown>
     </paper-menu-button>
+    </template>
+    
+    <template if="{{mode == 'design'}}">
+      <div>{{response.value}}</div>
+    </template>
+    
   </template>
 
   <script type="application/dart" src="response-element.dart"></script>

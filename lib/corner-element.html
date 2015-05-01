@@ -12,12 +12,15 @@
 <link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
 <link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
 <link rel="import" href="../../packages/paper_elements/paper_item.html">
+<link rel="import" href="../../packages/paper_elements/paper_action_dialog.html">
+<link rel="import" href="../../packages/paper_elements/paper_button.html">
 
-<polymer-element name="corner-element">
+<polymer-element name="corner-element" attributes="model mode">
   <template>
     <style>
     </style>
     
+    <template if="{{mode == 'define'}}">
     <paper-menu-button>
       <paper-item>{{model.value}}</paper-item>
       <paper-dropdown class="dropdown">
@@ -28,6 +31,11 @@
         </core-menu>
       </paper-dropdown>
     </paper-menu-button>
+    </template>
+    
+    <template if="{{mode == 'design' && model.value != '?'}}">
+      <paper-button transition="core-transition-center" on-tap="{{toggleDialog}}">{{model.value}}</paper-button>
+    </template>
     
   </template>
 
