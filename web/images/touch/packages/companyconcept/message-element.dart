@@ -3,14 +3,38 @@
 
 import 'models.dart'; // show Model;
 import 'package:polymer/polymer.dart';
+import 'dart:html' show CustomEvent, Event, Node;
+import 'package:template_binding/template_binding.dart' as tb;
 
 /// A Polymer `<message-element>` element.
 @CustomTag('message-element')
 class MessageElement extends PolymerElement with Observable {
   @published Message message;
+  @observable List<Attribute> attribs = toObservable([]);
+  @observable Attribute att;
     
   /// Constructor used to create instance of MainApp.
   MessageElement.created() : super.created() {
     polymerCreated();
+  }
+  
+  attached() {
+    att = new Attribute('', '');
+    attribs.add(att);
+    message.attributes = attribs;
+  }
+  
+  void addAttribute(Event event, Object detail, Node sender) {
+    att = new Attribute('', '');
+    attribs.add(att);
+  }
+  
+  void deleteAttribute(Event event, Object detail, Node sender) {
+    // See for details: 
+    //    http://stackoverflow.com/questions/30079141/dart-polymer-removing-element-from-list
+    
+    tb.TemplateInstance ti = tb.nodeBind(event.target).templateInstance; 
+    var value = ti.model.value as Attribute;
+    attribs.remove(value);
   }
 }

@@ -16,13 +16,15 @@
     </style>
     
     <template if="{{mode == 'define'}}">
-      <paper-input label="New Value" value="{{model.value}}"></paper-input>
-      <core-icon-button icon="check" on-tap="{{add}}"></core-icon-button>
-      <core-icon-button icon="highlight-remove" on-tap="{{delete}}"></core-icon-button>
+      <paper-input label="New Value" value="{{model.value}}" class="vertical-text"></paper-input>
+      <div class="vertical-icon">
+        <core-icon-button icon="check" on-tap="{{add}}" class="vertical-text"></core-icon-button>
+        <core-icon-button icon="highlight-remove" on-tap="{{delete}}" class="vertical-text"></core-icon-button>
+      </div>
     </template>
     
-    <template if="{{mode == 'design' && model.value != '?'}}">
-      <paper-button transition="core-transition-center" on-tap="{{toggleDialog}}">{{model.value}}</paper-button>
+    <template if="{{mode == 'design'}}">
+      <paper-button class="vertical-text" transition="core-transition-center" on-tap="{{toggleDialog}}">{{model.value}}</paper-button>
     </template>
     
   </template>

@@ -52,10 +52,12 @@ class Obj extends Model {
 }
 
 class Rule extends Model {  
+  @observable String criteria;
   Rule() : super() {
     type = "rule";
     name = "r2c2";
     value = "New Rule";
+    criteria = "";
   }
 }
 
@@ -67,7 +69,18 @@ class Actor extends Model {
   }
 }
 
+class Attribute extends Observable {
+  @observable String name;
+  @observable String value;
+  
+  Attribute(key,val) {
+    name = key;
+    value = val;
+  }
+}
+
 class Message extends Model {
+  @observable List<Attribute> attributes;
   Message() : super() {
     type = "message";
     name = "r3c1";
@@ -78,6 +91,9 @@ class Message extends Model {
     LIST.add('Update');
     LIST.add('Delete');
     LIST.add('?');
+    
+    attributes = new List();
+    attributes.add( new Attribute('New Attribute', '') ); // at least one attribute
   }
 }
 

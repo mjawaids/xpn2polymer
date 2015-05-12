@@ -21,21 +21,22 @@
 <!-- link rel="import" href="response-list.html" -->
 <link rel="import" href="corner-element.html">
 <link rel="import" href="middle-element.html">
-<link rel="import" href="service-element.html">
-<!-- link rel="import" href="response-element.html">
-<link rel="import" href="service-element.html">
-<link rel="import" href="task-element.html">
-
-<link rel="import" href="object-element.html">
-<link rel="import" href="rule-list.html">
-<link rel="import" href="rule-element.html">
-<link rel="import" href="actor-element.html">
-
-<link rel="import" href="message-element.html">
-<link rel="import" href="action-element.html">
-<link rel="import" href="request-element.html" -->
 
 <link rel="import" href="form-element.html">
+<link rel="import" href="rule-element.html">
+<link rel="import" href="message-element.html">
+<link rel="import" href="action-element.html">
+
+<!-- 
+<link rel="import" href="response-element.html">
+<link rel="import" href="service-element.html">
+<link rel="import" href="task-element.html">
+<link rel="import" href="object-element.html">
+<link rel="import" href="rule-list.html">
+<link rel="import" href="actor-element.html">
+<link rel="import" href="request-element.html">
+-->
+
 
 <polymer-element name="define-element" attributes="mode">
   <template>
@@ -70,6 +71,17 @@
       }
       .mainrow, .maincol, #ruletable tr {
         background-color: white;
+      }
+      
+      .vertical /deep/ .vertical-text {
+        transform: rotate(90deg);
+        width: 75px; 
+        padding-left: 20px;
+      }
+      
+      .vertical /deep/ .vertical-icon {
+        width: 85px; 
+        float: right;
       }
     </style>
     <div class="bar">
@@ -106,7 +118,7 @@
       <tr class="mainrow">
         
         <td template repeat="{{e in grid.centerRow.objects}}">
-          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
+          <middle-element class="vertical" model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
         <td class="maincol">
@@ -120,7 +132,7 @@
         </td>
         
         <td template repeat="{{e in grid.centerRow.actors}}">
-          <middle-element model="{{e}}" mode="{{mode}}"></middle-element>
+          <middle-element class="vertical" model="{{e}}" mode="{{mode}}"></middle-element>
         </td>
         
       </tr>
@@ -143,58 +155,38 @@
       </tr>
     </table>
     
-    <paper-action-dialog id="dialog" heading="{{dialogHeading}}" backdrop autoCloseDisabled layered="false" transition="core-transition-center">
+    <paper-action-dialog id="dialog" heading="{{model.value}}" backdrop autoCloseDisabled layered="false" transition="core-transition-center"
+      on-addattrib="{{addMessageAttribute}}">
       <section>
         <template if="{{showDialog == 'datastore'}}">
           <!-- datastore-element></datastore-element -->
           <p>This popup will show designs of selected element.</p> 
         </template>
+        
         <template if="{{showDialog == 'report'}}">     
           <!-- report-element></report-element -->
           <p>This popup will show designs of selected element.</p>
         </template>
-        <template if="{{showDialog == 'control'}}">    
-          <!-- control-element></control-element -->
-          <p>This popup will show designs of selected element.</p>
+        
+        <template if="{{showDialog == 'message'}}">     
+          <message-element message="{{model}}"></message-element>
         </template>
-        <template if="{{showDialog == 'execute'}}">    
-          <!-- execute-element></execute-element -->
-          <p>This popup will show designs of selected element.</p>
-        </template>
-        <template if="{{showDialog == 'create'}}">     
-          <!-- create-element></create-element -->
-          <p>This popup will show designs of selected element.</p>
-        </template>
-        <template if="{{showDialog == 'update'}}">     
-          <!-- update-element></update-element -->
-          <p>This popup will show designs of selected element.</p>
-        </template>
-        <template if="{{showDialog == 'delete'}}">     
-          <!-- delete-element></delete-element -->
-          <p>This popup will show designs of selected element.</p>
-        </template>
+        
         <template if="{{showDialog == 'request'}}">
           <form-element></form-element>           
         </template>
         
-        <template if="{{showDialog == 'service'}}">       
-          <service-element></service-element>     
-        </template>
         <template if="{{showDialog == 'obj'}}">       
           <!-- form-element></form-element -->
           <p>This popup will show designs of selected element.</p>
         </template>
+        
         <template if="{{showDialog == 'rule'}}">       
-          <!-- form-element></form-element -->
-          <p>This popup will show designs of selected element.</p>
+          <rule-element rule="{{model}}"></rule-element>
         </template>
-        <template if="{{showDialog == 'actor'}}">       
-          <!-- form-element></form-element -->
-          <p>This popup will show designs of selected element.</p>
-        </template>
+        
         <template if="{{showDialog == 'action'}}">      
-          <!-- form-element></form-element -->
-          <p>This popup will show designs of selected element.</p>
+          <action-element action="{{model}}"></action-element>
         </template>
       </section>
       

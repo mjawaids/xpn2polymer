@@ -15,15 +15,15 @@ class RuleElement extends PolymerElement with Observable {
     polymerCreated();
   }
   
-  void addRule(Event event, Object detail, Node sender) {
-    event.preventDefault();
-    dispatchEvent(new CustomEvent('addrule',
-        detail: {'rule': rule}));
-  }
-  
-  void deleteRule(Event event, Object detail, Node sender) {
-      event.preventDefault();
-      dispatchEvent(new CustomEvent('deleterule',
-          detail: {'rule': rule}));
-    }
+//  void addRule(Event event, Object detail, Node sender) {
+//    event.preventDefault();
+//    dispatchEvent(new CustomEvent('addrule',
+//        detail: {'rule': rule}));
+//  }
+//  
+//  void deleteRule(Event event, Object detail, Node sender) {
+//      event.preventDefault();
+//      dispatchEvent(new CustomEvent('deleterule',
+//          detail: {'rule': rule}));
+//    }
 }

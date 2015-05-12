@@ -11,7 +11,7 @@ class DefineElement extends PolymerElement {
   @observable Grid grid = appGrid; //needed to display on front
   @published String mode;
   @observable String showDialog;
-  @observable String dialogHeading;
+  @observable Model model;
   
   /// Constructor used to create instance of MainApp.
   DefineElement.created() : super.created() {
@@ -19,7 +19,7 @@ class DefineElement extends PolymerElement {
   
   // Lifecycle methods.
   
-  //  Called when an instance of xpn-element is inserted into the DOM.
+  //  Called when an instance of define-element is inserted into the DOM.
   attached() {
     super.attached();
   }
@@ -27,10 +27,31 @@ class DefineElement extends PolymerElement {
   void design(Event e, var detail, Node sender) {
     e.preventDefault();
     
-    showDialog = detail['model'].type;
-    dialogHeading = detail['model'].value;
-    var dialog = $['dialog'];
-    dialog.toggle();
+    model = detail['model'];
+    
+    if(!(model is Service) && !(model is Actor) && !(model is Task)) {
+      showDialog = detail['model'].type;
+      $['dialog'].toggle();
+    }
+  }
+  
+  void addMessageAttribute(Event e, var detail, Node sender){
+    e.preventDefault();
+    message = detail['message'];
+    message.attributes.add(new Attribute('New Message Attribute', '') );
+    
+//    bool found = false;
+//    for(var row in appGrid.bottomRows) {
+//      for(var msg in row.messages) {
+//        if (msg == message) {
+//          msg.attributes.add( new Attribute('New Attribute', '') );
+//          found = true;
+//          break;
+//        }
+//      }
+//      if(found) break;
+//      print('going for next row..');
+//    }
   }
   
   void add(Event e, var detail, Node sender) {

@@ -6,27 +6,40 @@
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
 
+<link rel="import" href="../../packages/core_elements/core_icon_button.html">
+<link rel="import" href="../../packages/core_elements/core_toolbar.html">
 <link rel="import" href="../../packages/core_elements/core_menu.html">
 <link rel="import" href="../../packages/core_elements/core_item.html">
 
 <link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
 <link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
 <link rel="import" href="../../packages/paper_elements/paper_item.html">
+<link rel="import" href="../../packages/paper_elements/paper_input.html">
+
 
 <polymer-element name="message-element" attributes="message">
   <template>
     <style>
     </style>
-    <paper-menu-button>
-      <paper-item>{{message.value}}</paper-item>
-      <paper-dropdown class="dropdown">
-        <core-menu class="menu" valueattr="label" selected="{{message.value}}">
-          <template repeat="{{message.LIST}}">
-            <paper-item label="{{}}">{{}}</paper-item>
-          </template>
-        </core-menu>
-      </paper-dropdown>
-    </paper-menu-button>
+    
+    <core-toolbar>
+      <span flex>Bank Problem</span>
+      <span flex>- V01 -</span>
+      <span flex>Jan van Hees</span>
+    </core-toolbar>
+    
+    <table class="table">
+    <tr template repeat="{{attrib in attribs}}">
+      <td><paper-input name="message-attrib-name" label="New Attribute" value="{{attrib.name}}"></paper-input></td>
+      <td>
+        <paper-input name="message-attrib-value" label="" value="{{attrib.value}}"></paper-input>
+  
+        <core-icon-button icon="check" on-tap="{{addAttribute}}"></core-icon-button>
+        <core-icon-button icon="highlight-remove" on-tap="{{deleteAttribute}}"></core-icon-button>
+      </td>
+    </tr>
+    </table>
+    
   </template>
 
   <script type="application/dart" src="message-element.dart"></script>

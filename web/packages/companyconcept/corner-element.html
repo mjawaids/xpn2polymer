@@ -21,16 +21,16 @@
     </style>
     
     <template if="{{mode == 'define'}}">
-    <paper-menu-button>
-      <paper-item>{{model.value}}</paper-item>
-      <paper-dropdown class="dropdown">
-        <core-menu class="menu" valueattr="label" selected="{{model.value}}">
-          <template repeat="{{model.LIST}}">
-            <paper-item label="{{}}">{{}}</paper-item>
-          </template>
-        </core-menu>
-      </paper-dropdown>
-    </paper-menu-button>
+      <paper-menu-button>
+        <paper-item>{{model.value}}</paper-item>
+        <paper-dropdown class="dropdown">
+          <core-menu class="menu" valueattr="label" selected="{{model.value}}">
+            <template repeat="{{model.LIST}}">
+              <paper-item label="{{}}">{{}}</paper-item>
+            </template>
+          </core-menu>
+        </paper-dropdown>
+      </paper-menu-button>
     </template>
     
     <template if="{{mode == 'design' && model.value != '?'}}">
