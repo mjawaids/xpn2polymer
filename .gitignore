@@ -45,3 +45,8 @@ Temporary Items
 build
 *.buildlog
 .buildlog
+.pub
+
+# IDE files
+.idea
+.idea/compiler.xml

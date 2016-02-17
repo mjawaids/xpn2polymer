@@ -56,7 +56,7 @@ class DefineElement extends PolymerElement {
   
   void add(Event e, var detail, Node sender) {
     e.preventDefault();
-    
+
     if(detail['model'] is Service)      // Service - Add Top Row
       addTopRow(e, detail, sender);
     else if(detail['model'] is Action)  // Action - Add Bottom Row
@@ -71,7 +71,7 @@ class DefineElement extends PolymerElement {
   
   void delete(Event e, var detail, Node sender) {
     e.preventDefault();
-    
+
     if(detail['model'] is Service)      // Service - Delete Top Row
       deleteTopRow(e, detail, sender);
     else if(detail['model'] is Action)  // Action - Delete Bottom Row
@@ -112,9 +112,8 @@ class DefineElement extends PolymerElement {
   
   void deleteTopRow(Event e, var detail, Node sender) {
 //    e.preventDefault();
-    
-    service = detail['service'];
-    
+    service = detail['model'];
+
     if(appGrid.topRows.length > 1)
       for(var row in appGrid.topRows)
         if (row.service == service) {
@@ -152,7 +151,8 @@ class DefineElement extends PolymerElement {
   void deleteBottomRow(Event e, var detail, Node sender) {
 //    e.preventDefault();
     
-    action = detail['action'];
+    //action = detail['action'];
+    action = detail['model'];
         
     if(appGrid.bottomRows.length > 1)
       for(var row in appGrid.bottomRows)
@@ -185,7 +185,8 @@ class DefineElement extends PolymerElement {
   void deleteLeftCol(Event e, var detail, Node sender) {
 //    e.preventDefault();
     
-    obj = detail['obj'];
+    //obj = detail['obj'];
+    obj = detail['model'];
     
     if(appGrid.topRows[0].responses.length > 1) {
       int i = appGrid.centerRow.objects.indexOf(obj);
@@ -228,7 +229,8 @@ class DefineElement extends PolymerElement {
   void deleteRightCol(Event e, var detail, Node sender) {
 //    e.preventDefault();
     
-    actor = detail['actor'];
+    //actor = detail['actor'];
+    actor = detail['model'];
         
     if(appGrid.topRows[0].tasks.length > 1) {
       int i = appGrid.centerRow.actors.indexOf(actor);
@@ -261,7 +263,8 @@ class DefineElement extends PolymerElement {
   void deleteRule(Event e, var detail, Node sender) {
 //      e.preventDefault();
           
-    rule = detail['rule'];
+    //rule = detail['rule'];
+    rule = detail['model'];
     centerRow.rules.remove(rule);
   }
 

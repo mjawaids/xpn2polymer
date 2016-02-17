@@ -9,6 +9,9 @@ import 'dart:async';
 import 'trace.dart';
 import 'chain.dart';
 
+/// A function that handles errors in the zone wrapped by [Chain.capture].
+typedef void _ChainHandler(error, Chain chain);
+
 /// A class encapsulating the zone specification for a [Chain.capture] zone.
 ///
 /// Until they're materialized and exposed to the user, stack chains are tracked
@@ -43,7 +46,7 @@ class StackZoneSpecification {
   ///
   /// If this is null, that indicates that any unhandled errors should be passed
   /// to the parent zone.
-  final ChainHandler _onError;
+  final _ChainHandler _onError;
 
   /// The most recent node of the current stack chain.
   _Node _currentNode;
@@ -172,12 +175,6 @@ class StackZoneSpecification {
   /// necessary.
   AsyncError errorCallback(Zone self, ZoneDelegate parent, Zone zone,
       Object error, StackTrace stackTrace) {
-    var asyncError = parent.errorCallback(zone, error, stackTrace);
-    if (asyncError != null) {
-      error = asyncError.error;
-      stackTrace = asyncError.stackTrace;
-    }
-
     // Go up two levels to get through [_CustomZone.errorCallback].
     if (stackTrace == null) {
       stackTrace = _createNode(2).toChain();
@@ -185,7 +182,8 @@ class StackZoneSpecification {
       if (_chains[stackTrace] == null) _chains[stackTrace] = _createNode(2);
     }
 
-    return new AsyncError(error, stackTrace);
+    var asyncError = parent.errorCallback(zone, error, stackTrace);
+    return asyncError == null ? new AsyncError(error, stackTrace) : asyncError;
   }
 
   /// Creates a [_Node] with the current stack trace and linked to

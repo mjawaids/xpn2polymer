@@ -8,6 +8,8 @@ import 'dart:mirrors';
 import 'package:path/path.dart' as path;
 import 'package:initialize/initialize.dart';
 
+final _root = currentMirrorSystem().isolate.rootLibrary;
+
 Queue<Function> loadInitializers(
     {List<Type> typeFilter, InitializerFilter customFilter}) {
   return new InitializationCrawler(typeFilter, customFilter).run();
@@ -28,28 +30,75 @@ class InitializationCrawler {
   // function will be processed.
   final InitializerFilter customFilter;
 
-  // The root library that we start parsing from.
-  LibraryMirror _root;
-
-  InitializationCrawler(this.typeFilter, this.customFilter,
-      {LibraryMirror root}) {
-    _root = root == null ? currentMirrorSystem().isolate.rootLibrary : root;
-  }
+  InitializationCrawler(this.typeFilter, this.customFilter);
 
   // The primary function in this class, invoke it to crawl and collect all the
   // annotations into a queue of init functions.
-  Queue<Function> run() => _readLibraryDeclarations(_root);
+  Queue<Function> run() {
+    var librariesSeen = new Set<LibraryMirror>();
+    var queue = new Queue<Function>();
+    var libraries = currentMirrorSystem().libraries;
+
+    var trampolineUri = Uri.parse('${_root.uri}\$trampoline');
+    if (libraries.containsKey(trampolineUri)) {
+      // In dartium, process all relative libraries in reverse order of when
+      // they were seen.
+      // TODO(jakemac): This is an approximation of what we actually want.
+      // https://github.com/dart-lang/initialize/issues/25
+      var relativeLibraryUris = new List.from(libraries.keys
+          .where((uri) => uri.scheme != 'package' && uri.scheme != 'dart'));
+
+      for (var import in relativeLibraryUris.reversed) {
+        // Always load the package: version of a library if available for
+        // canonicalization purposes.
+        var libToRun;
+        if (_isHttpStylePackageUrl(import)) {
+          var packageUri = _packageUriFor(import);
+          libToRun = libraries[packageUri];
+        }
+        if (libToRun == null) libToRun = libraries[import];
+
+        // Dartium creates an extra trampoline lib that loads the main dart script
+        // and breaks our ordering, we should skip it.
+        if (librariesSeen.contains(libToRun) ||
+            libToRun.uri.path.endsWith('\$trampoline')) {
+          continue;
+        }
+        _readLibraryDeclarations(libToRun, librariesSeen, queue);
+      }
+    } else {
+      // Not in dartium, just process from the root library.
+      _readLibraryDeclarations(_root, librariesSeen, queue);
+    }
+
+    return queue;
+  }
+
+  /// Whether [uri] is an http URI that contains a 'packages' segment, and
+  /// therefore could be converted into a 'package:' URI.
+  bool _isHttpStylePackageUrl(Uri uri) {
+    var uriPath = uri.path;
+    return uri.scheme == _root.uri.scheme &&
+        // Don't process cross-domain uris.
+        uri.authority == _root.uri.authority &&
+        uriPath.endsWith('.dart') &&
+        (uriPath.contains('/packages/') || uriPath.startsWith('packages/'));
+  }
+
+  Uri _packageUriFor(Uri httpUri) {
+    var packagePath = httpUri.path
+        .substring(httpUri.path.lastIndexOf('packages/') + 'packages/'.length);
+    return Uri.parse('package:$packagePath');
+  }
 
   // Reads Initializer annotations on this library and all its dependencies in
   // post-order.
   Queue<Function> _readLibraryDeclarations(LibraryMirror lib,
-      [Set<LibraryMirror> librariesSeen, Queue<Function> queue]) {
-    if (librariesSeen == null) librariesSeen = new Set<LibraryMirror>();
-    if (queue == null) queue = new Queue<Function>();
+      Set<LibraryMirror> librariesSeen, Queue<Function> queue) {
     librariesSeen.add(lib);
 
     // First visit all our dependencies.
-    for (var dependency in _sortedLibraryDependencies(lib)) {
+    for (var dependency in lib.libraryDependencies) {
       // Skip dart: imports, they never use this package.
       if (dependency.targetLibrary.uri.toString().startsWith('dart:')) continue;
       if (librariesSeen.contains(dependency.targetLibrary)) continue;
@@ -61,7 +110,7 @@ class InitializationCrawler {
     _readAnnotations(lib, queue);
 
     // Last, parse all class and method annotations.
-    for (var declaration in _sortedLibraryDeclarations(lib)) {
+    for (var declaration in _sortedDeclarationsWithMetadata(lib)) {
       _readAnnotations(declaration, queue);
       // Check classes for static annotations which are not supported
       if (declaration is ClassMirror) {
@@ -74,34 +123,35 @@ class InitializationCrawler {
     return queue;
   }
 
-  Iterable<LibraryDependencyMirror> _sortedLibraryDependencies(
-      LibraryMirror lib) => new List.from(lib.libraryDependencies)
-    ..sort((a, b) {
-      var aScheme = a.targetLibrary.uri.scheme;
-      var bScheme = b.targetLibrary.uri.scheme;
-      if (aScheme != 'file' && bScheme == 'file') return -1;
-      if (bScheme != 'file' && aScheme == 'file') return 1;
-      return _relativeLibraryUri(a).compareTo(_relativeLibraryUri(b));
-    });
-
-  String _relativeLibraryUri(LibraryDependencyMirror lib) {
-    if (lib.targetLibrary.uri.scheme == 'file' &&
-        lib.sourceLibrary.uri.scheme == 'file') {
-      return path.relative(lib.targetLibrary.uri.path,
-          from: path.dirname(lib.sourceLibrary.uri.path));
-    }
-    return lib.targetLibrary.uri.toString();
+  Iterable<DeclarationMirror> _sortedDeclarationsWithMetadata(
+      LibraryMirror lib) {
+    return new List()
+      ..addAll(_sortDeclarations(lib, lib.declarations.values
+          .where((d) => d is MethodMirror && d.metadata.isNotEmpty)))
+      ..addAll(_sortDeclarations(lib, lib.declarations.values
+          .where((d) => d is ClassMirror && d.metadata.isNotEmpty)));
   }
 
-  Iterable<DeclarationMirror> _sortedLibraryDeclarations(LibraryMirror lib) =>
-      lib.declarations.values
-          .where((d) => d is ClassMirror || d is MethodMirror)
-          .toList()
-    ..sort((a, b) {
-      if (a is MethodMirror && b is ClassMirror) return -1;
-      if (a is ClassMirror && b is MethodMirror) return 1;
-      return _declarationName(a).compareTo(_declarationName(b));
+  List<DeclarationMirror> _sortDeclarations(
+      LibraryMirror sourceLib, Iterable<DeclarationMirror> declarations) {
+    var declarationList = declarations.toList();
+    declarationList.sort((DeclarationMirror a, DeclarationMirror b) {
+      // If in the same file, compare by line.
+      var aSourceUri = a.location.sourceUri;
+      var bSourceUri = b.location.sourceUri;
+      if (aSourceUri == bSourceUri) {
+        return a.location.line.compareTo(b.location.line);
+      }
+
+      // Run parts first if one is from the original library.
+      if (aSourceUri == sourceLib.uri) return 1;
+      if (bSourceUri == sourceLib.uri) return -1;
+
+      // Sort parts alphabetically.
+      return aSourceUri.path.compareTo(bSourceUri.path);
     });
+    return declarationList;
+  }
 
   String _declarationName(DeclarationMirror declaration) =>
       MirrorSystem.getName(declaration.qualifiedName);
@@ -145,7 +195,26 @@ class InitializationCrawler {
         annotatedValue = (declaration.owner as ObjectMirror)
             .getField(declaration.simpleName).reflectee;
       } else if (declaration is LibraryMirror) {
-        annotatedValue = declaration.qualifiedName;
+        var package;
+        var filePath;
+        Uri uri = declaration.uri;
+        // Convert to a package style uri if possible.
+        if (_isHttpStylePackageUrl(uri)) {
+          uri = _packageUriFor(uri);
+        }
+        if (uri.scheme == 'file' || uri.scheme.startsWith('http')) {
+          filePath = path.url.relative(uri.path,
+              from: path.url.dirname(_root.uri.path));
+        } else if (uri.scheme == 'package') {
+          var segments = uri.pathSegments;
+          package = segments[0];
+          filePath = path.url.joinAll(segments.getRange(1, segments.length));
+        } else {
+          throw new UnsupportedError('Unsupported uri scheme ${uri.scheme} for '
+              'library ${declaration}.');
+        }
+        annotatedValue =
+            new LibraryIdentifier(declaration.qualifiedName, package, filePath);
       } else {
         throw _UNSUPPORTED_DECLARATION;
       }

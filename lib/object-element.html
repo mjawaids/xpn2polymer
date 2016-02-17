@@ -10,21 +10,40 @@
 
 <polymer-element name="object-element" attributes="obj">
   <template>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <style>
-      .vertical-text {
-        transform: rotate(90deg);
-        width: 75px; 
-        padding-left: 20px;
-      }
-      .vertical-icon {
-        width: 85px; 
-        float: right;
-      }
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
+    }
     </style>
-    <paper-input label="New Object" value="{{obj.value}}" class="vertical-text"></paper-input>
-    <div class="vertical-icon">
-      <core-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></core-icon-button>
-      <core-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></core-icon-button>
+    <div class="left">
+      <table class="table table-bordered">
+        <tr><td>
+        <label>New Attribute</label>
+        <core-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></core-icon-button>
+        <core-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></core-icon-button>
+        </td></tr>
+        <tr><td>
+        <label>New Attribute</label>
+        <core-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></core-icon-button>
+        <core-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></core-icon-button>
+        </td></tr>
+      </table>
+    </div>
+    <div class="right">
+      <table class="table table-bordered">
+        <tr>
+          <td>Attribute</td>
+          <td><paper-input label="New Object" value="{{obj.value}}"></paper-input></td>
+        </tr>
+        <tr>
+          <td>Attribute</td>
+          <td><paper-input label="New Object" value="{{obj.value}}"></paper-input></td>
+        </tr>
+      </table>
     </div>
   </template>
 
