@@ -1,10 +1,6 @@
-# {{ projectName }}
+# Web Component for Company Concepts Foundation
 
-A starter template for a polymer.dart web app.
+Lead Developer: Muhammad Jawaid Shamshad
 
-## Creating new elements
-
-The `polymer` package includes a utility to generate new elements. From
-within this project, run:
-
-`pub run polymer:new_element <name>`
+## Introduction
+Creates and converts business need defined in XML format to web component and vise versa.
