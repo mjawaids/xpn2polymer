@@ -116,11 +116,11 @@ packages:
   source_span:
     description: source_span
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   stack_trace:
     description: stack_trace
     source: hosted
-    version: "1.6.0"
+    version: "1.6.1"
   string_scanner:
     description: string_scanner
     source: hosted
@@ -128,11 +128,11 @@ packages:
   template_binding:
     description: template_binding
     source: hosted
-    version: "0.14.0+3"
+    version: "0.14.0+4"
   utf:
     description: utf
     source: hosted
-    version: "0.9.0+2"
+    version: "0.9.0+3"
   watcher:
     description: watcher
     source: hosted
@@ -153,3 +153,4 @@ packages:
     description: yaml
     source: hosted
     version: "2.1.8"
+sdk: ">=1.14.0 <2.0.0"

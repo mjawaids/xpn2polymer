@@ -46,6 +46,8 @@ build
 *.buildlog
 .buildlog
 .pub
+packages
+web/packages/
 
 # IDE files
 .idea
