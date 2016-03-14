@@ -8,75 +8,116 @@
 library engine.source;
 
 import 'dart:collection';
-import 'java_core.dart';
-import 'sdk.dart' show DartSdk;
+import "dart:math" as math;
+
+import 'package:analyzer/file_system/file_system.dart';
+import 'package:analyzer/file_system/physical_file_system.dart';
+import 'package:analyzer/source/package_map_resolver.dart';
+import 'package:analyzer/src/generated/utilities_dart.dart' as utils;
+import 'package:analyzer/task/model.dart';
+import 'package:package_config/packages.dart';
+import 'package:path/path.dart' as pathos;
+
 import 'engine.dart';
+import 'java_core.dart';
 import 'java_engine.dart';
+import 'java_io.dart' show JavaFile;
+import 'sdk.dart' show DartSdk;
+import 'source_io.dart' show FileBasedSource;
 
 /**
- * Instances of class `ContentCache` hold content used to override the default content of a
- * [Source].
+ * A function that is used to visit [ContentCache] entries.
+ */
+typedef void ContentCacheVisitor(String fullPath, int stamp, String contents);
+
+/**
+ * A cache used to override the default content of a [Source].
  */
 class ContentCache {
   /**
-   * A table mapping sources to the contents of those sources. This is used to override the default
-   * contents of a source.
+   * A table mapping the full path of sources to the contents of those sources.
+   * This is used to override the default contents of a source.
    */
-  HashMap<Source, String> _contentMap = new HashMap<Source, String>();
+  HashMap<String, String> _contentMap = new HashMap<String, String>();
 
   /**
-   * A table mapping sources to the modification stamps of those sources. This is used when the
-   * default contents of a source has been overridden.
+   * A table mapping the full path of sources to the modification stamps of
+   * those sources. This is used when the default contents of a source has been
+   * overridden.
    */
-  HashMap<Source, int> _stampMap = new HashMap<Source, int>();
+  HashMap<String, int> _stampMap = new HashMap<String, int>();
 
   /**
-   * Return the contents of the given source, or `null` if this cache does not override the
-   * contents of the source.
-   *
-   * <b>Note:</b> This method is not intended to be used except by
-   * [AnalysisContext#getContents].
-   *
-   * @param source the source whose content is to be returned
-   * @return the contents of the given source
+   * Visit all entries of this cache.
    */
-  String getContents(Source source) => _contentMap[source];
+  void accept(ContentCacheVisitor visitor) {
+    _contentMap.forEach((String fullPath, String contents) {
+      int stamp = _stampMap[fullPath];
+      visitor(fullPath, stamp, contents);
+    });
+  }
 
   /**
-   * Return the modification stamp of the given source, or `null` if this cache does not
+   * Return the contents of the given [source], or `null` if this cache does not
    * override the contents of the source.
    *
    * <b>Note:</b> This method is not intended to be used except by
-   * [AnalysisContext#getModificationStamp].
-   *
-   * @param source the source whose modification stamp is to be returned
-   * @return the modification stamp of the given source
+   * [AnalysisContext.getContents].
    */
-  int getModificationStamp(Source source) => _stampMap[source];
+  String getContents(Source source) => _contentMap[source.fullName];
 
   /**
-   * Set the contents of the given source to the given contents. This has the effect of overriding
-   * the default contents of the source. If the contents are `null` the override is removed so
-   * that the default contents will be returned.
+   * Return the modification stamp of the given [source], or `null` if this
+   * cache does not override the contents of the source.
    *
-   * @param source the source whose contents are being overridden
-   * @param contents the new contents of the source
-   * @return the original cached contents or `null` if none
+   * <b>Note:</b> This method is not intended to be used except by
+   * [AnalysisContext.getModificationStamp].
+   */
+  int getModificationStamp(Source source) => _stampMap[source.fullName];
+
+  /**
+   * Set the contents of the given [source] to the given [contents]. This has
+   * the effect of overriding the default contents of the source. If the
+   * contents are `null` the override is removed so that the default contents
+   * will be returned.
    */
   String setContents(Source source, String contents) {
+    String fullName = source.fullName;
     if (contents == null) {
-      _stampMap.remove(source);
-      return _contentMap.remove(source);
+      _stampMap.remove(fullName);
+      return _contentMap.remove(fullName);
     } else {
       int newStamp = JavaSystem.currentTimeMillis();
-      int oldStamp = javaMapPut(_stampMap, source, newStamp);
-      // Occasionally, if this method is called in rapid succession, the timestamps are equal.
-      // Guard against this by artificially incrementing the new timestamp
+      int oldStamp = _stampMap[fullName];
+      _stampMap[fullName] = newStamp;
+      // Occasionally, if this method is called in rapid succession, the
+      // timestamps are equal. Guard against this by artificially incrementing
+      // the new timestamp.
       if (newStamp == oldStamp) {
-        _stampMap[source] = newStamp + 1;
+        _stampMap[fullName] = newStamp + 1;
       }
-      return javaMapPut(_contentMap, source, contents);
+      String oldContent = _contentMap[fullName];
+      _contentMap[fullName] = contents;
+      return oldContent;
     }
+  }
+}
+
+class CustomUriResolver extends UriResolver {
+  final Map<String, String> _urlMappings;
+
+  CustomUriResolver(this._urlMappings);
+
+  @override
+  Source resolveAbsolute(Uri uri) {
+    String mapping = _urlMappings[uri.toString()];
+    if (mapping == null) return null;
+
+    Uri fileUri = new Uri.file(mapping);
+    if (!fileUri.isAbsolute) return null;
+
+    JavaFile javaFile = new JavaFile.fromUri(fileUri);
+    return new FileBasedSource(javaFile);
   }
 }
 
@@ -84,19 +125,6 @@ class ContentCache {
  * Instances of the class `DartUriResolver` resolve `dart` URI's.
  */
 class DartUriResolver extends UriResolver {
-  /**
-   * Return `true` if the given URI is a `dart-ext:` URI.
-   *
-   * @param uriContent the textual representation of the URI being tested
-   * @return `true` if the given URI is a `dart-ext:` URI
-   */
-  static bool isDartExtUri(String uriContent) => uriContent != null && uriContent.startsWith(_DART_EXT_SCHEME);
-
-  /**
-   * The Dart SDK against which URI's are to be resolved.
-   */
-  final DartSdk _sdk;
-
   /**
    * The name of the `dart` scheme.
    */
@@ -108,12 +136,9 @@ class DartUriResolver extends UriResolver {
   static String _DART_EXT_SCHEME = "dart-ext:";
 
   /**
-   * Return `true` if the given URI is a `dart:` URI.
-   *
-   * @param uri the URI being tested
-   * @return `true` if the given URI is a `dart:` URI
+   * The Dart SDK against which URI's are to be resolved.
    */
-  static bool isDartUri(Uri uri) => DART_SCHEME == uri.scheme;
+  final DartSdk _sdk;
 
   /**
    * Initialize a newly created resolver to resolve Dart URI's against the given platform within the
@@ -137,6 +162,23 @@ class DartUriResolver extends UriResolver {
     }
     return _sdk.mapDartUri(uri.toString());
   }
+
+  /**
+   * Return `true` if the given URI is a `dart-ext:` URI.
+   *
+   * @param uriContent the textual representation of the URI being tested
+   * @return `true` if the given URI is a `dart-ext:` URI
+   */
+  static bool isDartExtUri(String uriContent) =>
+      uriContent != null && uriContent.startsWith(_DART_EXT_SCHEME);
+
+  /**
+   * Return `true` if the given URI is a `dart:` URI.
+   *
+   * @param uri the URI being tested
+   * @return `true` if the given URI is a `dart:` URI
+   */
+  static bool isDartUri(Uri uri) => DART_SCHEME == uri.scheme;
 }
 
 /**
@@ -148,6 +190,12 @@ class LineInfo {
    * An array containing the offsets of the first character of each line in the source code.
    */
   final List<int> _lineStarts;
+
+  /**
+   * The zero-based [_lineStarts] index resulting from the last call to
+   * [getLocation].
+   */
+  int _previousLine = 0;
 
   /**
    * Initialize a newly created set of line information to represent the data encoded in the given
@@ -170,13 +218,37 @@ class LineInfo {
    * @return the location information for the character at the given offset
    */
   LineInfo_Location getLocation(int offset) {
-    int lineCount = _lineStarts.length;
-    for (int i = 1; i < lineCount; i++) {
-      if (offset < _lineStarts[i]) {
-        return new LineInfo_Location(i, offset - _lineStarts[i - 1] + 1);
+    var min = 0;
+    var max = _lineStarts.length - 1;
+
+    // Subsequent calls to [getLocation] are often for offsets near each other.
+    // To take advantage of that, we cache the index of the line start we found
+    // when this was last called. If the current offset is on that line or
+    // later, we'll skip those early indices completely when searching.
+    if (offset >= _lineStarts[_previousLine]) {
+      min = _previousLine;
+
+      // Before kicking off a full binary search, do a quick check here to see
+      // if the new offset is on that exact line.
+      if (min == _lineStarts.length - 1 || offset < _lineStarts[min + 1]) {
+        return new LineInfo_Location(min + 1, offset - _lineStarts[min] + 1);
       }
     }
-    return new LineInfo_Location(lineCount, offset - _lineStarts[lineCount - 1] + 1);
+
+    // Binary search to fine the line containing this offset.
+    while (min < max) {
+      var midpoint = (max - min + 1) ~/ 2 + min;
+
+      if (_lineStarts[midpoint] > offset) {
+        max = midpoint - 1;
+      } else {
+        min = midpoint;
+      }
+    }
+
+    _previousLine = min;
+
+    return new LineInfo_Location(min + 1, offset - _lineStarts[min] + 1);
   }
 }
 
@@ -224,7 +296,8 @@ abstract class LocalSourcePredicate {
    * Instance of [LocalSourcePredicate] that returns `true` for all [Source]s
    * except of SDK.
    */
-  static final LocalSourcePredicate NOT_SDK = new LocalSourcePredicate_NOT_SDK();
+  static final LocalSourcePredicate NOT_SDK =
+      new LocalSourcePredicate_NOT_SDK();
 
   /**
    * Determines if the given [Source] is local.
@@ -253,18 +326,43 @@ class LocalSourcePredicate_TRUE implements LocalSourcePredicate {
 /**
  * An implementation of an non-existing [Source].
  */
-class NonExistingSource implements Source {
-  final String _name;
+class NonExistingSource extends Source {
+  @override
+  final String fullName;
+
+  @override
+  final Uri uri;
 
   final UriKind uriKind;
 
-  NonExistingSource(this._name, this.uriKind);
+  NonExistingSource(this.fullName, this.uri, this.uriKind);
 
   @override
-  bool operator ==(Object obj) {
-    if (obj is NonExistingSource) {
-      NonExistingSource other = obj;
-      return other.uriKind == uriKind && (other._name == _name);
+  TimestampedData<String> get contents {
+    throw new UnsupportedOperationException('$fullName does not exist.');
+  }
+
+  @override
+  String get encoding {
+    throw new UnsupportedOperationException('$fullName does not exist.');
+  }
+
+  @override
+  int get hashCode => fullName.hashCode;
+
+  @override
+  bool get isInSystemLibrary => false;
+
+  @override
+  int get modificationStamp => -1;
+
+  @override
+  String get shortName => pathos.basename(fullName);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is NonExistingSource) {
+      return other.uriKind == uriKind && other.fullName == fullName;
     }
     return false;
   }
@@ -273,36 +371,8 @@ class NonExistingSource implements Source {
   bool exists() => false;
 
   @override
-  TimestampedData<String> get contents {
-    throw new UnsupportedOperationException("${_name}does not exist.");
-  }
-
-  @override
-  String get encoding {
-    throw new UnsupportedOperationException("${_name}does not exist.");
-  }
-
-  @override
-  String get fullName => _name;
-
-  @override
-  int get modificationStamp => 0;
-
-  @override
-  String get shortName => _name;
-
-  @override
-  Uri get uri => null;
-
-  @override
-  int get hashCode => _name.hashCode;
-
-  @override
-  bool get isInSystemLibrary => false;
-
-  @override
   Uri resolveRelativeUri(Uri relativeUri) {
-    throw new UnsupportedOperationException("${_name}does not exist.");
+    throw new UnsupportedOperationException('$fullName does not exist.');
   }
 }
 
@@ -326,39 +396,22 @@ class NonExistingSource implements Source {
  * retained so that if those files are created at a later date the long-lived sources representing
  * those files will know that they now exist.
  */
-abstract class Source {
+abstract class Source implements AnalysisTarget {
   /**
-   * An empty array of sources.
+   * An empty list of sources.
    */
-  static final List<Source> EMPTY_ARRAY = new List<Source>(0);
+  @deprecated // Use Source.EMPTY_LIST
+  static const List<Source> EMPTY_ARRAY = EMPTY_LIST;
 
   /**
-   * Return `true` if the given object is a source that represents the same source code as
-   * this source.
-   *
-   * @param object the object to be compared with this object
-   * @return `true` if the given object is a source that represents the same source code as
-   *         this source
-   * @see Object#equals(Object)
+   * An empty list of sources.
    */
-  @override
-  bool operator ==(Object object);
-
-  /**
-   * Return `true` if this source exists.
-   *
-   * Clients should consider using the the method [AnalysisContext#exists] because
-   * contexts can have local overrides of the content of a source that the source is not aware of
-   * and a source with local content is considered to exist even if there is no file on disk.
-   *
-   * @return `true` if this source exists
-   */
-  bool exists();
+  static const List<Source> EMPTY_LIST = const <Source>[];
 
   /**
    * Get the contents and timestamp of this source.
    *
-   * Clients should consider using the the method [AnalysisContext#getContents]
+   * Clients should consider using the the method [AnalysisContext.getContents]
    * because contexts can have local overrides of the content of a source that the source is not
    * aware of.
    *
@@ -372,7 +425,7 @@ abstract class Source {
    * equal to this source.
    *
    * @return an encoded representation of this source
-   * @see SourceFactory#fromEncoding(String)
+   * See [SourceFactory.fromEncoding].
    */
   String get encoding;
 
@@ -386,17 +439,32 @@ abstract class Source {
   String get fullName;
 
   /**
-   * Return the modification stamp for this source. A modification stamp is a non-negative integer
-   * with the property that if the contents of the source have not been modified since the last time
-   * the modification stamp was accessed then the same value will be returned, but if the contents
-   * of the source have been modified one or more times (even if the net change is zero) the stamps
-   * will be different.
+   * Return a hash code for this source.
+   *
+   * @return a hash code for this source
+   * See [Object.hashCode].
+   */
+  @override
+  int get hashCode;
+
+  /**
+   * Return `true` if this source is in one of the system libraries.
+   *
+   * @return `true` if this is in a system library
+   */
+  bool get isInSystemLibrary;
+
+  /**
+   * Return the modification stamp for this source, or a negative value if the
+   * source does not exist. A modification stamp is a non-negative integer with
+   * the property that if the contents of the source have not been modified
+   * since the last time the modification stamp was accessed then the same value
+   * will be returned, but if the contents of the source have been modified one
+   * or more times (even if the net change is zero) the stamps will be different.
    *
    * Clients should consider using the the method
-   * [AnalysisContext#getModificationStamp] because contexts can have local overrides
-   * of the content of a source that the source is not aware of.
-   *
-   * @return the modification stamp for this source
+   * [AnalysisContext.getModificationStamp] because contexts can have local
+   * overrides of the content of a source that the source is not aware of.
    */
   int get modificationStamp;
 
@@ -407,6 +475,9 @@ abstract class Source {
    * @return a name that can be displayed to the user to denote this source
    */
   String get shortName;
+
+  @override
+  Source get source => this;
 
   /**
    * Return the URI from which this source was originally derived.
@@ -426,20 +497,27 @@ abstract class Source {
   UriKind get uriKind;
 
   /**
-   * Return a hash code for this source.
+   * Return `true` if the given object is a source that represents the same source code as
+   * this source.
    *
-   * @return a hash code for this source
-   * @see Object#hashCode()
+   * @param object the object to be compared with this object
+   * @return `true` if the given object is a source that represents the same source code as
+   *         this source
+   * See [Object.==].
    */
   @override
-  int get hashCode;
+  bool operator ==(Object object);
 
   /**
-   * Return `true` if this source is in one of the system libraries.
+   * Return `true` if this source exists.
    *
-   * @return `true` if this is in a system library
+   * Clients should consider using the the method [AnalysisContext.exists] because
+   * contexts can have local overrides of the content of a source that the source is not aware of
+   * and a source with local content is considered to exist even if there is no file on disk.
+   *
+   * @return `true` if this source exists
    */
-  bool get isInSystemLibrary;
+  bool exists();
 
   /**
    * Resolve the relative URI against the URI associated with this source object.
@@ -455,6 +533,20 @@ abstract class Source {
    * @throws AnalysisException if the relative URI could not be resolved
    */
   Uri resolveRelativeUri(Uri relativeUri);
+}
+
+/**
+ * The interface `ContentReceiver` defines the behavior of objects that can receive the
+ * content of a source.
+ */
+abstract class Source_ContentReceiver {
+  /**
+   * Accept the contents of a source.
+   *
+   * @param contents the contents of the source
+   * @param modificationTime the time at which the contents were last set
+   */
+  void accept(String contents, int modificationTime);
 }
 
 /**
@@ -486,6 +578,17 @@ class SourceFactory {
   AnalysisContext context;
 
   /**
+   * URI processor used to find mappings for `package:` URIs found in a `.packages` config
+   * file.
+   */
+  final Packages _packages;
+
+  /**
+   * Resource provider used in working with package maps.
+   */
+  final ResourceProvider _resourceProvider;
+
+  /**
    * The resolvers used to resolve absolute URI's.
    */
   final List<UriResolver> _resolvers;
@@ -496,64 +599,14 @@ class SourceFactory {
   LocalSourcePredicate _localSourcePredicate = LocalSourcePredicate.NOT_SDK;
 
   /**
-   * Initialize a newly created source factory.
-   *
-   * @param resolvers the resolvers used to resolve absolute URI's
+   * Initialize a newly created source factory with the given absolute URI [resolvers] and
+   * optional [packages] resolution helper.
    */
-  SourceFactory(this._resolvers);
-
-  /**
-   * Return a source object representing the given absolute URI, or `null` if the URI is not a
-   * valid URI or if it is not an absolute URI.
-   *
-   * @param absoluteUri the absolute URI to be resolved
-   * @return a source object representing the absolute URI
-   */
-  Source forUri(String absoluteUri) {
-    try {
-      Uri uri = parseUriWithException(absoluteUri);
-      if (uri.isAbsolute) {
-        return _internalResolveUri(null, uri);
-      }
-    } catch (exception) {
-      AnalysisEngine.instance.logger.logError2("Could not resolve URI: ${absoluteUri}", exception);
-    }
-    return null;
-  }
-
-  /**
-   * Return a source object representing the given absolute URI, or `null` if the URI is not
-   * an absolute URI.
-   *
-   * @param absoluteUri the absolute URI to be resolved
-   * @return a source object representing the absolute URI
-   */
-  Source forUri2(Uri absoluteUri) {
-    if (absoluteUri.isAbsolute) {
-      try {
-        return _internalResolveUri(null, absoluteUri);
-      } on AnalysisException catch (exception, stackTrace) {
-        AnalysisEngine.instance.logger.logError2("Could not resolve URI: ${absoluteUri}", new CaughtException(exception, stackTrace));
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Return a source object that is equal to the source object used to obtain the given encoding.
-   *
-   * @param encoding the encoding of a source object
-   * @return a source object that is described by the given encoding
-   * @throws IllegalArgumentException if the argument is not a valid encoding
-   * @see Source#getEncoding()
-   */
-  Source fromEncoding(String encoding) {
-    Source source = forUri(encoding);
-    if (source == null) {
-      throw new IllegalArgumentException("Invalid source encoding: ${encoding}");
-    }
-    return source;
-  }
+  SourceFactory(this._resolvers,
+      [this._packages, ResourceProvider resourceProvider])
+      : _resourceProvider = resourceProvider != null
+          ? resourceProvider
+          : PhysicalResourceProvider.INSTANCE;
 
   /**
    * Return the [DartSdk] associated with this [SourceFactory], or `null` if there
@@ -570,6 +623,94 @@ class SourceFactory {
       }
     }
     return null;
+  }
+
+  /**
+   * Sets the [LocalSourcePredicate].
+   *
+   * @param localSourcePredicate the predicate to determine is [Source] is local
+   */
+  void set localSourcePredicate(LocalSourcePredicate localSourcePredicate) {
+    this._localSourcePredicate = localSourcePredicate;
+  }
+
+  /// A table mapping package names to paths of directories containing
+  /// the package (or [null] if there is no registered package URI resolver).
+  Map<String, List<Folder>> get packageMap {
+    // Start by looking in .packages.
+    if (_packages != null) {
+      Map<String, List<Folder>> packageMap = <String, List<Folder>>{};
+      _packages.asMap().forEach((String name, Uri uri) {
+        if (uri.scheme == 'file' || uri.scheme == '' /* unspecified */) {
+          packageMap[name] =
+              <Folder>[_resourceProvider.getFolder(uri.toFilePath())];
+        }
+      });
+      return packageMap;
+    }
+
+    // Default to the PackageMapUriResolver.
+    PackageMapUriResolver resolver = _resolvers.firstWhere(
+        (r) => r is PackageMapUriResolver, orElse: () => null);
+    return resolver != null ? resolver.packageMap : null;
+  }
+
+  /**
+   * Return a source object representing the given absolute URI, or `null` if the URI is not a
+   * valid URI or if it is not an absolute URI.
+   *
+   * @param absoluteUri the absolute URI to be resolved
+   * @return a source object representing the absolute URI
+   */
+  Source forUri(String absoluteUri) {
+    try {
+      Uri uri = parseUriWithException(absoluteUri);
+      if (uri.isAbsolute) {
+        return _internalResolveUri(null, uri);
+      }
+    } catch (exception, stackTrace) {
+      AnalysisEngine.instance.logger.logError(
+          "Could not resolve URI: $absoluteUri",
+          new CaughtException(exception, stackTrace));
+    }
+    return null;
+  }
+
+  /**
+   * Return a source object representing the given absolute URI, or `null` if the URI is not
+   * an absolute URI.
+   *
+   * @param absoluteUri the absolute URI to be resolved
+   * @return a source object representing the absolute URI
+   */
+  Source forUri2(Uri absoluteUri) {
+    if (absoluteUri.isAbsolute) {
+      try {
+        return _internalResolveUri(null, absoluteUri);
+      } on AnalysisException catch (exception, stackTrace) {
+        AnalysisEngine.instance.logger.logError(
+            "Could not resolve URI: $absoluteUri",
+            new CaughtException(exception, stackTrace));
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Return a source object that is equal to the source object used to obtain the given encoding.
+   *
+   * @param encoding the encoding of a source object
+   * @return a source object that is described by the given encoding
+   * @throws IllegalArgumentException if the argument is not a valid encoding
+   * See [Source.encoding].
+   */
+  Source fromEncoding(String encoding) {
+    Source source = forUri(encoding);
+    if (source == null) {
+      throw new IllegalArgumentException(
+          "Invalid source encoding: '$encoding'");
+    }
+    return source;
   }
 
   /**
@@ -596,9 +737,14 @@ class SourceFactory {
     }
     try {
       // Force the creation of an escaped URI to deal with spaces, etc.
-      return _internalResolveUri(containingSource, parseUriWithException(containedUri));
-    } catch (exception) {
-      AnalysisEngine.instance.logger.logError2("Could not resolve URI (${containedUri}) relative to source (${containingSource.fullName})", exception);
+      return _internalResolveUri(
+          containingSource, parseUriWithException(containedUri));
+    } catch (exception, stackTrace) {
+      String containingFullName =
+          containingSource != null ? containingSource.fullName : '<null>';
+      AnalysisEngine.instance.logger.logError(
+          "Could not resolve URI ($containedUri) relative to source ($containingFullName)",
+          new CaughtException(exception, stackTrace));
       return null;
     }
   }
@@ -611,22 +757,42 @@ class SourceFactory {
    * @return the absolute URI representing the given source
    */
   Uri restoreUri(Source source) {
+    // First see if a resolver can restore the URI.
     for (UriResolver resolver in _resolvers) {
       Uri uri = resolver.restoreAbsolute(source);
       if (uri != null) {
+        // Now see if there's a package mapping.
+        Uri packageMappedUri = _getPackageMapping(uri);
+        if (packageMappedUri != null) {
+          return packageMappedUri;
+        }
+        // Fall back to the resolver's computed URI.
         return uri;
       }
     }
+
     return null;
   }
 
-  /**
-   * Sets the [LocalSourcePredicate].
-   *
-   * @param localSourcePredicate the predicate to determine is [Source] is local
-   */
-  void set localSourcePredicate(LocalSourcePredicate localSourcePredicate) {
-    this._localSourcePredicate = localSourcePredicate;
+  Uri _getPackageMapping(Uri sourceUri) {
+    if (_packages == null) {
+      return null;
+    }
+    if (sourceUri.scheme != 'file') {
+      //TODO(pquitslund): verify this works for non-file URIs.
+      return null;
+    }
+
+    Uri packageUri;
+    _packages.asMap().forEach((String name, Uri uri) {
+      if (packageUri == null) {
+        if (utils.startsWith(sourceUri, uri)) {
+          packageUri = Uri.parse(
+              'package:$name/${sourceUri.path.substring(uri.path.length)}');
+        }
+      }
+    });
+    return packageUri;
   }
 
   /**
@@ -643,9 +809,20 @@ class SourceFactory {
   Source _internalResolveUri(Source containingSource, Uri containedUri) {
     if (!containedUri.isAbsolute) {
       if (containingSource == null) {
-        throw new AnalysisException("Cannot resolve a relative URI without a containing source: ${containedUri}");
+        throw new AnalysisException(
+            "Cannot resolve a relative URI without a containing source: $containedUri");
       }
       containedUri = containingSource.resolveRelativeUri(containedUri);
+    }
+    // Now check .packages.
+    if (_packages != null && containedUri.scheme == 'package') {
+      Uri packageUri =
+          _packages.resolve(containedUri, notFound: (Uri packageUri) => null);
+      // Ensure scheme is set.
+      if (packageUri != null && packageUri.scheme == '') {
+        packageUri = packageUri.replace(scheme: 'file');
+      }
+      containedUri = packageUri;
     }
     for (UriResolver resolver in _resolvers) {
       Source result = resolver.resolveAbsolute(containedUri);
@@ -720,6 +897,24 @@ class SourceRange {
   SourceRange(this.offset, this.length);
 
   /**
+   * @return the 0-based index of the after-last character of the source code for this element,
+   *         relative to the source buffer in which this element is contained.
+   */
+  int get end => offset + length;
+
+  @override
+  int get hashCode => 31 * offset + length;
+
+  @override
+  bool operator ==(Object obj) {
+    if (obj is! SourceRange) {
+      return false;
+    }
+    SourceRange sourceRange = obj as SourceRange;
+    return sourceRange.offset == offset && sourceRange.length == length;
+  }
+
+  /**
    * @return `true` if <code>x</code> is in [offset, offset + length) interval.
    */
   bool contains(int x) => offset <= x && x < offset + length;
@@ -737,7 +932,8 @@ class SourceRange {
   /**
    * @return `true` if this [SourceRange] covers <code>otherRange</code>.
    */
-  bool covers(SourceRange otherRange) => offset <= otherRange.offset && otherRange.end <= end;
+  bool covers(SourceRange otherRange) =>
+      offset <= otherRange.offset && otherRange.end <= end;
 
   /**
    * @return `true` if this [SourceRange] ends in <code>otherRange</code>.
@@ -747,25 +943,11 @@ class SourceRange {
     return otherRange.contains(thisEnd);
   }
 
-  @override
-  bool operator ==(Object obj) {
-    if (obj is! SourceRange) {
-      return false;
-    }
-    SourceRange sourceRange = obj as SourceRange;
-    return sourceRange.offset == offset && sourceRange.length == length;
-  }
-
-  /**
-   * @return the 0-based index of the after-last character of the source code for this element,
-   *         relative to the source buffer in which this element is contained.
-   */
-  int get end => offset + length;
-
   /**
    * @return the expanded instance of [SourceRange], which has the same center.
    */
-  SourceRange getExpanded(int delta) => new SourceRange(offset - delta, delta + length + delta);
+  SourceRange getExpanded(int delta) =>
+      new SourceRange(offset - delta, delta + length + delta);
 
   /**
    * @return the instance of [SourceRange] with end moved on "delta".
@@ -775,19 +957,17 @@ class SourceRange {
   /**
    * @return the expanded translated of [SourceRange], with moved start and the same length.
    */
-  SourceRange getTranslated(int delta) => new SourceRange(offset + delta, length);
+  SourceRange getTranslated(int delta) =>
+      new SourceRange(offset + delta, length);
 
   /**
    * @return the minimal [SourceRange] that cover this and the given [SourceRange]s.
    */
   SourceRange getUnion(SourceRange other) {
-    int newOffset = Math.min(offset, other.offset);
-    int newEnd = Math.max(offset + length, other.offset + other.length);
+    int newOffset = math.min(offset, other.offset);
+    int newEnd = math.max(offset + length, other.offset + other.length);
     return new SourceRange(newOffset, newEnd - newOffset);
   }
-
-  @override
-  int get hashCode => 31 * offset + length;
 
   /**
    * @return `true` if this [SourceRange] intersects with given.
@@ -806,34 +986,12 @@ class SourceRange {
   }
 
   /**
-   * @return `true` if this [SourceRange] starts in <code>otherRange</code>.
+   * Return `true` if this [SourceRange] starts in the [otherRange].
    */
   bool startsIn(SourceRange otherRange) => otherRange.contains(offset);
 
   @override
-  String toString() {
-    JavaStringBuilder builder = new JavaStringBuilder();
-    builder.append("[offset=");
-    builder.append(offset);
-    builder.append(", length=");
-    builder.append(length);
-    builder.append("]");
-    return builder.toString();
-  }
-}
-
-/**
- * The interface `ContentReceiver` defines the behavior of objects that can receive the
- * content of a source.
- */
-abstract class Source_ContentReceiver {
-  /**
-   * Accept the contents of a source.
-   *
-   * @param contents the contents of the source
-   * @param modificationTime the time at which the contents were last set
-   */
-  void accept(String contents, int modificationTime);
+  String toString() => '[offset=$offset, length=$length]';
 }
 
 /**
@@ -859,6 +1017,18 @@ class UriKind extends Enum<UriKind> {
   static const List<UriKind> values = const [DART_URI, FILE_URI, PACKAGE_URI];
 
   /**
+   * The single character encoding used to identify this kind of URI.
+   */
+  final int encoding;
+
+  /**
+   * Initialize a newly created URI kind to have the given encoding.
+   *
+   * @param encoding the single character encoding used to identify this kind of URI.
+   */
+  const UriKind(String name, int ordinal, this.encoding) : super(name, ordinal);
+
+  /**
    * Return the URI kind represented by the given encoding, or `null` if there is no kind with
    * the given encoding.
    *
@@ -878,18 +1048,6 @@ class UriKind extends Enum<UriKind> {
     }
     return null;
   }
-
-  /**
-   * The single character encoding used to identify this kind of URI.
-   */
-  final int encoding;
-
-  /**
-   * Initialize a newly created URI kind to have the given encoding.
-   *
-   * @param encoding the single character encoding used to identify this kind of URI.
-   */
-  const UriKind(String name, int ordinal, this.encoding) : super(name, ordinal);
 }
 
 /**

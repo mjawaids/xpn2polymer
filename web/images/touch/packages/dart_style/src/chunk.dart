@@ -4,7 +4,9 @@
 
 library dart_style.src.chunk;
 
-import 'debug.dart';
+import 'fast_hash.dart';
+import 'nesting_level.dart';
+import 'rule/rule.dart';
 
 /// Tracks where a selection start or end point may appear in some piece of
 /// text.
@@ -69,15 +71,15 @@ class Chunk extends Selection {
   String get text => _text;
   String _text;
 
-  /// The indentation level of the line following this chunk.
+  /// The number of characters of indentation from the left edge of the block
+  /// that contains this chunk.
   ///
-  /// Note that this is not a relative indentation *offset*. It's the full
-  /// indentation. When a chunk is newly created from text, this is `null` to
-  /// indicate that the chunk has no splitting information yet.
+  /// For top level chunks that are not inside any block, this also includes
+  /// leading indentation.
   int get indent => _indent;
-  int _indent = null;
+  int _indent;
 
-  /// The number of levels of expression nesting following this chunk.
+  /// The expression nesting level following this chunk.
   ///
   /// This is used to determine how much to increase the indentation when a
   /// line starts after this chunk. A single statement may be indented multiple
@@ -87,16 +89,16 @@ class Chunk extends Selection {
   ///     someFunctionName(argument, argument,
   ///         argument, anotherFunction(argument,
   ///             argument));
-  int get nesting => _nesting;
-  int _nesting = -1;
+  NestingLevel get nesting => _nesting;
+  NestingLevel _nesting;
 
-  /// Whether or not the chunk occurs inside an expression.
-  ///
-  /// Splits within expressions must take into account how deeply nested they
-  /// are to determine the indentation of subsequent lines. "Statement level"
-  /// splits that occur between statements or in the top-level of a unit only
-  /// take the main indent level into account.
-  bool get isInExpression => _nesting != -1;
+  /// If this chunk marks the beginning of a block, this contains the child
+  /// chunks and other data about that nested block.
+  ChunkBlock get block => _block;
+  ChunkBlock _block;
+
+  /// Whether this chunk has a [block].
+  bool get isBlock => _block != null;
 
   /// Whether it's valid to add more text to this chunk or not.
   ///
@@ -104,36 +106,77 @@ class Chunk extends Selection {
   /// split information set by calling [handleSplit]. Once the latter has been
   /// called, no more text should be added to the chunk since it would appear
   /// *before* the split.
-  bool get canAddText => _indent == null;
+  bool get canAddText => _rule == null;
 
-  /// The [SplitParam] that determines if this chunk is being used as a split
-  /// or not.
+  /// The [Rule] that controls when a split should occur after this chunk.
   ///
-  /// Multiple splits may share a [SplitParam] because they are part of the
-  /// same [Multisplit], in which case they are split or unsplit in unison.
+  /// Multiple splits may share a [Rule].
+  Rule get rule => _rule;
+  Rule _rule;
+
+  /// Whether or not an extra blank line should be output after this chunk if
+  /// it's split.
   ///
-  /// This is `null` for hard splits.
-  SplitParam get param => _param;
-  SplitParam _param;
+  /// Internally, this can be either `true`, `false`, or `null`. The latter is
+  /// an indeterminate state that lets later modifications to the split decide
+  /// whether it should be double or not.
+  ///
+  /// However, this getter does not expose that. It will return `false` if the
+  /// chunk is still indeterminate.
+  bool get isDouble => _isDouble != null ? _isDouble : false;
+  bool _isDouble;
 
-  /// Whether this chunk is always followed by a newline or whether the line
-  /// splitter may choose to keep the next chunk on the same line.
-  bool get isHardSplit => _indent != null && _param == null;
+  /// If `true`, then the line after this chunk should always be at column
+  /// zero regardless of any indentation or expression nesting.
+  ///
+  /// Used for multi-line strings and commented out code.
+  bool get flushLeft => _flushLeft;
+  bool _flushLeft = false;
 
-  /// Whether this chunk may cause a newline depending on line splitting.
-  bool get isSoftSplit => _indent != null && _param != null;
+  /// If `true`, then the line after this chunk and its contained block should
+  /// be flush left.
+  bool get flushLeftAfter {
+    if (!isBlock) return _flushLeft;
 
-  /// `true` if an extra blank line should be output after this chunk if it's
-  /// split.
-  bool get isDouble => _isDouble;
-  bool _isDouble = false;
+    return _block.chunks.last.flushLeftAfter;
+  }
 
-  /// Whether this chunk should append an extra space if it's a soft split and
-  /// is left unsplit.
+  /// Whether this chunk should append an extra space if it does not split.
   ///
   /// This is `true`, for example, in a chunk that ends with a ",".
   bool get spaceWhenUnsplit => _spaceWhenUnsplit;
   bool _spaceWhenUnsplit = false;
+
+  /// Whether this chunk marks the end of a range of chunks that can be line
+  /// split independently of the following chunks.
+  bool get canDivide {
+    // Have to call markDivide() before accessing this.
+    assert(_canDivide != null);
+    return _canDivide;
+  }
+
+  bool _canDivide;
+
+  /// The number of characters in this chunk when unsplit.
+  int get length => _text.length + (spaceWhenUnsplit ? 1 : 0);
+
+  /// The unsplit length of all of this chunk's block contents.
+  ///
+  /// Does not include this chunk's own length, just the length of its child
+  /// block chunks (recursively).
+  int get unsplitBlockLength {
+    if (_block == null) return 0;
+
+    var length = 0;
+    for (var chunk in _block.chunks) {
+      length += chunk.length + chunk.unsplitBlockLength;
+    }
+
+    return length;
+  }
+
+  /// The [Span]s that contain this chunk.
+  final spans = <Span>[];
 
   /// Creates a new chunk starting with [_text].
   Chunk(this._text);
@@ -141,140 +184,169 @@ class Chunk extends Selection {
   /// Discard the split for the chunk and put it back into the state where more
   /// text can be appended.
   void allowText() {
-    _indent = null;
+    _rule = null;
   }
 
   /// Append [text] to the end of the split's text.
   void appendText(String text) {
     assert(canAddText);
-
     _text += text;
   }
 
-  /// Forces this soft split to become a hard split.
-  ///
-  /// This is called on the soft splits of a [Multisplit] when it ends up
-  /// containing some other hard split.
-  void harden() {
-    assert(_param != null);
-    _param = null;
-  }
-
-  /// Finishes off this chunk with the given split information.
+  /// Finishes off this chunk with the given [rule] and split information.
   ///
   /// This may be called multiple times on the same split since the splits
   /// produced by walking the source and the splits coming from comments and
   /// preserved whitespace often overlap. When that happens, this has logic to
   /// combine that information into a single split.
-  void applySplit(int indent, int nesting, SplitParam param,
-      {bool spaceWhenUnsplit, bool isDouble}) {
-    if (spaceWhenUnsplit == null) spaceWhenUnsplit = false;
-    if (isDouble == null) isDouble = false;
-
-    if (isHardSplit || param == null) {
+  void applySplit(Rule rule, int indent, NestingLevel nesting,
+      {bool flushLeft, bool isDouble, bool space}) {
+    if (flushLeft == null) flushLeft = false;
+    if (space == null) space = false;
+    if (rule.isHardened) {
       // A hard split always wins.
-      _param = null;
-    } else if (_indent == null) {
-      // If the chunk hasn't been initialized yet, just inherit the param.
-      _param = param;
+      _rule = rule;
+    } else if (_rule == null) {
+      // If the chunk hasn't been initialized yet, just inherit the rule.
+      _rule = rule;
     }
 
-    // Last newline settings win.
-    _indent = indent;
+    // Last split settings win.
+    _flushLeft = flushLeft;
     _nesting = nesting;
-    _spaceWhenUnsplit = spaceWhenUnsplit;
+    _indent = indent;
 
-    // Preserve a blank line.
-    _isDouble = _isDouble || isDouble;
+    _spaceWhenUnsplit = space;
+
+    // Pin down the double state, if given and we haven't already.
+    if (_isDouble == null) _isDouble = isDouble;
+  }
+
+  /// Turns this chunk into one that can contain a block of child chunks.
+  void makeBlock(Chunk blockArgument) {
+    assert(_block == null);
+    _block = new ChunkBlock(blockArgument);
+  }
+
+  /// Returns `true` if the block body owned by this chunk should be expression
+  /// indented given a set of rule values provided by [getValue].
+  bool indentBlock(int getValue(Rule rule)) {
+    if (_block == null) return false;
+    if (_block.argument == null) return false;
+
+    return _block.argument.rule
+        .isSplit(getValue(_block.argument.rule), _block.argument);
+  }
+
+  // Mark whether this chunk can divide the range of chunks.
+  void markDivide(canDivide) {
+    // Should only do this once.
+    assert(_canDivide == null);
+
+    _canDivide = canDivide;
   }
 
   String toString() {
     var parts = [];
 
-    if (text.isNotEmpty) parts.add("${Color.bold}$text${Color.none}");
+    if (text.isNotEmpty) parts.add(text);
 
-    if (_indent != 0 && _indent != null) parts.add("indent:$_indent");
-    if (_nesting != -1) parts.add("nest:$_nesting");
-    if (spaceWhenUnsplit) parts.add("space");
-    if (_isDouble) parts.add("double");
+    if (_indent != null) parts.add("indent:$_indent");
+    if (spaceWhenUnsplit == true) parts.add("space");
+    if (_isDouble == true) parts.add("double");
+    if (_flushLeft == true) parts.add("flush");
 
-    if (_indent == null) {
-      parts.add("(no split info)");
-    } else if (isHardSplit) {
-      parts.add("hard");
+    if (_rule == null) {
+      parts.add("(no split)");
     } else {
-      var param = "p$_param";
+      parts.add(rule.toString());
+      if (rule.isHardened) parts.add("(hard)");
 
-      if (_param.cost != Cost.normal) param += " \$${_param.cost}";
-
-      if (_param.implies.isNotEmpty) {
-        var impliedIds = _param.implies.map(
-            (param) => "p${param.id}").join(" ");
-        param += " -> $impliedIds";
+      if (_rule.constrainedRules.isNotEmpty) {
+        parts.add("-> ${_rule.constrainedRules.join(' ')}");
       }
-
-      parts.add(param);
     }
 
     return parts.join(" ");
   }
 }
 
+/// The child chunks owned by a chunk that begins a "block" -- an actual block
+/// statement, function expression, or collection literal.
+class ChunkBlock {
+  /// If this block is for a collection literal in an argument list, this will
+  /// be the chunk preceding this literal argument.
+  ///
+  /// That chunk is owned by the argument list and if it splits, this collection
+  /// may need extra expression-level indentation.
+  final Chunk argument;
+
+  /// The child chunks in this block.
+  final List<Chunk> chunks = [];
+
+  ChunkBlock(this.argument);
+}
+
 /// Constants for the cost heuristics used to determine which set of splits is
 /// most desirable.
 class Cost {
-  /// The smallest cost.
+  /// The cost of splitting after the `=>` in a lambda or arrow-bodied member.
+  ///
+  /// We make this zero because there is already a span around the entire body
+  /// and we generally do prefer splitting after the `=>` over other places.
+  static const arrow = 0;
+
+  /// The default cost.
   ///
   /// This isn't zero because we want to ensure all splitting has *some* cost,
   /// otherwise, the formatter won't try to keep things on one line at all.
-  /// Almost all splits and spans use this. Greater costs tend to come from a
-  /// greater number of nested spans.
+  /// Most splits and spans use this. Greater costs tend to come from a greater
+  /// number of nested spans.
   static const normal = 1;
 
-  /// The cost of splitting after a "=" both for assignment and initialization.
-  static const assignment = 2;
+  /// Splitting after a "=".
+  static const assign = 1;
 
-  /// The cost of a single character that goes past the page limit.
+  /// Splitting after a "=" when the right-hand side is a collection or cascade.
+  static const assignBlock = 2;
+
+  /// Splitting before the first argument when it happens to be a function
+  /// expression with a block body.
+  static const firstBlockArgument = 2;
+
+  /// The series of positional arguments.
+  static const positionalArguments = 2;
+
+  /// Splitting inside the brackets of a list with only one element.
+  static const singleElementList = 2;
+
+  /// Splitting the internals of collection literal arguments.
   ///
-  /// This cost is high to ensure any solution that fits in the page is
-  /// preferred over one that does not.
-  static const overflowChar = 1000;
+  /// Used to prefer splitting at the argument boundary over splitting the
+  /// collection contents.
+  static const splitCollections = 2;
+
+  /// Splitting on the "." in a named constructor.
+  static const constructorName = 3;
+
+  /// Splitting before a type argument or type parameter.
+  static const typeArgument = 4;
 }
 
-/// Controls whether or not one or more soft split [Chunk]s are split.
-///
-/// When [LineSplitter] tries to split a line to fit within its page width, it
-/// does so by trying different combinations of parameters to see which set of
-/// active ones yields the best result.
-class SplitParam {
-  static int _nextId = 0;
+/// The in-progress state for a [Span] that has been started but has not yet
+/// been completed.
+class OpenSpan {
+  /// Index of the first chunk contained in this span.
+  int get start => _start;
+  int _start;
 
-  /// A semi-unique numeric indentifier for the param.
-  ///
-  /// This is useful for debugging and also speeds up using the param in hash
-  /// sets. Ids are *semi*-unique because they may wrap around in long running
-  /// processes. Since params are equal based on their identity, this is
-  /// innocuous and prevents ids from growing without bound.
-  final int id = _nextId = (_nextId + 1) & 0x0fffffff;
-
-  /// The cost of this param when split.
+  /// The cost applied when the span is split across multiple lines or `null`
+  /// if the span is for a multisplit.
   final int cost;
 
-  /// The other [SplitParam]s that are "implied" by this one.
-  ///
-  /// Implication means that if the splitter chooses to split this param, it
-  /// must also split all of its implied ones (transitively). Implication is
-  /// one-way. If A implies B, it's fine to split B without splitting A.
-  final implies = <SplitParam>[];
+  OpenSpan(this._start, this.cost);
 
-  /// Creates a new [SplitParam].
-  SplitParam([this.cost = Cost.normal]);
-
-  String toString() => "$id";
-
-  int get hashCode => id.hashCode;
-
-  bool operator ==(other) => identical(this, other);
+  String toString() => "OpenSpan($start, \$$cost)";
 }
 
 /// Delimits a range of chunks that must end up on the same line to avoid an
@@ -282,39 +354,18 @@ class SplitParam {
 ///
 /// These are used to encourage the line splitter to try to keep things
 /// together, like parameter lists and binary operator expressions.
-class Span {
-  /// Index of the first chunk contained in this span.
-  final int start;
-
-  /// Index of the last chunk contained in this span.
-  int get end => _end;
-  int _end;
-
+///
+/// This is a wrapper around the cost so that spans have unique identities.
+/// This way we can correctly avoid paying the cost multiple times if the same
+/// span is split by multiple chunks.
+class Span extends FastHash {
   /// The cost applied when the span is split across multiple lines or `null`
   /// if the span is for a multisplit.
   final int cost;
 
-  Span(this.start, this.cost);
+  Span(this.cost);
 
-  /// Marks this span as ending at [end].
-  void close(int end) {
-    assert(_end == null);
-    _end = end;
-  }
-
-  String toString() {
-    var result = "Span($start";
-
-    if (end != null) {
-      result += " - $end";
-    } else {
-      result += "...";
-    }
-
-    if (cost != null) result += " \$$cost";
-
-    return result + ")";
-  }
+  String toString() => "$id\$$cost";
 }
 
 /// A comment in the source, with a bit of information about the surrounding
@@ -327,7 +378,7 @@ class SourceComment extends Selection {
   /// and the beginning of this one.
   ///
   /// Will be zero if the comment is a trailing one.
-  final int linesBefore;
+  int linesBefore;
 
   /// Whether this comment is a line comment.
   final bool isLineComment;
@@ -337,8 +388,11 @@ class SourceComment extends Selection {
   /// Comments that start at the start of the line will not be indented in the
   /// output. This way, commented out chunks of code do not get erroneously
   /// re-indented.
-  final bool isStartOfLine;
+  final bool flushLeft;
+
+  /// Whether this comment is an inline block comment.
+  bool get isInline => linesBefore == 0 && !isLineComment;
 
   SourceComment(this.text, this.linesBefore,
-      {this.isLineComment, this.isStartOfLine});
+      {this.isLineComment, this.flushLeft});
 }

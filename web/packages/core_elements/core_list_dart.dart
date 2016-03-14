@@ -6,6 +6,7 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
+@HtmlImport('core_list_dart_nodart.html')
 library core_elements.core_list_dart;
 
 import 'dart:async';
@@ -173,7 +174,7 @@ class CoreList extends PolymerElement {
 'which contains a single element (which can itself contain whatever content or '
 'elements you wish). For example: '
 '''\n\n
-<core-list-dart model="{{data}}">
+<core-list-dart data="{{data}}">
   <template>
     <div>
       // All your custom content/elements here.

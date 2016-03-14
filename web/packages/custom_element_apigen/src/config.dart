@@ -9,15 +9,17 @@
 library custom_element_apigen.src.config;
 
 import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
 /// Holds the entire information parsed from the command line arguments and
 /// configuration files.
 class GlobalConfig {
-  final Map<String, FileConfig> files = {};
+  final List<FileConfig> files = [];
   final Map<String, String> stubs = {};
   final List<PackageMapping> packageMappings = [];
   final List<RegExp> deletionPatterns = [];
+  final List<String> filesToLoad = [];
   String currentPackage;
   int _lastUpdated = 0;
 
@@ -48,6 +50,9 @@ class PackageMapping implements Comparable<PackageMapping> {
 class FileConfig {
   final GlobalConfig global;
 
+  /// The path to the original file.
+  final String inputPath;
+
   /// Javascript names that should be substituted when generating Dart code.
   final Map<String, String> nameSubstitutions;
 
@@ -55,15 +60,20 @@ class FileConfig {
   /// corresponding Dart type.
   final List<String> omitImports;
 
+  /// Map of file names to classes that should live within them. All other
+  /// classes will end up in the default file.
+  final Map<String, List<String>> file_overrides;
+
   /// Dart import to get the base class of a custom element. This is inferred
   /// normally from the package_mappings, but can be overriden on an individual
   /// file if necessary.
   final String extendsImport;
 
-  FileConfig(this.global, [Map map])
-    : nameSubstitutions = map != null ? map['name_substitutions'] : null,
-      omitImports = map != null ? map['omit_imports'] : null,
-      extendsImport = map != null ? map['extends_import'] : null;
+  FileConfig(this.global, this.inputPath, [Map map])
+      : nameSubstitutions = map != null ? map['name_substitutions'] : null,
+        omitImports = map != null ? map['omit_imports'] : null,
+        extendsImport = map != null ? map['extends_import'] : null,
+        file_overrides = map != null ? map['file_overrides'] : null;
 }
 
 /// Parse configurations from a `.yaml` configuration file.
@@ -77,6 +87,7 @@ void parseConfigFile(String filePath, GlobalConfig config) {
   _parseFilesToGenerate(yaml, config);
   _parseStubsToGenerate(yaml, config);
   _parseDeletionPatterns(yaml, config);
+  _parseFilesToLoad(yaml, config);
 
   if (!new File('pubspec.yaml').existsSync()) {
     print("error: file 'pubspec.yaml' doesn't exist");
@@ -91,8 +102,8 @@ void _parsePackageMappings(yaml, GlobalConfig config) {
   if (packageMappings == null) return;
   for (var entry in packageMappings) {
     if (entry is! YamlMap) continue;
-    config.packageMappings.add(
-        new PackageMapping(entry.keys.single, entry.values.single));
+    config.packageMappings
+        .add(new PackageMapping(entry.keys.single, entry.values.single));
   }
 }
 
@@ -101,7 +112,7 @@ void _parseFilesToGenerate(yaml, GlobalConfig config) {
   if (toGenerate == null) return;
   for (var entry in toGenerate) {
     if (entry is String) {
-      config.files['lib/src/$entry'] = new FileConfig(config);
+      config.files.add(new FileConfig(config, path.join('lib', 'src', entry)));
       continue;
     }
 
@@ -111,8 +122,8 @@ void _parseFilesToGenerate(yaml, GlobalConfig config) {
       continue;
     }
 
-    config.files['lib/src/${entry.keys.single}'] =
-        new FileConfig(config, entry.values.single);
+    config.files.add(new FileConfig(config,
+        path.join('lib', 'src', entry.keys.single), entry.values.single));
   }
 }
 
@@ -127,25 +138,49 @@ void _parseStubsToGenerate(yaml, GlobalConfig config) {
   for (var key in map.keys) {
     var value = map[key];
     if (value is String) {
-      config.stubs['lib/src/$value'] = key;
+      config.stubs[path.join('lib', 'src', value)] = key;
       continue;
     }
     if (value is YamlList) {
       for (var entry in value) {
-        config.stubs['lib/src/$entry'] = key;
+        config.stubs[path.join('lib', 'src', entry)] = key;
       }
     }
   }
 }
 
 void _parseDeletionPatterns(yaml, GlobalConfig config) {
-  var patterns = yaml['deletion_patterns'];
+  var patterns = _parseStringList(yaml, 'deletion_patterns');
   if (patterns == null) return;
-  if (patterns is! YamlList ||
-      (patterns as YamlList).any((e) => e is! String)) {
-    print('Unrecognized deletion_patterns setting, expected a list of Strings');
+  config.deletionPatterns
+      .addAll((patterns as YamlList).map((pattern) => new RegExp(pattern)));
+}
+
+void _parseFilesToLoad(yaml, GlobalConfig config) {
+  var filePaths = _parseStringList(yaml, 'files_to_load');
+  if (filePaths == null) return;
+  config.filesToLoad.addAll(filePaths.map((filePath) {
+    var parts = filePath.split(':');
+    if (parts.length == 1) {
+      return platformIndependentPath(parts[0]);
+    } else if (parts.length == 2 && parts[0] == 'package') {
+      return path.join('packages', platformIndependentPath(parts[1]));
+    } else {
+      throw 'Unrecognized path `$filePath`. Should be a relative uri or a '
+          '`package:` style uri.';
+    }
+  }));
+}
+
+String platformIndependentPath(String originalPath) =>
+    path.joinAll(path.url.split(originalPath));
+
+List<String> _parseStringList(yaml, String name) {
+  var items = yaml[name];
+  if (items == null) return null;
+  if (items is! YamlList || (items as YamlList).any((e) => e is! String)) {
+    print('Unrecognized $name setting, expected a list of Strings');
     exit(1);
   }
-  config.deletionPatterns.addAll(
-      (patterns as YamlList).map((pattern) => new RegExp(pattern)));
+  return items;
 }

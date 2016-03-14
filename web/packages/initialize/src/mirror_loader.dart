@@ -9,10 +9,11 @@ import 'package:path/path.dart' as path;
 import 'package:initialize/initialize.dart';
 
 final _root = currentMirrorSystem().isolate.rootLibrary;
+final _libs = currentMirrorSystem().libraries;
 
 Queue<Function> loadInitializers(
-    {List<Type> typeFilter, InitializerFilter customFilter}) {
-  return new InitializationCrawler(typeFilter, customFilter).run();
+    {List<Type> typeFilter, InitializerFilter customFilter, Uri from}) {
+  return new InitializationCrawler(typeFilter, customFilter, from: from).run();
 }
 
 // Crawls a library and all its dependencies for `Initializer` annotations using
@@ -30,7 +31,17 @@ class InitializationCrawler {
   // function will be processed.
   final InitializerFilter customFilter;
 
-  InitializationCrawler(this.typeFilter, this.customFilter);
+  /// The library to start crawling from.
+  final LibraryMirror _rootLibrary;
+
+  /// Note: The [from] argument is only supported in the mirror_loader.dart. It
+  /// is not supported statically.
+  InitializationCrawler(this.typeFilter, this.customFilter, {Uri from})
+      : _rootLibrary = from == null
+          ? _root
+          : _libs[from] {
+    if (_rootLibrary == null) throw 'Unable to find library at $from.';
+  }
 
   // The primary function in this class, invoke it to crawl and collect all the
   // annotations into a queue of init functions.
@@ -39,40 +50,26 @@ class InitializationCrawler {
     var queue = new Queue<Function>();
     var libraries = currentMirrorSystem().libraries;
 
-    var trampolineUri = Uri.parse('${_root.uri}\$trampoline');
-    if (libraries.containsKey(trampolineUri)) {
-      // In dartium, process all relative libraries in reverse order of when
-      // they were seen.
-      // TODO(jakemac): This is an approximation of what we actually want.
-      // https://github.com/dart-lang/initialize/issues/25
-      var relativeLibraryUris = new List.from(libraries.keys
-          .where((uri) => uri.scheme != 'package' && uri.scheme != 'dart'));
-
-      for (var import in relativeLibraryUris.reversed) {
-        // Always load the package: version of a library if available for
-        // canonicalization purposes.
-        var libToRun;
-        if (_isHttpStylePackageUrl(import)) {
-          var packageUri = _packageUriFor(import);
-          libToRun = libraries[packageUri];
-        }
-        if (libToRun == null) libToRun = libraries[import];
-
-        // Dartium creates an extra trampoline lib that loads the main dart script
-        // and breaks our ordering, we should skip it.
-        if (librariesSeen.contains(libToRun) ||
-            libToRun.uri.path.endsWith('\$trampoline')) {
-          continue;
-        }
-        _readLibraryDeclarations(libToRun, librariesSeen, queue);
-      }
-    } else {
-      // Not in dartium, just process from the root library.
-      _readLibraryDeclarations(_root, librariesSeen, queue);
-    }
-
+    _readLibraryDeclarations(_rootLibrary, librariesSeen, queue);
     return queue;
   }
+
+  /// Returns the canonical [LibraryMirror] for a given [LibraryMirror]. This
+  /// is defined as the one loaded from a `package:` url if available, otherwise
+  /// it is just [lib].
+  LibraryMirror _canonicalLib(LibraryMirror lib) {
+    var uri = lib.uri;
+    if (_isHttpStylePackageUrl(uri)) {
+      var packageUri = _packageUriFor(uri);
+      if (_libs.containsKey(packageUri)) return _libs[packageUri];
+    }
+    return lib;
+  }
+
+  /// Returns the canonical [ClassMirror] for a given [ClassMirror]. This is
+  /// defined as the one that appears in the canonical owner [LibararyMirror].
+  ClassMirror _canonicalClassDeclaration(ClassMirror declaration) =>
+      _canonicalLib(declaration.owner).declarations[declaration.simpleName];
 
   /// Whether [uri] is an http URI that contains a 'packages' segment, and
   /// therefore could be converted into a 'package:' URI.
@@ -85,9 +82,10 @@ class InitializationCrawler {
         (uriPath.contains('/packages/') || uriPath.startsWith('packages/'));
   }
 
-  Uri _packageUriFor(Uri httpUri) {
-    var packagePath = httpUri.path
-        .substring(httpUri.path.lastIndexOf('packages/') + 'packages/'.length);
+  /// Returns a `package:` version of [uri].
+  Uri _packageUriFor(Uri uri) {
+    var packagePath = uri.path
+        .substring(uri.path.lastIndexOf('packages/') + 'packages/'.length);
     return Uri.parse('package:$packagePath');
   }
 
@@ -95,14 +93,15 @@ class InitializationCrawler {
   // post-order.
   Queue<Function> _readLibraryDeclarations(LibraryMirror lib,
       Set<LibraryMirror> librariesSeen, Queue<Function> queue) {
+    lib = _canonicalLib(lib);
+    if (librariesSeen.contains(lib)) return queue;
     librariesSeen.add(lib);
 
     // First visit all our dependencies.
     for (var dependency in lib.libraryDependencies) {
       // Skip dart: imports, they never use this package.
-      if (dependency.targetLibrary.uri.toString().startsWith('dart:')) continue;
-      if (librariesSeen.contains(dependency.targetLibrary)) continue;
-
+      var targetLibrary = dependency.targetLibrary;
+      if (targetLibrary == null || targetLibrary.uri.scheme == 'dart') continue;
       _readLibraryDeclarations(dependency.targetLibrary, librariesSeen, queue);
     }
 
@@ -156,12 +155,14 @@ class InitializationCrawler {
   String _declarationName(DeclarationMirror declaration) =>
       MirrorSystem.getName(declaration.qualifiedName);
 
-  // Reads annotations on declarations and adds them to `_initQueue` if they are
-  // initializers.
+  /// Reads annotations on a [DeclarationMirror] and adds them to [_initQueue]
+  /// if they are [Initializer]s.
   void _readAnnotations(DeclarationMirror declaration, Queue<Function> queue) {
     var annotations =
         declaration.metadata.where((m) => _filterMetadata(declaration, m));
     for (var meta in annotations) {
+      _annotationsFound.putIfAbsent(
+          declaration, () => new Set<InstanceMirror>());
       _annotationsFound[declaration].add(meta);
 
       // Initialize super classes first, if they are in the same library,
@@ -171,14 +172,26 @@ class InitializationCrawler {
         if (declaration.superclass.owner == declaration.owner) {
           _readAnnotations(declaration.superclass, queue);
         } else {
-          var superMetas = declaration.superclass.metadata
-              .where((m) => _filterMetadata(declaration.superclass, m))
+          // Make sure to check the canonical superclass declaration, the one
+          // we get here is not always that. Specifically, this occurs if all of
+          // the following conditions are met:
+          //
+          //   1. The current library is never loaded via a `package:` dart
+          //      import anywhere in the program.
+          //   2. The current library loads the superclass via a relative file
+          //      import.
+          //   3. The super class is imported via a `package:` import somewhere
+          //      else in the program.
+          var canonicalSuperDeclaration =
+              _canonicalClassDeclaration(declaration.superclass);
+          var superMetas = canonicalSuperDeclaration.metadata
+              .where((m) => _filterMetadata(canonicalSuperDeclaration, m))
               .toList();
           if (superMetas.isNotEmpty) {
             throw new UnsupportedError(
                 'We have detected a cycle in your import graph when running '
                 'initializers on ${declaration.qualifiedName}. This means the '
-                'super class ${declaration.superclass.qualifiedName} has a '
+                'super class ${canonicalSuperDeclaration.qualifiedName} has a '
                 'dependency on this library (possibly transitive).');
           }
         }
@@ -204,7 +217,9 @@ class InitializationCrawler {
         }
         if (uri.scheme == 'file' || uri.scheme.startsWith('http')) {
           filePath = path.url.relative(uri.path,
-              from: path.url.dirname(_root.uri.path));
+              from: _root.uri.path.endsWith('/')
+                  ? _root.uri.path
+                  : path.url.dirname(_root.uri.path));
         } else if (uri.scheme == 'package') {
           var segments = uri.pathSegments;
           package = segments[0];
@@ -232,9 +247,7 @@ class InitializationCrawler {
       return false;
     }
     if (customFilter != null && !customFilter(meta.reflectee)) return false;
-    if (!_annotationsFound.containsKey(declaration)) {
-      _annotationsFound[declaration] = new Set<InstanceMirror>();
-    }
+    if (!_annotationsFound.containsKey(declaration)) return true;
     if (_annotationsFound[declaration].contains(meta)) return false;
     return true;
   }

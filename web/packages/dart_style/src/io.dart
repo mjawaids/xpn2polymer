@@ -8,61 +8,85 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import 'package:dart_style/dart_style.dart';
+import 'dart_formatter.dart';
+import 'formatter_exception.dart';
+import 'formatter_options.dart';
+import 'source_code.dart';
 
 /// Runs the formatter on every .dart file in [path] (and its subdirectories),
 /// and replaces them with their formatted output.
-void processDirectory(Directory directory,
-    {bool overwrite, int pageWidth, bool followLinks: false}) {
-  print("Formatting directory ${directory.path}:");
+///
+/// Returns `true` if successful or `false` if an error occurred in any of the
+/// files.
+bool processDirectory(FormatterOptions options, Directory directory) {
+  options.reporter.showDirectory(directory.path);
+
+  var success = true;
+  var shownHiddenPaths = new Set<String>();
+
   for (var entry in directory.listSync(
-      recursive: true, followLinks: followLinks)) {
+      recursive: true, followLinks: options.followLinks)) {
     var relative = p.relative(entry.path, from: directory.path);
 
     if (entry is Link) {
-      print("Skipping link $relative");
+      options.reporter.showSkippedLink(relative);
       continue;
     }
 
     if (entry is! File || !entry.path.endsWith(".dart")) continue;
 
     // If the path is in a subdirectory starting with ".", ignore it.
-    if (p.split(relative).any((part) => part.startsWith("."))) {
-      print("Skipping hidden file $relative");
+    var parts = p.split(relative);
+    var hiddenIndex;
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].startsWith(".")) {
+        hiddenIndex = i;
+        break;
+      }
+    }
+
+    if (hiddenIndex != null) {
+      // Since we'll hide everything inside the directory starting with ".",
+      // show the directory name once instead of once for each file.
+      var hiddenPath = p.joinAll(parts.take(hiddenIndex + 1));
+      if (shownHiddenPaths.add(hiddenPath)) {
+        options.reporter.showHiddenPath(hiddenPath);
+      }
       continue;
     }
 
-    processFile(
-        entry, label: relative, overwrite: overwrite, pageWidth: pageWidth);
+    if (!processFile(options, entry, label: relative)) success = false;
   }
+
+  return success;
 }
 
 /// Runs the formatter on [file].
-void processFile(File file, {String label, bool overwrite, int pageWidth}) {
+///
+/// Returns `true` if successful or `false` if an error occurred.
+bool processFile(FormatterOptions options, File file, {String label}) {
   if (label == null) label = file.path;
-  if (overwrite == null) overwrite = false;
 
-  var formatter = new DartFormatter(pageWidth: pageWidth);
+  var formatter =
+      new DartFormatter(indent: options.indent, pageWidth: options.pageWidth);
   try {
-    var source = file.readAsStringSync();
-    var output = formatter.format(source, uri: file.path);
-    if (overwrite) {
-      if (source != output) {
-        file.writeAsStringSync(output);
-        print("Formatted $label");
-      } else {
-        print("Unchanged $label");
-      }
-    } else {
-      // Don't add an extra newline.
-      stdout.write(output);
-    }
+    var source = new SourceCode(file.readAsStringSync(), uri: file.path);
+    options.reporter.beforeFile(file, label);
+    var output = formatter.formatSource(source);
+    options.reporter
+        .afterFile(file, label, output, changed: source.text != output.text);
+    return true;
   } on FormatterException catch (err) {
-    stderr.writeln(err.message());
+    var color = Platform.operatingSystem != "windows" &&
+        stdioType(stderr) == StdioType.TERMINAL;
+
+    stderr.writeln(err.message(color: color));
   } catch (err, stack) {
-    stderr.writeln('''Hit a bug in the formatter when formatting $label
-  Please report at: github.com/dart-lang/dart_style/issues
+    stderr.writeln('''Hit a bug in the formatter when formatting $label.
+Please report at: github.com/dart-lang/dart_style/issues
 $err
 $stack''');
   }
+
+  return false;
 }

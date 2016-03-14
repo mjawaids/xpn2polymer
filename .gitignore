@@ -45,10 +45,11 @@ Temporary Items
 build
 *.buildlog
 .buildlog
-.pub
-packages
+.pub/
+packages/
 web/packages/
 
 # IDE files
 .idea
 .idea/compiler.xml
+.packages
