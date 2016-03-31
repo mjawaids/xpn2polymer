@@ -4,12 +4,13 @@
 import 'models.dart'; // show Model;
 import 'dart:html' show CustomEvent, Event, Node;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<middle-element>` element.
-@CustomTag('middle-element')
-class MiddleElement extends PolymerElement with Observable {
-  @published Model model;
-  @published String mode;
+@PolymerRegister('middle-element')
+class MiddleElement extends PolymerElement {
+  @property Model model;
+  @property String mode;
 
   /// Constructor used to create instance of MainApp.
   MiddleElement.created() : super.created() {
@@ -22,9 +23,7 @@ class MiddleElement extends PolymerElement with Observable {
     dispatchEvent(new CustomEvent('design', detail: {'model': model}));
   }
 
-  void add(Event event, Object detail, Node sender) {
-    event.preventDefault();
-      
+  void add(String path, dynamic item) {
     dispatchEvent(new CustomEvent('add',
         detail: {'model': model}));
   }

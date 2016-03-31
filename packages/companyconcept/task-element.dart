@@ -3,11 +3,12 @@
 
 import 'models.dart';
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<task-element>` element.
-@CustomTag('task-element')
-class TaskElement extends PolymerElement with Observable {  
-  @published Task task;
+@PolymerRegister('task-element')
+class TaskElement extends PolymerElement {
+  @property Task task;
     
   /// Constructor used to create instance of MainApp.
   TaskElement.created() : super.created() {

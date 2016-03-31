@@ -5,10 +5,10 @@
 
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
 
-<polymer-element name="actor-element" attributes="actor">
+<dom-module name="actor-element" attributes="actor">
   <template>
     <style>
       .vertical-text {
@@ -23,10 +23,10 @@
     </style>
     <paper-input label="New Actor" value="{{actor.value}}" class="vertical-text"></paper-input>
     <div class="vertical-icon">
-      <core-icon-button icon="check" on-tap="{{addActor}}" class="vertical-text"></core-icon-button>
-      <core-icon-button icon="highlight-remove" on-tap="{{deleteActor}}" class="vertical-text"></core-icon-button>
+      <paper-icon-button icon="check" on-tap="{{addActor}}" class="vertical-text"></paper-icon-button>
+      <paper-icon-button icon="highlight-remove" on-tap="{{deleteActor}}" class="vertical-text"></paper-icon-button>
     </div>
   </template>
 
   <script type="application/dart" src="actor-element.dart"></script>
-</polymer-element>
+</dom-module>

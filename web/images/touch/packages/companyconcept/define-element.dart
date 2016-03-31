@@ -4,14 +4,15 @@
 import 'dart:html';
 import 'package:polymer/polymer.dart';
 import 'models.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<define-element>` element.
-@CustomTag('define-element')
+// @CustomTag('define-element')
 class DefineElement extends PolymerElement {
-  @observable Grid grid = appGrid; //needed to display on front
-  @published String mode;
-  @observable String showDialog;
-  @observable Model model;
+  @property Grid grid = appGrid; //needed to display on front
+  @property String mode;
+  @property String showDialog;
+  @property Model model;
   
   /// Constructor used to create instance of MainApp.
   DefineElement.created() : super.created() {
@@ -39,34 +40,21 @@ class DefineElement extends PolymerElement {
     e.preventDefault();
     message = detail['message'];
     message.attributes.add(new Attribute('New Message Attribute', '') );
-    
-//    bool found = false;
-//    for(var row in appGrid.bottomRows) {
-//      for(var msg in row.messages) {
-//        if (msg == message) {
-//          msg.attributes.add( new Attribute('New Attribute', '') );
-//          found = true;
-//          break;
-//        }
-//      }
-//      if(found) break;
-//      print('going for next row..');
-//    }
   }
   
-  void add(Event e, var detail, Node sender) {
-    e.preventDefault();
+  void add(String path, dynamic item) {
+    var detail = item;  // TODO: jugar
 
     if(detail['model'] is Service)      // Service - Add Top Row
-      addTopRow(e, detail, sender);
+      addTopRow(path, item);
     else if(detail['model'] is Action)  // Action - Add Bottom Row
-      addBottomRow(e, detail, sender);
+      addBottomRow(path, item);
     else if(detail['model'] is Obj)     // Object - Add Left Col
-      addLeftCol(e, detail, sender);
+      addLeftCol(path, item);
     else if(detail['model'] is Actor)   // Actor - Add Right Col
-      addRightCol(e, detail, sender);
+      addRightCol(path, item);
     else if(detail['model'] is Rule)    // Rule - Add Rule
-      addRule(e, detail, sender);
+      addRule(path, item);
   }
   
   void delete(Event e, var detail, Node sender) {
@@ -84,9 +72,7 @@ class DefineElement extends PolymerElement {
       deleteRule(e, detail, sender);
   }
   
-  void addTopRow(Event e, var detail, Node sender) {
-//    e.preventDefault();
-    
+  void addTopRow(String path, dynamic item) {
     int i;
     topRow = new TopRow();
     
@@ -111,7 +97,6 @@ class DefineElement extends PolymerElement {
   }
   
   void deleteTopRow(Event e, var detail, Node sender) {
-//    e.preventDefault();
     service = detail['model'];
 
     if(appGrid.topRows.length > 1)
@@ -122,9 +107,9 @@ class DefineElement extends PolymerElement {
         }
   }
   
-  void addBottomRow(Event e, var detail, Node sender) {
+  void addBottomRow(String path, dynamic item) {
 //      e.preventDefault();
-  
+
     int i;
     bottomRow = new BottomRow();
     
@@ -149,9 +134,6 @@ class DefineElement extends PolymerElement {
   }
   
   void deleteBottomRow(Event e, var detail, Node sender) {
-//    e.preventDefault();
-    
-    //action = detail['action'];
     action = detail['model'];
         
     if(appGrid.bottomRows.length > 1)
@@ -162,9 +144,7 @@ class DefineElement extends PolymerElement {
         }
   }
   
-  void addLeftCol(Event e, var detail, Node sender) {
-//    e.preventDefault();
-
+  void addLeftCol(String path, dynamic item) {
     // Add Responses
     for(var row in appGrid.topRows) {
       response = new Response();
@@ -183,9 +163,6 @@ class DefineElement extends PolymerElement {
   }
   
   void deleteLeftCol(Event e, var detail, Node sender) {
-//    e.preventDefault();
-    
-    //obj = detail['obj'];
     obj = detail['model'];
     
     if(appGrid.topRows[0].responses.length > 1) {
@@ -206,9 +183,7 @@ class DefineElement extends PolymerElement {
     }
   }
   
-  void addRightCol(Event e, var detail, Node sender) {
-//    e.preventDefault();
-    
+  void addRightCol(String path, dynamic item) {
     // Add Tasks
     for(var row in appGrid.topRows) {
       task = new Task();
@@ -227,9 +202,6 @@ class DefineElement extends PolymerElement {
   }
   
   void deleteRightCol(Event e, var detail, Node sender) {
-//    e.preventDefault();
-    
-    //actor = detail['actor'];
     actor = detail['model'];
         
     if(appGrid.topRows[0].tasks.length > 1) {
@@ -250,9 +222,7 @@ class DefineElement extends PolymerElement {
     }
   }
   
-  void addRule(Event e, var detail, Node sender) {
-//    e.preventDefault();
-        
+  void addRule(String path, dynamic item) {
     rule = new Rule();
     centerRow.rules.add(rule);
   }
@@ -261,9 +231,6 @@ class DefineElement extends PolymerElement {
    * 
    */
   void deleteRule(Event e, var detail, Node sender) {
-//      e.preventDefault();
-          
-    //rule = detail['rule'];
     rule = detail['model'];
     centerRow.rules.remove(rule);
   }

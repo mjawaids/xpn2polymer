@@ -1,13 +1,17 @@
 name: companyconcept
 version: 0.0.1
-description: A starter template for a polymer.dart web app.
+description: A Company Concept Web Component.
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
+  #paper_elements: '>=0.6.1 <0.7.0'
+  polymer_elements: ^1.0.0-rc.1
+  polymer: ^1.0.0-rc.11 #'>=0.15.4 <0.17.0'
+  web_components: ^0.12.0
   browser: any
-  core_elements: any
-  paper_elements: '>=0.6.1 <0.7.0'
-  polymer: '>=0.15.4 <0.17.0'
+  template_binding: "^0.14.0+4"
+  observable: any
+  #core_elements: any
 transformers:
 - polymer:
     entry_points: web/index.html

@@ -4,12 +4,13 @@
 import 'dart:html';
 import 'package:polymer/polymer.dart';
 import 'models.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<design-element>` element.
-@CustomTag('design-element')
+// @CustomTag('design-element')
 class DesignElement extends PolymerElement {
-  @observable Grid grid = appGrid;
-  @observable String mode = "design";
+  @property Grid grid = appGrid;
+  @property String mode = "design";
   
   /// Constructor used to create instance of MainApp.
   DesignElement.created() : super.created() {

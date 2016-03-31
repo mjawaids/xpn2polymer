@@ -1,12 +1,12 @@
 library xpn.models;
 
-import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 class Model extends Observable {
-  @observable List<String> LIST;
-  @observable String type;
-  @observable String name;
-  @observable String value;
+  List<String> LIST;
+  String type;
+  String name;
+  String value;
 }
 
 class Response extends Model {
@@ -52,7 +52,7 @@ class Obj extends Model {
 }
 
 class Rule extends Model {  
-  @observable String criteria;
+  String criteria;
   Rule() : super() {
     type = "rule";
     name = "r2c2";
@@ -70,8 +70,8 @@ class Actor extends Model {
 }
 
 class Attribute extends Observable {
-  @observable String name;
-  @observable String value;
+  String name;
+  String value;
   
   Attribute(key,val) {
     name = key;
@@ -80,7 +80,7 @@ class Attribute extends Observable {
 }
 
 class Message extends Model {
-  @observable List<Attribute> attributes;
+  List<Attribute> attributes;
   Message() : super() {
     type = "message";
     name = "r3c1";
@@ -121,27 +121,27 @@ class Row extends Observable {
 }
 
 class TopRow extends Row {
-  @observable List<Response> responses = toObservable([]);
-  @observable Service service = new Service();
-  @observable List<Task> tasks = toObservable([]);
+  List<Response> responses = new List();
+  Service service = new Service();
+  List<Task> tasks = new List();
 }
 
 class CenterRow extends Row {
-  @observable List<Obj> objects = toObservable([]);
-  @observable List<Rule> rules = toObservable([]);
-  @observable List<Actor> actors = toObservable([]);
+  List<Obj> objects = new List();
+  List<Rule> rules = new List();
+  List<Actor> actors = new List();
 }
 
 class BottomRow extends Row {
-  @observable List<Message> messages = toObservable([]);
-  @observable Action action = new Action();
-  @observable List<Request> requests = toObservable([]);
+  List<Message> messages = new List();
+  Action action = new Action();
+  List<Request> requests = new List();
 }
 
 class Grid extends Observable {
-  @observable List<TopRow> topRows = toObservable([]);
-  @observable CenterRow centerRow = new CenterRow();
-  @observable List<BottomRow> bottomRows = toObservable([]);
+  List<TopRow> topRows = new List();
+  CenterRow centerRow = new CenterRow();
+  List<BottomRow> bottomRows = new List();
 }
 
 final appGrid = new Grid();

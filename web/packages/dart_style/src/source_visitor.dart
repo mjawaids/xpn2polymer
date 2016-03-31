@@ -161,10 +161,13 @@ class SourceVisitor implements AstVisitor {
   visitAssertStatement(AssertStatement node) {
     _simpleStatement(node, () {
       token(node.assertKeyword);
-      token(node.leftParenthesis);
-      soloZeroSplit();
-      visit(node.condition);
-      token(node.rightParenthesis);
+
+      var arguments = [node.condition];
+      if (node.message != null) arguments.add(node.message);
+
+      var visitor = new ArgumentListVisitor.forArguments(
+          this, node.leftParenthesis, node.rightParenthesis, arguments);
+      visitor.visit();
     });
   }
 
@@ -372,7 +375,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitClassDeclaration(ClassDeclaration node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     builder.nestExpression();
     modifier(node.abstractKeyword);
@@ -427,7 +430,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitClassTypeAlias(ClassTypeAlias node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       modifier(node.abstractKeyword);
@@ -533,8 +536,28 @@ class SourceVisitor implements AstVisitor {
     builder.unnest();
   }
 
+  visitConfiguration(Configuration node) {
+    token(node.ifKeyword);
+    space();
+    token(node.leftParenthesis);
+    visit(node.name);
+
+    if (node.equalToken != null) {
+      builder.nestExpression();
+      space();
+      token(node.equalToken);
+      soloSplit();
+      visit(node.value);
+      builder.unnest();
+    }
+
+    token(node.rightParenthesis);
+    space();
+    visit(node.libraryUri);
+  }
+
   visitConstructorDeclaration(ConstructorDeclaration node) {
-    visitMemberMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     modifier(node.externalKeyword);
     modifier(node.constKeyword);
@@ -666,6 +689,17 @@ class SourceVisitor implements AstVisitor {
     builder.unnest();
   }
 
+  visitDottedName(DottedName node) {
+    for (var component in node.components) {
+      // Write the preceding ".".
+      if (component != node.components.first) {
+        token(component.beginToken.previous);
+      }
+
+      visit(component);
+    }
+  }
+
   visitDoubleLiteral(DoubleLiteral node) {
     token(node.literal);
   }
@@ -683,7 +717,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitEnumDeclaration(EnumDeclaration node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     token(node.enumKeyword);
     space();
@@ -696,12 +730,14 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitExportDirective(ExportDirective node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.keyword);
       space();
       visit(node.uri);
+
+      _visitConfigurations(node.configurations);
 
       builder.startRule(new CombinatorRule());
       visitNodes(node.combinators);
@@ -757,7 +793,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitFieldDeclaration(FieldDeclaration node) {
-    visitMemberMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       modifier(node.staticKeyword);
@@ -823,12 +859,7 @@ class SourceVisitor implements AstVisitor {
 
     var rule;
     if (requiredParams.isNotEmpty) {
-      if (requiredParams.length > 1) {
-        rule = new MultiplePositionalRule(null, 0, 0);
-      } else {
-        rule = new SinglePositionalRule(null);
-      }
-
+      rule = new PositionalRule(null, 0, 0);
       _metadataRules.last.bindPositionalRule(rule);
 
       builder.startRule(rule);
@@ -914,7 +945,7 @@ class SourceVisitor implements AstVisitor {
       builder.startRule();
 
       var declaration = node.variables;
-      visitDeclarationMetadata(declaration.metadata);
+      visitMetadata(declaration.metadata);
       modifier(declaration.keyword);
       visit(declaration.type, after: space);
 
@@ -970,7 +1001,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitFunctionTypeAlias(FunctionTypeAlias node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.typedefKeyword);
@@ -1055,12 +1086,14 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitImportDirective(ImportDirective node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.keyword);
       space();
       visit(node.uri);
+
+      _visitConfigurations(node.configurations);
 
       if (node.asKeyword != null) {
         soloSplit();
@@ -1158,7 +1191,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitLibraryDirective(LibraryDirective node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.keyword);
@@ -1221,21 +1254,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitNamedExpression(NamedExpression node) {
-    builder.nestExpression();
-    builder.startSpan();
-    visit(node.name);
-
-    // Don't allow a split between a name and a collection. Instead, we want
-    // the collection itself to split, or to split before the argument.
-    if (node.expression is ListLiteral || node.expression is MapLiteral) {
-      space();
-    } else {
-      soloSplit();
-    }
-
-    visit(node.expression);
-    builder.endSpan();
-    builder.unnest();
+    visitNamedArgument(node);
   }
 
   visitNativeClause(NativeClause node) {
@@ -1268,7 +1287,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitPartDirective(PartDirective node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.keyword);
@@ -1278,7 +1297,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitPartOfDirective(PartOfDirective node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       token(node.keyword);
@@ -1477,7 +1496,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitTopLevelVariableDeclaration(TopLevelVariableDeclaration node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     _simpleStatement(node, () {
       visit(node.variables);
@@ -1526,7 +1545,7 @@ class SourceVisitor implements AstVisitor {
   }
 
   visitVariableDeclarationList(VariableDeclarationList node) {
-    visitDeclarationMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     // Allow but try to avoid splitting between the type and name.
     builder.startSpan();
@@ -1589,35 +1608,17 @@ class SourceVisitor implements AstVisitor {
     if (after != null) after();
   }
 
-  /// Visit metadata annotations on directives and declarations.
+  /// Visit metadata annotations on directives, declarations, and members.
   ///
   /// These always force the annotations to be on the previous line.
-  void visitDeclarationMetadata(NodeList<Annotation> metadata) {
-    // If there are multiple annotations, they are always on their own lines,
-    // even the last.
-    if (metadata.length > 1) {
-      visitNodes(metadata, between: newline, after: newline);
-    } else {
-      visitNodes(metadata, between: space, after: newline);
-    }
-  }
-
-  /// Visit metadata annotations on members.
-  ///
-  /// These may be on the same line as the member, or on the previous.
-  void visitMemberMetadata(NodeList<Annotation> metadata) {
-    // If there are multiple annotations, they are always on their own lines,
-    // even the last.
-    if (metadata.length > 1) {
-      visitNodes(metadata, between: newline, after: newline);
-    } else {
-      visitNodes(metadata, between: space, after: spaceOrNewline);
-    }
+  void visitMetadata(NodeList<Annotation> metadata) {
+    visitNodes(metadata, between: newline, after: newline);
   }
 
   /// Visits metadata annotations on parameters and type parameters.
   ///
-  /// These are always on the same line as the parameter.
+  /// Unlike other annotations, these are allowed to stay on the same line as
+  /// the parameter.
   void visitParameterMetadata(
       NodeList<Annotation> metadata, void visitParameter()) {
     if (metadata == null || metadata.isEmpty) {
@@ -1646,6 +1647,31 @@ class SourceVisitor implements AstVisitor {
     // Wrap the rule around the parameter too. If it splits, we want to force
     // the annotations to split as well.
     builder.endRule();
+  }
+
+  /// Visits [node], which may be in an argument list controlled by [rule].
+  ///
+  /// This is called directly by [ArgumentListVisitor] so that it can pass in
+  /// the surrounding named argument rule. That way, this can ensure that a
+  /// split between the name and argument forces the argument list to split
+  /// too.
+  void visitNamedArgument(NamedExpression node, [NamedRule rule]) {
+    builder.nestExpression();
+    builder.startSpan();
+    visit(node.name);
+
+    // Don't allow a split between a name and a collection. Instead, we want
+    // the collection itself to split, or to split before the argument.
+    if (node.expression is ListLiteral || node.expression is MapLiteral) {
+      space();
+    } else {
+      var split = soloSplit();
+      if (rule != null) split.imply(rule);
+    }
+
+    visit(node.expression);
+    builder.endSpan();
+    builder.unnest();
   }
 
   /// Visits the `=` and the following expression in any place where an `=`
@@ -1698,7 +1724,7 @@ class SourceVisitor implements AstVisitor {
   void _visitMemberDeclaration(
       /* FunctionDeclaration|MethodDeclaration */ node,
       /* FunctionExpression|MethodDeclaration */ function) {
-    visitMemberMetadata(node.metadata);
+    visitMetadata(node.metadata);
 
     // Nest the signature in case we have to split between the return type and
     // name.
@@ -1854,25 +1880,42 @@ class SourceVisitor implements AstVisitor {
 
     _startLiteralBody(leftBracket);
 
-    // Always use a hard rule to split the elements. The parent chunk of
-    // the collection will handle the unsplit case, so this only comes
-    // into play when the collection is split.
-    var rule = new Rule.hard();
-    builder.startRule(rule);
-
     // If a collection contains a line comment, we assume it's a big complex
     // blob of data with some documented structure. In that case, the user
     // probably broke the elements into lines deliberately, so preserve those.
     var preserveNewlines = _containsLineComments(elements, rightBracket);
 
+    var rule;
+    var lineRule;
+    if (preserveNewlines) {
+      // Newlines are significant, so we'll explicitly write those. Elements
+      // on the same line all share an argument-list-like rule that allows
+      // splitting between zero, one, or all of them. This is faster in long
+      // lists than using individual splits after each element.
+      lineRule = new TypeArgumentRule();
+      builder.startLazyRule(lineRule);
+    } else {
+      // Newlines aren't significant, so use a hard rule to split the elements.
+      // The parent chunk of the collection will handle the unsplit case, so
+      // this only comes into play when the collection is split.
+      rule = new Rule.hard();
+      builder.startRule(rule);
+    }
+
     for (var element in elements) {
       if (element != elements.first) {
         if (preserveNewlines) {
+          // See if the next element is on the next line.
           if (_endLine(element.beginToken.previous) !=
               _startLine(element.beginToken)) {
             oneOrTwoNewlines();
+
+            // Start a new rule for the new line.
+            builder.endRule();
+            lineRule = new TypeArgumentRule();
+            builder.startLazyRule(lineRule);
           } else {
-            soloSplit();
+            lineRule.beforeArgument(split());
           }
         } else {
           builder.split(nest: false, space: true);
@@ -1997,6 +2040,20 @@ class SourceVisitor implements AstVisitor {
     _writeText(rightBracket.lexeme, rightBracket.offset);
   }
 
+  /// Visits a list of configurations in an import or export directive.
+  void _visitConfigurations(NodeList<Configuration> configurations) {
+    if (configurations.isEmpty) return;
+
+    builder.startRule();
+
+    for (var configuration in configurations) {
+      split();
+      visit(configuration);
+    }
+
+    builder.endRule();
+  }
+
   /// Visits a "combinator".
   ///
   /// This is a [keyword] followed by a list of [nodes], with specific line
@@ -2115,13 +2172,6 @@ class SourceVisitor implements AstVisitor {
     builder.writeWhitespace(Whitespace.twoNewlines);
   }
 
-  /// Allow either a single space or newline to be emitted before the next
-  /// non-whitespace token based on whether a newline exists in the source
-  /// between the last token and the next one.
-  void spaceOrNewline() {
-    builder.writeWhitespace(Whitespace.spaceOrNewline);
-  }
-
   /// Allow either a single split or newline to be emitted before the next
   /// non-whitespace token based on whether a newline exists in the source
   /// between the last token and the next one.
@@ -2147,10 +2197,12 @@ class SourceVisitor implements AstVisitor {
   Chunk zeroSplit() => builder.split();
 
   /// Writes a single space split with its own rule.
-  void soloSplit([int cost]) {
-    builder.startRule(new Rule(cost));
+  Rule soloSplit([int cost]) {
+    var rule = new Rule(cost);
+    builder.startRule(rule);
     split();
     builder.endRule();
+    return rule;
   }
 
   /// Writes a zero-space split with its own rule.

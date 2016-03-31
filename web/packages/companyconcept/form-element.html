@@ -5,11 +5,11 @@
 
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
-<link rel="import" href="../../packages/core_elements/core_toolbar.html">
-<link rel="import" href="../../packages/core_elements/core_icon.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_toolbar.html">
+<link rel="import" href="../../packages/polymer_elements/iron_icon.html">
 
-<polymer-element name="form-element">
+<dom-module name="form-element">
   <template>
     <style>
       :host {
@@ -18,15 +18,15 @@
     </style>
 
     <!-- Toolbar -->
-    <core-toolbar>
+    <paper-toolbar>
       <span flex>Bank Problem</span>
       <span flex>- V01 -</span>
       <span flex>Jan van Hees</span>
-    </core-toolbar>
+    </paper-toolbar>
     <!-- Add list of attributes -->
     <section class="left"><h3>Heading One</h3></section>
     <section class="right"><p>This is a Paragraph from form element!</p></section>
 
   </template>
   <script type="application/dart" src="form-element.dart"></script>
-</polymer-element>
+</dom-module>

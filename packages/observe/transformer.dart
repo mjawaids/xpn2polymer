@@ -10,8 +10,6 @@ import 'dart:async';
 
 import 'package:analyzer/analyzer.dart';
 import 'package:analyzer/src/generated/ast.dart';
-import 'package:analyzer/src/generated/error.dart';
-import 'package:analyzer/src/generated/parser.dart';
 import 'package:analyzer/src/generated/scanner.dart';
 import 'package:barback/barback.dart';
 import 'package:code_transformers/messages/build_logger.dart';
@@ -135,9 +133,9 @@ bool _hasObservable(AnnotatedNode node) =>
 // that is expensive in analyzer, so it isn't feasible yet.
 bool _isObservableAnnotation(Annotation node) =>
     _isAnnotationContant(node, 'observable') ||
-        _isAnnotationContant(node, 'published') ||
-        _isAnnotationType(node, 'ObservableProperty') ||
-        _isAnnotationType(node, 'PublishedProperty');
+    _isAnnotationContant(node, 'published') ||
+    _isAnnotationType(node, 'ObservableProperty') ||
+    _isAnnotationType(node, 'PublishedProperty');
 
 bool _isAnnotationContant(Annotation m, String name) =>
     m.name.name == name && m.constructorName == null && m.arguments == null;
@@ -265,7 +263,6 @@ String _getOriginalCode(TextEditTransaction code, AstNode node) =>
 
 void _fixConstructor(ConstructorDeclaration ctor, TextEditTransaction code,
     Set<String> changedFields) {
-
   // Fix normal initializers
   for (var initializer in ctor.initializers) {
     if (initializer is ConstructorFieldInitializer) {
@@ -292,7 +289,7 @@ void _fixConstructor(ConstructorDeclaration ctor, TextEditTransaction code,
       if (changedFields.contains(name)) {
         thisInit.add(name);
         // Remove "this." but keep everything else.
-        code.edit(param.thisToken.offset, param.period.end, '');
+        code.edit(param.thisKeyword.offset, param.period.end, '');
       }
     }
   }
@@ -394,7 +391,10 @@ void _transformFields(SourceFile file, FieldDeclaration member,
     final end = _findFieldSeperator(field.endToken.next);
     if (end.type == TokenType.COMMA) code.edit(end.offset, end.end, ';');
 
-    code.edit(end.end, end.end, ' @reflectable set $name($type value) { '
+    code.edit(
+        end.end,
+        end.end,
+        ' @reflectable set $name($type value) { '
         '__\$$name = notifyPropertyChange(#$name, __\$$name, value); }');
   }
 }

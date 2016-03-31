@@ -68,8 +68,8 @@ class Chain implements StackTrace {
   /// considered unhandled.
   ///
   /// If [callback] returns a value, it will be returned by [capture] as well.
-  static capture(callback(), {void onError(error, Chain chain),
-      bool when: true}) {
+  static /*=T*/ capture/*<T>*/(/*=T*/ callback(),
+      {void onError(error, Chain chain), bool when: true}) {
     if (!when) {
       var newOnError;
       if (onError != null) {
@@ -193,7 +193,7 @@ class Chain implements StackTrace {
   ///
   /// The trace version of a chain is just the concatenation of all the traces
   /// in the chain.
-  Trace toTrace() => new Trace(flatten(traces.map((trace) => trace.frames)));
+  Trace toTrace() => new Trace(traces.expand((trace) => trace.frames));
 
   String toString() {
     // Figure out the longest path so we know how much to pad.

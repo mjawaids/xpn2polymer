@@ -5,12 +5,12 @@
 
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
-<link rel="import" href="../../packages/core_elements/core_toolbar.html">
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
-<link rel="import" href="../../packages/paper_elements/paper_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_toolbar.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_button.html">
 
-<polymer-element name="action-element" attributes="action">
+<dom-module name="action-element" attributes="action">
   <template>
     <style>
     table, tr {
@@ -18,34 +18,34 @@
     }
     </style>
     
-    <core-toolbar>
+    <paper-toolbar>
       <span flex>Bank Problem</span>
       <span flex>- V01 -</span>
       <span flex>Monthly Costs Action Details</span>
-    </core-toolbar>
+    </paper-toolbar>
     
     <table class="table">
     <!-- tr template repeat="{{attrib in attribs}}" -->
     <tr>
       <td>
-        <core-icon-button icon="remove"></core-icon-button>
+        <paper-icon-button icon="remove"></paper-icon-button>
         <paper-button transition="core-transition-center">Client</paper-button>,
         Order = <paper-input name="order" label="" value=""></paper-input>
         Filter = <paper-input name="filter" label="" value=""></paper-input>
   
-        <core-icon-button icon="check" on-tap="{{addAttribute}}"></core-icon-button>
-        <core-icon-button icon="highlight-remove" on-tap="{{deleteAttribute}}"></core-icon-button>
+        <paper-icon-button icon="check" on-tap="{{addAttribute}}"></paper-icon-button>
+        <paper-icon-button icon="highlight-remove" on-tap="{{deleteAttribute}}"></paper-icon-button>
       </td>
     </tr>
     <tr>
       <td>
         <paper-button transition="core-transition-center">Update Client</paper-button>,
-        <core-icon-button icon="expand-less" on-tap="{{moveUp}}"></core-icon-button>
-        <core-icon-button icon="expand-more" on-tap="{{moveDown}}"></core-icon-button>
-        <core-icon-button icon="chevron-right" on-tap="{{increaseIndent}}"></core-icon-button>
-        <core-icon-button icon="chevron-left" on-tap="{{decreaseIndent}}"></core-icon-button>
+        <paper-icon-button icon="expand-less" on-tap="{{moveUp}}"></paper-icon-button>
+        <paper-icon-button icon="expand-more" on-tap="{{moveDown}}"></paper-icon-button>
+        <paper-icon-button icon="chevron-right" on-tap="{{increaseIndent}}"></paper-icon-button>
+        <paper-icon-button icon="chevron-left" on-tap="{{decreaseIndent}}"></paper-icon-button>
         
-        <core-icon-button icon="highlight-remove" on-tap="{{deleteAttribute}}"></core-icon-button>
+        <paper-icon-button icon="highlight-remove" on-tap="{{deleteAttribute}}"></paper-icon-button>
       </td>
     </tr>
     </table>
@@ -53,4 +53,4 @@
   </template>
 
   <script type="application/dart" src="action-element.dart"></script>
-</polymer-element>
+</dom-module>

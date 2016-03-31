@@ -4,11 +4,12 @@
 import 'models.dart';
 import 'dart:html' show CustomEvent, Event, Node;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<rule-element>` element.
-@CustomTag('rule-element')
-class RuleElement extends PolymerElement with Observable {  
-  @published Rule rule;
+@PolymerRegister('rule-element')
+class RuleElement extends PolymerElement {
+  @property Rule rule;
 
   /// Constructor used to create instance of MainApp.
   RuleElement.created() : super.created() {

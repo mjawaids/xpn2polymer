@@ -3,12 +3,13 @@
 
 import 'models.dart'; // show Model;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<response-element>` element.
-@CustomTag('response-element')
-class ResponseElement extends PolymerElement with Observable {
-  @published Response response;
-  @published String mode = "define";
+@PolymerRegister('response-element')
+class ResponseElement extends PolymerElement {
+  @property Response response;
+  @property String mode = "define";
     
   /// Constructor used to create instance of MainApp.
   ResponseElement.created() : super.created() {

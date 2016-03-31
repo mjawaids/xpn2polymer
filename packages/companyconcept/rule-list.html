@@ -1,7 +1,7 @@
 <link rel="import" href="../../packages/polymer/polymer.html">
 <link rel="import" href="rule-element.html">
 
-<polymer-element name="rule-list">
+<dom-module name="rule-list">
   <template>
     <table id="ruletable" on-deleterule="{{deleteRule}}" on-addrule="{{addRule}}">
       <tr template repeat="{{rule in rules}}">
@@ -13,4 +13,4 @@
   </template>
   
   <script type="application/dart" src="rule-list.dart"></script>
-</polymer-element>
+</dom-module>

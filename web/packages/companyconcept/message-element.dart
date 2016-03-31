@@ -5,13 +5,14 @@ import 'models.dart'; // show Model;
 import 'package:polymer/polymer.dart';
 import 'dart:html' show CustomEvent, Event, Node;
 import 'package:template_binding/template_binding.dart' as tb;
+import 'package:observable/observable.dart';
 
 /// A Polymer `<message-element>` element.
-@CustomTag('message-element')
-class MessageElement extends PolymerElement with Observable {
-  @published Message message;
-  @observable List<Attribute> attribs = toObservable([]);
-  @observable Attribute att;
+@PolymerRegister('message-element')
+class MessageElement extends PolymerElement {
+  @property Message message;
+  @property List<Attribute> attribs = new List();
+  @property Attribute att;
     
   /// Constructor used to create instance of MainApp.
   MessageElement.created() : super.created() {

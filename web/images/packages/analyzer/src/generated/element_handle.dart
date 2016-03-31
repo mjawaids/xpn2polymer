@@ -2,19 +2,19 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// This code was auto-generated, is not intended to be edited, and is subject to
-// significant change. Please see the README file for more information.
+library analyzer.src.generated.element_handle;
 
-library engine.element_handle;
-
-import 'ast.dart';
-import 'element.dart';
-import 'engine.dart';
-import 'java_core.dart';
-import 'java_engine.dart';
-import 'resolver.dart';
-import 'source.dart';
-import 'utilities_dart.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/src/dart/element/element.dart';
+import 'package:analyzer/src/generated/ast.dart';
+import 'package:analyzer/src/generated/constant.dart';
+import 'package:analyzer/src/generated/engine.dart';
+import 'package:analyzer/src/generated/java_core.dart';
+import 'package:analyzer/src/generated/java_engine.dart';
+import 'package:analyzer/src/generated/resolver.dart';
+import 'package:analyzer/src/generated/source.dart';
+import 'package:analyzer/src/generated/utilities_dart.dart';
 
 /**
  * Instances of the class `ClassElementHandle` implement a handle to a `ClassElement`.
@@ -25,7 +25,9 @@ class ClassElementHandle extends ElementHandle implements ClassElement {
    *
    * @param element the element being represented
    */
-  ClassElementHandle(ClassElement element) : super(element);
+  ClassElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   List<PropertyAccessorElement> get accessors => actualElement.accessors;
@@ -68,10 +70,6 @@ class ClassElementHandle extends ElementHandle implements ClassElement {
 
   @override
   bool get isProxy => actualElement.isProxy;
-
-  @override
-  @deprecated
-  bool get isTypedef => actualElement.isMixinApplication;
 
   @override
   bool get isValidMixin => actualElement.isValidMixin;
@@ -171,7 +169,9 @@ class CompilationUnitElementHandle extends ElementHandle
    *
    * @param element the element being represented
    */
-  CompilationUnitElementHandle(CompilationUnitElement element) : super(element);
+  CompilationUnitElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   List<PropertyAccessorElement> get accessors => actualElement.accessors;
@@ -245,7 +245,9 @@ class ConstructorElementHandle extends ExecutableElementHandle
    *
    * @param element the element being represented
    */
-  ConstructorElementHandle(ConstructorElement element) : super(element);
+  ConstructorElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ConstructorElement get actualElement =>
@@ -291,32 +293,29 @@ abstract class ElementHandle implements Element {
   final int id = 0;
 
   /**
-   * The context in which the element is defined.
+   * The [ElementResynthesizer] which will be used to resynthesize elements on
+   * demand.
    */
-  AnalysisContext _context;
+  final ElementResynthesizer _resynthesizer;
 
   /**
    * The location of this element, used to reconstitute the element if it has been garbage
    * collected.
    */
-  ElementLocation _location;
+  final ElementLocation _location;
 
   /**
    * A reference to the element being referenced by this handle, or `null` if the element has
    * been garbage collected.
    */
-  WeakReference<Element> _elementReference;
+  Element _elementReference;
 
   /**
-   * Initialize a newly created element handle to represent the given element.
-   *
-   * @param element the element being represented
+   * Initialize a newly created element handle to represent the element at the
+   * given [_location].  [_resynthesizer] will be used to resynthesize the
+   * element when needed.
    */
-  ElementHandle(Element element) {
-    _context = element.context;
-    _location = element.location;
-    _elementReference = new WeakReference<Element>(element);
-  }
+  ElementHandle(this._resynthesizer, this._location);
 
   /**
    * Return the element being represented by this handle, reconstituting the element if the
@@ -325,19 +324,20 @@ abstract class ElementHandle implements Element {
    * @return the element being represented by this handle
    */
   Element get actualElement {
-    Element element = _elementReference.get();
-    if (element == null) {
-      element = _context.getElement(_location);
-      _elementReference = new WeakReference<Element>(element);
+    if (_elementReference == null) {
+      _elementReference = _resynthesizer.getElement(_location);
     }
-    return element;
+    return _elementReference;
   }
 
   @override
-  AnalysisContext get context => _context;
+  AnalysisContext get context => _resynthesizer.context;
 
   @override
   String get displayName => actualElement.displayName;
+
+  @override
+  SourceRange get docRange => actualElement.docRange;
 
   @override
   Element get enclosingElement => actualElement.enclosingElement;
@@ -374,11 +374,10 @@ abstract class ElementHandle implements Element {
   String get name => actualElement.name;
 
   @override
-  int get nameOffset => actualElement.nameOffset;
+  int get nameLength => actualElement.nameLength;
 
-  @deprecated
   @override
-  AstNode get node => computeNode();
+  int get nameOffset => actualElement.nameOffset;
 
   @override
   Source get source => actualElement.source;
@@ -416,82 +415,19 @@ abstract class ElementHandle implements Element {
   void visitChildren(ElementVisitor visitor) {
     actualElement.visitChildren(visitor);
   }
+}
 
-  /**
-   * Return a handle on the given element. If the element is already a handle, then it will be
-   * returned directly, otherwise a handle of the appropriate class will be constructed.
-   *
-   * @param element the element for which a handle is to be constructed
-   * @return a handle on the given element
-   */
-  static Element forElement(Element element) {
-    if (element is ElementHandle) {
-      return element;
-    }
-    while (true) {
-      if (element.kind == ElementKind.CLASS) {
-        return new ClassElementHandle(element as ClassElement);
-      } else if (element.kind == ElementKind.COMPILATION_UNIT) {
-        return new CompilationUnitElementHandle(
-            element as CompilationUnitElement);
-      } else if (element.kind == ElementKind.CONSTRUCTOR) {
-        return new ConstructorElementHandle(element as ConstructorElement);
-      } else if (element.kind == ElementKind.EXPORT) {
-        return new ExportElementHandle(element as ExportElement);
-      } else if (element.kind == ElementKind.FIELD) {
-        return new FieldElementHandle(element as FieldElement);
-      } else if (element.kind == ElementKind.FUNCTION) {
-        return new FunctionElementHandle(element as FunctionElement);
-      } else if (element.kind == ElementKind.GETTER) {
-        return new PropertyAccessorElementHandle(
-            element as PropertyAccessorElement);
-      } else if (element.kind == ElementKind.IMPORT) {
-        return new ImportElementHandle(element as ImportElement);
-      } else if (element.kind == ElementKind.LABEL) {
-        return new LabelElementHandle(element as LabelElement);
-      } else if (element.kind == ElementKind.LIBRARY) {
-        return new LibraryElementHandle(element as LibraryElement);
-      } else if (element.kind == ElementKind.LOCAL_VARIABLE) {
-        return new LocalVariableElementHandle(element as LocalVariableElement);
-      } else if (element.kind == ElementKind.METHOD) {
-        return new MethodElementHandle(element as MethodElement);
-      } else if (element.kind == ElementKind.PARAMETER) {
-        return new ParameterElementHandle(element as ParameterElement);
-      } else if (element.kind == ElementKind.PREFIX) {
-        return new PrefixElementHandle(element as PrefixElement);
-      } else if (element.kind == ElementKind.SETTER) {
-        return new PropertyAccessorElementHandle(
-            element as PropertyAccessorElement);
-      } else if (element.kind == ElementKind.TOP_LEVEL_VARIABLE) {
-        return new TopLevelVariableElementHandle(
-            element as TopLevelVariableElement);
-      } else if (element.kind == ElementKind.FUNCTION_TYPE_ALIAS) {
-        return new FunctionTypeAliasElementHandle(
-            element as FunctionTypeAliasElement);
-      } else if (element.kind == ElementKind.TYPE_PARAMETER) {
-        return new TypeParameterElementHandle(element as TypeParameterElement);
-      } else {
-        throw new UnsupportedOperationException();
-      }
-      break;
-    }
-  }
+/**
+ * Interface which allows an [Element] handle to be resynthesized based on an
+ * [ElementLocation].  The concrete classes implementing element handles use
+ * this interface to retrieve the underlying elements when queried.
+ */
+abstract class ElementResynthesizer {
+  final AnalysisContext context;
 
-  /**
-   * Return an array of the same size as the given array where each element of the returned array is
-   * a handle for the corresponding element of the given array.
-   *
-   * @param elements the elements for which handles are to be created
-   * @return an array of handles to the given elements
-   */
-  static List<Element> forElements(List<Element> elements) {
-    int length = elements.length;
-    List<Element> handles = new List<Element>.from(elements);
-    for (int i = 0; i < length; i++) {
-      handles[i] = forElement(elements[i]);
-    }
-    return handles;
-  }
+  ElementResynthesizer(this.context);
+
+  Element getElement(ElementLocation location);
 }
 
 /**
@@ -505,7 +441,9 @@ abstract class ExecutableElementHandle extends ElementHandle
    *
    * @param element the element being represented
    */
-  ExecutableElementHandle(ExecutableElement element) : super(element);
+  ExecutableElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ExecutableElement get actualElement =>
@@ -513,6 +451,9 @@ abstract class ExecutableElementHandle extends ElementHandle
 
   @override
   List<FunctionElement> get functions => actualElement.functions;
+
+  @override
+  bool get hasImplicitReturnType => actualElement.hasImplicitReturnType;
 
   @override
   bool get isAbstract => actualElement.isAbstract;
@@ -564,7 +505,9 @@ class ExportElementHandle extends ElementHandle implements ExportElement {
    *
    * @param element the element being represented
    */
-  ExportElementHandle(ExportElement element) : super(element);
+  ExportElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ExportElement get actualElement => super.actualElement as ExportElement;
@@ -598,7 +541,9 @@ class FieldElementHandle extends PropertyInducingElementHandle
    *
    * @param element the element being represented
    */
-  FieldElementHandle(FieldElement element) : super(element);
+  FieldElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   FieldElement get actualElement => super.actualElement as FieldElement;
@@ -608,9 +553,6 @@ class FieldElementHandle extends PropertyInducingElementHandle
 
   @override
   bool get isEnumConstant => actualElement.isEnumConstant;
-
-  @override
-  bool get isStatic => actualElement.isStatic;
 
   @override
   ElementKind get kind => ElementKind.FIELD;
@@ -630,7 +572,9 @@ class FunctionElementHandle extends ExecutableElementHandle
    *
    * @param element the element being represented
    */
-  FunctionElementHandle(FunctionElement element) : super(element);
+  FunctionElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   FunctionElement get actualElement => super.actualElement as FunctionElement;
@@ -659,8 +603,9 @@ class FunctionTypeAliasElementHandle extends ElementHandle
    *
    * @param element the element being represented
    */
-  FunctionTypeAliasElementHandle(FunctionTypeAliasElement element)
-      : super(element);
+  FunctionTypeAliasElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   FunctionTypeAliasElement get actualElement =>
@@ -699,7 +644,9 @@ class ImportElementHandle extends ElementHandle implements ImportElement {
    *
    * @param element the element being represented
    */
-  ImportElementHandle(ImportElement element) : super(element);
+  ImportElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ImportElement get actualElement => super.actualElement as ImportElement;
@@ -741,7 +688,9 @@ class LabelElementHandle extends ElementHandle implements LabelElement {
    *
    * @param element the element being represented
    */
-  LabelElementHandle(LabelElement element) : super(element);
+  LabelElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ExecutableElement get enclosingElement =>
@@ -761,7 +710,9 @@ class LibraryElementHandle extends ElementHandle implements LibraryElement {
    *
    * @param element the element being represented
    */
-  LibraryElementHandle(LibraryElement element) : super(element);
+  LibraryElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   LibraryElement get actualElement => super.actualElement as LibraryElement;
@@ -787,6 +738,9 @@ class LibraryElementHandle extends ElementHandle implements LibraryElement {
 
   @override
   bool get hasLoadLibraryFunction => actualElement.hasLoadLibraryFunction;
+
+  @override
+  String get identifier => location.components.last;
 
   @override
   List<LibraryElement> get importedLibraries => actualElement.importedLibraries;
@@ -846,7 +800,9 @@ class LocalVariableElementHandle extends VariableElementHandle
    *
    * @param element the element being represented
    */
-  LocalVariableElementHandle(LocalVariableElement element) : super(element);
+  LocalVariableElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   LocalVariableElement get actualElement =>
@@ -872,7 +828,9 @@ class MethodElementHandle extends ExecutableElementHandle
    *
    * @param element the element being represented
    */
-  MethodElementHandle(MethodElement element) : super(element);
+  MethodElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   MethodElement get actualElement => super.actualElement as MethodElement;
@@ -895,13 +853,16 @@ class MethodElementHandle extends ExecutableElementHandle
  * `ParameterElement`.
  */
 class ParameterElementHandle extends VariableElementHandle
+    with ParameterElementMixin
     implements ParameterElement {
   /**
    * Initialize a newly created element handle to represent the given element.
    *
    * @param element the element being represented
    */
-  ParameterElementHandle(ParameterElement element) : super(element);
+  ParameterElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ParameterElement get actualElement => super.actualElement as ParameterElement;
@@ -937,7 +898,9 @@ class PrefixElementHandle extends ElementHandle implements PrefixElement {
    *
    * @param element the element being represented
    */
-  PrefixElementHandle(PrefixElement element) : super(element);
+  PrefixElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   PrefixElement get actualElement => super.actualElement as PrefixElement;
@@ -964,8 +927,9 @@ class PropertyAccessorElementHandle extends ExecutableElementHandle
    *
    * @param element the element being represented
    */
-  PropertyAccessorElementHandle(PropertyAccessorElement element)
-      : super(element);
+  PropertyAccessorElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   PropertyAccessorElement get actualElement =>
@@ -1009,8 +973,9 @@ abstract class PropertyInducingElementHandle extends VariableElementHandle
    *
    * @param element the element being represented
    */
-  PropertyInducingElementHandle(PropertyInducingElement element)
-      : super(element);
+  PropertyInducingElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   PropertyInducingElement get actualElement =>
@@ -1018,9 +983,6 @@ abstract class PropertyInducingElementHandle extends VariableElementHandle
 
   @override
   PropertyAccessorElement get getter => actualElement.getter;
-
-  @override
-  bool get isStatic => actualElement.isStatic;
 
   @override
   DartType get propagatedType => actualElement.propagatedType;
@@ -1040,8 +1002,9 @@ class TopLevelVariableElementHandle extends PropertyInducingElementHandle
    *
    * @param element the element being represented
    */
-  TopLevelVariableElementHandle(TopLevelVariableElement element)
-      : super(element);
+  TopLevelVariableElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   ElementKind get kind => ElementKind.TOP_LEVEL_VARIABLE;
@@ -1058,7 +1021,9 @@ class TypeParameterElementHandle extends ElementHandle
    *
    * @param element the element being represented
    */
-  TypeParameterElementHandle(TypeParameterElement element) : super(element);
+  TypeParameterElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   TypeParameterElement get actualElement =>
@@ -1085,10 +1050,18 @@ abstract class VariableElementHandle extends ElementHandle
    *
    * @param element the element being represented
    */
-  VariableElementHandle(VariableElement element) : super(element);
+  VariableElementHandle(
+      ElementResynthesizer resynthesizer, ElementLocation location)
+      : super(resynthesizer, location);
 
   @override
   VariableElement get actualElement => super.actualElement as VariableElement;
+
+  @override
+  DartObject get constantValue => actualElement.constantValue;
+
+  @override
+  bool get hasImplicitType => actualElement.hasImplicitType;
 
   @override
   FunctionElement get initializer => actualElement.initializer;
@@ -1108,8 +1081,12 @@ abstract class VariableElementHandle extends ElementHandle
       actualElement.isPotentiallyMutatedInScope;
 
   @override
+  bool get isStatic => actualElement.isStatic;
+
+  @override
   DartType get type => actualElement.type;
 }
+
 /**
  * TODO(scheglov) invalid implementation
  */

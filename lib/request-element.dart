@@ -3,11 +3,12 @@
 
 import 'models.dart'; // show Model;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<request-element>` element.
-@CustomTag('request-element')
-class RequestElement extends PolymerElement with Observable {
-  @published Request request;
+@PolymerRegister('request-element')
+class RequestElement extends PolymerElement {
+  @property Request request;
     
   /// Constructor used to create instance of MainApp.
   RequestElement.created() : super.created() {

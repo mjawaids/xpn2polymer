@@ -6,17 +6,17 @@
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
 
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/core_elements/core_collapse.html">
-<link rel="import" href="../../packages/core_elements/core_icons.html">
-<link rel="import" href="../../packages/core_elements/core_menu.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/iron_collapse.html">
+<link rel="import" href="../../packages/polymer_elements/iron_icons.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu.html">
 
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
-<link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
-<link rel="import" href="../../packages/paper_elements/paper_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_item.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_dropdown_menu.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_item.html">
 
 <!-- link rel="import" href="response-list.html" -->
 <link rel="import" href="corner-element.html">
@@ -38,7 +38,7 @@
 -->
 
 
-<polymer-element name="define-element" attributes="mode">
+<dom-module name="define-element" attributes="mode">
   <template>
     <style>
       .bar {
@@ -84,9 +84,9 @@
         float: right;
       }
       
-      paper-action-dialog {
+      paper-dialog {
         width: 800px;
-        height 400px; 
+        height: 400px;
       }
     </style>
     <div class="bar">
@@ -160,7 +160,7 @@
       </tr>
     </table>
     
-    <paper-action-dialog id="dialog" heading="{{model.value}}" backdrop autoCloseDisabled layered="false" transition="core-transition-center"
+    <paper-dialog id="dialog" heading="{{model.value}}" backdrop autoCloseDisabled layered="false" transition="core-transition-center"
       on-addattrib="{{addMessageAttribute}}">
       <section>
         <template if="{{showDialog == 'datastore'}}">
@@ -196,9 +196,9 @@
       
       <!-- paper-button dismissive>Cancel</paper-button -->
       <paper-button affirmative autofocus>Close</paper-button>
-    </paper-action-dialog>
+    </paper-dialog>
     
   </template>
 
   <script type="application/dart" src="define-element.dart"></script>
-</polymer-element>
+</dom-module>

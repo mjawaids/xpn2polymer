@@ -6,17 +6,13 @@
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
 
-<link rel="import" href="../../packages/core_elements/core_menu.html">
-<link rel="import" href="../../packages/core_elements/core_item.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu.html">
+<link rel="import" href="../../packages/polymer_elements/paper_item.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_dropdown_menu.html">
 
-<link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
-<link rel="import" href="../../packages/paper_elements/paper_item.html">
-<link rel="import" href="../../packages/paper_elements/paper_action_dialog.html">
-<link rel="import" href="../../packages/paper_elements/paper_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_dropdown_menu.html">
-
-<polymer-element name="corner-element" attributes="model mode">
+<dom-module name="corner-element" attributes="model mode">
   <template>
     <style>
     </style>
@@ -24,13 +20,13 @@
     <template if="{{mode == 'define'}}">
       <paper-menu-button>
         <paper-item>{{model.value}}</paper-item>
-        <paper-dropdown class="dropdown">
-          <core-menu class="menu" valueattr="label" selected="{{model.value}}">
+        <paper-dropdown-menu class="dropdown">
+          <paper-menu class="menu" valueattr="label" selected="{{model.value}}">
             <template repeat="{{model.LIST}}">
               <paper-item label="{{}}">{{}}</paper-item>
             </template>
-          </core-menu>
-        </paper-dropdown>
+          </paper-menu>
+        </paper-dropdown-menu>
       </paper-menu-button>
     </template>
     
@@ -41,4 +37,4 @@
   </template>
 
   <script type="application/dart" src="corner-element.dart"></script>
-</polymer-element>
+</dom-module>

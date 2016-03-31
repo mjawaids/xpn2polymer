@@ -6,12 +6,11 @@
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
 
-<link rel="import" href="../../packages/core_elements/core_menu.html">
-<link rel="import" href="../../packages/core_elements/core_item.html">
-
-<link rel="import" href="../../packages/paper_elements/paper_menu_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_dropdown.html">
-<link rel="import" href="../../packages/paper_elements/paper_item.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu.html">
+<link rel="import" href="../../packages/polymer_elements/paper_item.html">
+<link rel="import" href="../../packages/polymer_elements/paper_menu_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_dropdown_menu.html">
+<link rel="import" href="../../packages/polymer_elements/paper_item.html">
 
 <polymer-element name="request-element" attributes="request">
   <template>
@@ -19,13 +18,13 @@
     </style>
     <paper-menu-button>
       <paper-item>{{request.value}}</paper-item>
-      <paper-dropdown class="dropdown">
-        <core-menu class="menu" valueattr="label" selected="{{request.value}}">
+      <paper-dropdown-menu class="dropdown">
+        <paper-menu class="menu" valueattr="label" selected="{{request.value}}">
           <template repeat="{{request.LIST}}">
             <paper-item label="{{}}">{{}}</paper-item>
           </template>
-        </core-menu>
-      </paper-dropdown>
+        </paper-menu>
+      </paper-dropdown-menu>
     </paper-menu-button>
   </template>
 

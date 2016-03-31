@@ -5,10 +5,10 @@
 
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
 
-<polymer-element name="object-element" attributes="obj">
+<dom-module name="object-element" attributes="obj">
   <template>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <style>
@@ -23,13 +23,13 @@
       <table class="table table-bordered">
         <tr><td>
         <label>New Attribute</label>
-        <core-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></core-icon-button>
-        <core-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></core-icon-button>
+        <paper-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></paper-icon-button>
+        <paper-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></paper-icon-button>
         </td></tr>
         <tr><td>
         <label>New Attribute</label>
-        <core-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></core-icon-button>
-        <core-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></core-icon-button>
+        <paper-icon-button icon="check" on-tap="{{addObject}}" class="vertical-text"></paper-icon-button>
+        <paper-icon-button icon="highlight-remove" on-tap="{{deleteObject}}" class="vertical-text"></paper-icon-button>
         </td></tr>
       </table>
     </div>
@@ -48,4 +48,4 @@
   </template>
 
   <script type="application/dart" src="object-element.dart"></script>
-</polymer-element>
+</dom-module>

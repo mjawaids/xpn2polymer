@@ -7,18 +7,18 @@
 <link rel="import" href="../../packages/polymer/polymer.html">
 
 <!-- POLYMER PAPER AND CORE ELEMENTS -->
-<link rel="import" href="../../packages/paper_elements/roboto.html">
-<link rel="import" href="../../packages/core_elements/core_header_panel.html">
-<link rel="import" href="../../packages/core_elements/core_toolbar.html">
-<link rel="import" href="../../packages/core_elements/core_pages.html">
+<link rel="import" href="../../packages/polymer_elements/roboto.html">
+<link rel="import" href="../../packages/polymer_elements/paper_header_panel.html">
+<link rel="import" href="../../packages/polymer_elements/paper_toolbar.html">
+<link rel="import" href="../../packages/polymer_elements/iron_pages.html">
 
-<link rel="import" href="../../packages/paper_elements/paper_tabs.html">
-<link rel="import" href="../../packages/paper_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_tabs.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
 
 <link rel="import" href="define-element.html">
 <!-- link rel="import" href="design-element.html" -->
 
-<polymer-element name="xpn-element">
+<dom-module name="xpn-element">
   <template>
     <style>
       :host {
@@ -28,13 +28,13 @@
         font-family: 'RobotoDraft', sans-serif;
       }
       
-      core-header-panel {
+      paper-header-panel {
         height: 100%;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
       }
       
-      core-toolbar {
+      paper-toolbar {
         background: #03a9f4;
         color: white;
       }
@@ -92,9 +92,9 @@
       }
     </style>
 
-    <core-header-panel flex>
+    <paper-header-panel flex>
     
-      <core-toolbar class="medium-tall">
+      <paper-toolbar class="medium-tall">
   
         <paper-icon-button id="navicon" icon="dashboard"></paper-icon-button>
         <span flex>Company Concepts</span>
@@ -109,20 +109,20 @@
           <paper-tab name="export">EXPORT</paper-tab>
         </paper-tabs>
   
-      </core-toolbar>
+      </paper-toolbar>
   
-      <core-pages id="pages" valueattr="name" selected="{{tab}}">
+      <iron-pages id="pages" valueattr="name" selected="{{tab}}">
         <div name="import"><h1>This is import</h1></div>
         <div name="define"><define-element class="table" mode="define"></define-element></div>
         <div name="design"><define-element class="table" mode="design"></define-element></div>
         <div name="develop"><h1>This is develop</h1></div>
         <div name="deploy"><h1>This is deploy</h1></div>
         <div name="export"><h1>This is export</h1></div>
-      </core-pages>
+      </iron-pages>
   
-    </core-header-panel>
+    </paper-header-panel>
 
   </template>
 
   <script type="application/dart" src="xpn-element.dart"></script>
-</polymer-element>
+</dom-module>

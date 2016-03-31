@@ -5,7 +5,10 @@
 import "dart:collection";
 import "dart:math" as math;
 
+import "typed_wrappers.dart";
 import "unmodifiable_wrappers.dart";
+
+typedef K _KeyForValue<K, V>(V value);
 
 /// A base class for delegating iterables.
 ///
@@ -24,14 +27,17 @@ abstract class _DelegatingIterableBase<E> implements Iterable<E> {
 
   bool every(bool test(E element)) => _base.every(test);
 
-  Iterable expand(Iterable f(E element)) => _base.expand(f);
+  Iterable/*<T>*/ expand/*<T>*/(Iterable/*<T>*/ f(E element)) =>
+      _base.expand(f);
 
   E get first => _base.first;
 
   E firstWhere(bool test(E element), {E orElse()}) =>
       _base.firstWhere(test, orElse: orElse);
 
-  fold(initialValue, combine(previousValue, E element)) =>
+  /*=T*/ fold/*<T>*/(
+          /*=T*/ initialValue,
+          /*=T*/ combine(/*=T*/ previousValue, E element)) =>
       _base.fold(initialValue, combine);
 
   void forEach(void f(E element)) => _base.forEach(f);
@@ -51,7 +57,7 @@ abstract class _DelegatingIterableBase<E> implements Iterable<E> {
 
   int get length => _base.length;
 
-  Iterable map(f(E element)) => _base.map(f);
+  Iterable/*<T>*/ map/*<T>*/(/*=T*/ f(E element)) => _base.map(f);
 
   E reduce(E combine(E value, E element)) => _base.reduce(combine);
 
@@ -76,26 +82,52 @@ abstract class _DelegatingIterableBase<E> implements Iterable<E> {
   String toString() => _base.toString();
 }
 
-/// Creates an [Iterable] that delegates all operations to a base iterable.
+/// An [Iterable] that delegates all operations to a base iterable.
 ///
-/// This class can be used hide non-`Iterable` methods of an iterable object,
+/// This class can be used to hide non-`Iterable` methods of an iterable object,
 /// or it can be extended to add extra functionality on top of an existing
 /// iterable object.
 class DelegatingIterable<E> extends _DelegatingIterableBase<E> {
   final Iterable<E> _base;
 
-  /// Create a wrapper that forwards operations to [base].
+  /// Creates a wrapper that forwards operations to [base].
   const DelegatingIterable(Iterable<E> base) : _base = base;
+
+  /// Creates a wrapper that asserts the types of values in [base].
+  ///
+  /// This soundly converts an [Iterable] without a generic type to an
+  /// `Iterable<E>` by asserting that its elements are instances of `E` whenever
+  /// they're accessed. If they're not, it throws a [CastError].
+  ///
+  /// This forwards all operations to [base], so any changes in [base] will be
+  /// reflected in [this]. If [base] is already an `Iterable<E>`, it's returned
+  /// unmodified.
+  static Iterable/*<E>*/ typed/*<E>*/(Iterable base) =>
+      base is Iterable/*<E>*/ ? base : new TypeSafeIterable/*<E>*/(base);
 }
 
 
-/// Creates a [List] that delegates all operations to a base list.
+/// A [List] that delegates all operations to a base list.
 ///
-/// This class can be used hide non-`List` methods of a list object,
-/// or it can be extended to add extra functionality on top of an existing
-/// list object.
+/// This class can be used to hide non-`List` methods of a list object, or it
+/// can be extended to add extra functionality on top of an existing list
+/// object.
 class DelegatingList<E> extends DelegatingIterable<E> implements List<E> {
   const DelegatingList(List<E> base) : super(base);
+
+  /// Creates a wrapper that asserts the types of values in [base].
+  ///
+  /// This soundly converts a [List] without a generic type to a `List<E>` by
+  /// asserting that its elements are instances of `E` whenever they're
+  /// accessed. If they're not, it throws a [CastError]. Note that even if an
+  /// operation throws a [CastError], it may still mutate the underlying
+  /// collection.
+  ///
+  /// This forwards all operations to [base], so any changes in [base] will be
+  /// reflected in [this]. If [base] is already a `List<E>`, it's returned
+  /// unmodified.
+  static List/*<E>*/ typed/*<E>*/(List base) =>
+      base is List/*<E>*/ ? base : new TypeSafeList/*<E>*/(base);
 
   List<E> get _listBase => _base;
 
@@ -186,13 +218,26 @@ class DelegatingList<E> extends DelegatingIterable<E> implements List<E> {
 }
 
 
-/// Creates a [Set] that delegates all operations to a base set.
+/// A [Set] that delegates all operations to a base set.
 ///
-/// This class can be used hide non-`Set` methods of a set object,
-/// or it can be extended to add extra functionality on top of an existing
-/// set object.
+/// This class can be used to hide non-`Set` methods of a set object, or it can
+/// be extended to add extra functionality on top of an existing set object.
 class DelegatingSet<E> extends DelegatingIterable<E> implements Set<E> {
   const DelegatingSet(Set<E> base) : super(base);
+
+  /// Creates a wrapper that asserts the types of values in [base].
+  ///
+  /// This soundly converts a [Set] without a generic type to a `Set<E>` by
+  /// asserting that its elements are instances of `E` whenever they're
+  /// accessed. If they're not, it throws a [CastError]. Note that even if an
+  /// operation throws a [CastError], it may still mutate the underlying
+  /// collection.
+  ///
+  /// This forwards all operations to [base], so any changes in [base] will be
+  /// reflected in [this]. If [base] is already a `Set<E>`, it's returned
+  /// unmodified.
+  static Set/*<E>*/ typed/*<E>*/(Set base) =>
+      base is Set/*<E>*/ ? base : new TypeSafeSet/*<E>*/(base);
 
   Set<E> get _setBase => _base;
 
@@ -237,13 +282,27 @@ class DelegatingSet<E> extends DelegatingIterable<E> implements Set<E> {
   Set<E> toSet() => new DelegatingSet<E>(_setBase.toSet());
 }
 
-/// Creates a [Queue] that delegates all operations to a base queue.
+/// A [Queue] that delegates all operations to a base queue.
 ///
-/// This class can be used hide non-`Queue` methods of a queue object,
-/// or it can be extended to add extra functionality on top of an existing
-/// queue object.
+/// This class can be used to hide non-`Queue` methods of a queue object, or it
+/// can be extended to add extra functionality on top of an existing queue
+/// object.
 class DelegatingQueue<E> extends DelegatingIterable<E> implements Queue<E> {
   const DelegatingQueue(Queue<E> queue) : super(queue);
+
+  /// Creates a wrapper that asserts the types of values in [base].
+  ///
+  /// This soundly converts a [Queue] without a generic type to a `Queue<E>` by
+  /// asserting that its elements are instances of `E` whenever they're
+  /// accessed. If they're not, it throws a [CastError]. Note that even if an
+  /// operation throws a [CastError], it may still mutate the underlying
+  /// collection.
+  ///
+  /// This forwards all operations to [base], so any changes in [base] will be
+  /// reflected in [this]. If [base] is already a `Queue<E>`, it's returned
+  /// unmodified.
+  static Queue/*<E>*/ typed/*<E>*/(Queue base) =>
+      base is Queue/*<E>*/ ? base : new TypeSafeQueue/*<E>*/(base);
 
   Queue<E> get _baseQueue => _base;
 
@@ -278,15 +337,29 @@ class DelegatingQueue<E> extends DelegatingIterable<E> implements Queue<E> {
   E removeLast() => _baseQueue.removeLast();
 }
 
-/// Creates a [Map] that delegates all operations to a base map.
+/// A [Map] that delegates all operations to a base map.
 ///
-/// This class can be used hide non-`Map` methods of an object that extends
+/// This class can be used to hide non-`Map` methods of an object that extends
 /// `Map`, or it can be extended to add extra functionality on top of an
 /// existing map object.
 class DelegatingMap<K, V> implements Map<K, V> {
   final Map<K, V> _base;
 
   const DelegatingMap(Map<K, V> base) : _base = base;
+
+  /// Creates a wrapper that asserts the types of keys and values in [base].
+  ///
+  /// This soundly converts a [Map] without generic types to a `Map<K, V>` by
+  /// asserting that its keys are instances of `E` and its values are instances
+  /// of `V` whenever they're accessed. If they're not, it throws a [CastError].
+  /// Note that even if an operation throws a [CastError], it may still mutate
+  /// the underlying collection.
+  ///
+  /// This forwards all operations to [base], so any changes in [base] will be
+  /// reflected in [this]. If [base] is already a `Map<K, V>`, it's returned
+  /// unmodified.
+  static Map/*<K, V>*/ typed/*<K, V>*/(Map base) =>
+      base is Map/*<K, V>*/ ? base : new TypeSafeMap/*<K, V>*/(base);
 
   V operator [](Object key) => _base[key];
 
@@ -391,7 +464,7 @@ class MapKeySet<E> extends _DelegatingIterableBase<E>
 }
 
 /// Creates a modifiable [Set] view of the values of a [Map].
-/// 
+///
 /// The `Set` view assumes that the keys of the `Map` can be uniquely determined
 /// from the values. The `keyForValue` function passed to the constructor finds
 /// the key for a single value. The `keyForValue` function should be consistent
@@ -413,7 +486,7 @@ class MapKeySet<E> extends _DelegatingIterableBase<E>
 /// Effectively, the map will act as a kind of index for the set.
 class MapValueSet<K, V> extends _DelegatingIterableBase<V> implements Set<V> {
   final Map<K, V> _baseMap;
-  final Function _keyForValue;
+  final _KeyForValue<K, V> _keyForValue;
 
   /// Creates a new [MapValueSet] based on [base].
   ///
@@ -428,7 +501,9 @@ class MapValueSet<K, V> extends _DelegatingIterableBase<V> implements Set<V> {
 
   bool contains(Object element) {
     if (element != null && element is! V) return false;
-    return _baseMap.containsKey(_keyForValue(element));
+    var key = _keyForValue(element as V);
+
+    return _baseMap.containsKey(key);
   }
 
   bool get isEmpty => _baseMap.isEmpty;
@@ -474,11 +549,17 @@ class MapValueSet<K, V> extends _DelegatingIterableBase<V> implements Set<V> {
   /// may be different than the equality operation [this] uses.
   Set<V> intersection(Set<Object> other) => where(other.contains).toSet();
 
-  V lookup(Object element) => _baseMap[_keyForValue(element)];
+  V lookup(Object element) {
+    if (element != null && element is! V) return null;
+    var key = _keyForValue(element as V);
 
-  bool remove(Object value) {
-    if (value != null && value is! V) return false;
-    var key = _keyForValue(value);
+    return _baseMap[key];
+  }
+
+  bool remove(Object element) {
+    if (element != null && element is! V) return false;
+    var key = _keyForValue(element as V);
+
     if (!_baseMap.containsKey(key)) return false;
     _baseMap.remove(key);
     return true;
@@ -498,7 +579,8 @@ class MapValueSet<K, V> extends _DelegatingIterableBase<V> implements Set<V> {
     var valuesToRetain = new Set<V>.identity();
     for (var element in elements) {
       if (element != null && element is! V) continue;
-      var key = _keyForValue(element);
+      var key = _keyForValue(element as V);
+
       if (!_baseMap.containsKey(key)) continue;
       valuesToRetain.add(_baseMap[key]);
     }

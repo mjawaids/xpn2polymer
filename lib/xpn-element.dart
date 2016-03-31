@@ -4,11 +4,12 @@
 import 'package:polymer/polymer.dart';
 //import 'dart:html';
 import 'models.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<xpn-element>` element.
-@CustomTag('xpn-element')
+@PolymerRegister('xpn-element')
 class XPNElement extends PolymerElement {
-  @observable var tab = 0;
+  @property var tab = 0;
   
   /// Constructor used to create instance of MainApp.
   XPNElement.created() : super.created() {

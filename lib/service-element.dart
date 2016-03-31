@@ -4,11 +4,12 @@
 import 'models.dart'; // show Model;
 import 'dart:html' show CustomEvent, Event, Node;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<service-element>` element.
-@CustomTag('service-element')
-class ServiceElement extends PolymerElement with Observable {  
-  @published Service service;
+@PolymerRegister('service-element')
+class ServiceElement extends PolymerElement {
+  @property Service service;
 
   /// Constructor used to create instance of MainApp.
   ServiceElement.created() : super.created() {

@@ -2,10 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// This code was auto-generated, is not intended to be edited, and is subject to
-// significant change. Please see the README file for more information.
-
-library engine.source;
+library analyzer.src.generated.source;
 
 import 'dart:collection';
 import "dart:math" as math;
@@ -13,17 +10,16 @@ import "dart:math" as math;
 import 'package:analyzer/file_system/file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:analyzer/source/package_map_resolver.dart';
+import 'package:analyzer/src/generated/engine.dart';
+import 'package:analyzer/src/generated/java_core.dart';
+import 'package:analyzer/src/generated/java_engine.dart';
+import 'package:analyzer/src/generated/java_io.dart' show JavaFile;
+import 'package:analyzer/src/generated/sdk.dart' show DartSdk;
+import 'package:analyzer/src/generated/source_io.dart' show FileBasedSource;
 import 'package:analyzer/src/generated/utilities_dart.dart' as utils;
 import 'package:analyzer/task/model.dart';
 import 'package:package_config/packages.dart';
 import 'package:path/path.dart' as pathos;
-
-import 'engine.dart';
-import 'java_core.dart';
-import 'java_engine.dart';
-import 'java_io.dart' show JavaFile;
-import 'sdk.dart' show DartSdk;
-import 'source_io.dart' show FileBasedSource;
 
 /**
  * A function that is used to visit [ContentCache] entries.
@@ -109,7 +105,7 @@ class CustomUriResolver extends UriResolver {
   CustomUriResolver(this._urlMappings);
 
   @override
-  Source resolveAbsolute(Uri uri) {
+  Source resolveAbsolute(Uri uri, [Uri actualUri]) {
     String mapping = _urlMappings[uri.toString()];
     if (mapping == null) return null;
 
@@ -117,7 +113,7 @@ class CustomUriResolver extends UriResolver {
     if (!fileUri.isAbsolute) return null;
 
     JavaFile javaFile = new JavaFile.fromUri(fileUri);
-    return new FileBasedSource(javaFile);
+    return new FileBasedSource(javaFile, actualUri != null ? actualUri : uri);
   }
 }
 
@@ -156,7 +152,7 @@ class DartUriResolver extends UriResolver {
   DartSdk get dartSdk => _sdk;
 
   @override
-  Source resolveAbsolute(Uri uri) {
+  Source resolveAbsolute(Uri uri, [Uri actualUri]) {
     if (!isDartUri(uri)) {
       return null;
     }
@@ -250,6 +246,17 @@ class LineInfo {
 
     return new LineInfo_Location(min + 1, offset - _lineStarts[min] + 1);
   }
+
+  /**
+   * Return the offset of the first character on the line with the given
+   * [lineNumber].
+   */
+  int getOffsetOfLine(int lineNumber) {
+    if (lineNumber < 0 || lineNumber >= _lineStarts.length) {
+      throw new ArgumentError('Invalid line number: $lineNumber');
+    }
+    return _lineStarts[lineNumber];
+  }
 }
 
 /**
@@ -275,6 +282,9 @@ class LineInfo_Location {
    * @param columnNumber the one-based index of the column containing the character
    */
   LineInfo_Location(this.lineNumber, this.columnNumber);
+
+  @override
+  String toString() => '$lineNumber:$columnNumber';
 }
 
 /**
@@ -397,12 +407,6 @@ class NonExistingSource extends Source {
  * those files will know that they now exist.
  */
 abstract class Source implements AnalysisTarget {
-  /**
-   * An empty list of sources.
-   */
-  @deprecated // Use Source.EMPTY_LIST
-  static const List<Source> EMPTY_ARRAY = EMPTY_LIST;
-
   /**
    * An empty list of sources.
    */
@@ -605,8 +609,8 @@ class SourceFactory {
   SourceFactory(this._resolvers,
       [this._packages, ResourceProvider resourceProvider])
       : _resourceProvider = resourceProvider != null
-          ? resourceProvider
-          : PhysicalResourceProvider.INSTANCE;
+            ? resourceProvider
+            : PhysicalResourceProvider.INSTANCE;
 
   /**
    * Return the [DartSdk] associated with this [SourceFactory], or `null` if there
@@ -642,17 +646,29 @@ class SourceFactory {
       Map<String, List<Folder>> packageMap = <String, List<Folder>>{};
       _packages.asMap().forEach((String name, Uri uri) {
         if (uri.scheme == 'file' || uri.scheme == '' /* unspecified */) {
-          packageMap[name] =
-              <Folder>[_resourceProvider.getFolder(uri.toFilePath())];
+          packageMap[name] = <Folder>[
+            _resourceProvider.getFolder(uri.toFilePath())
+          ];
         }
       });
       return packageMap;
     }
 
     // Default to the PackageMapUriResolver.
-    PackageMapUriResolver resolver = _resolvers.firstWhere(
-        (r) => r is PackageMapUriResolver, orElse: () => null);
+    PackageMapUriResolver resolver = _resolvers
+        .firstWhere((r) => r is PackageMapUriResolver, orElse: () => null);
     return resolver != null ? resolver.packageMap : null;
+  }
+
+  /**
+   * Return a source factory that will resolve URI's in the same way that this
+   * source factory does.
+   */
+  SourceFactory clone() {
+    SourceFactory factory =
+        new SourceFactory(_resolvers, _packages, _resourceProvider);
+    factory.localSourcePredicate = _localSourcePredicate;
+    return factory;
   }
 
   /**
@@ -722,14 +738,11 @@ class SourceFactory {
   bool isLocalSource(Source source) => _localSourcePredicate.isLocal(source);
 
   /**
-   * Return a source object representing the URI that results from resolving the given (possibly
-   * relative) contained URI against the URI associated with an existing source object, whether or
-   * not the resulting source exists, or `null` if either the contained URI is invalid or if
-   * it cannot be resolved against the source object's URI.
-   *
-   * @param containingSource the source containing the given URI
-   * @param containedUri the (possibly relative) URI to be resolved against the containing source
-   * @return the source representing the contained URI
+   * Return a source representing the URI that results from resolving the given
+   * (possibly relative) [containedUri] against the URI associated with the
+   * [containingSource], whether or not the resulting source exists, or `null`
+   * if either the [containedUri] is invalid or if it cannot be resolved against
+   * the [containingSource]'s URI.
    */
   Source resolveUri(Source containingSource, String containedUri) {
     if (containedUri == null || containedUri.isEmpty) {
@@ -739,10 +752,12 @@ class SourceFactory {
       // Force the creation of an escaped URI to deal with spaces, etc.
       return _internalResolveUri(
           containingSource, parseUriWithException(containedUri));
+    } on URISyntaxException {
+      return null;
     } catch (exception, stackTrace) {
       String containingFullName =
           containingSource != null ? containingSource.fullName : '<null>';
-      AnalysisEngine.instance.logger.logError(
+      AnalysisEngine.instance.logger.logInformation(
           "Could not resolve URI ($containedUri) relative to source ($containingFullName)",
           new CaughtException(exception, stackTrace));
       return null;
@@ -814,22 +829,30 @@ class SourceFactory {
       }
       containedUri = containingSource.resolveRelativeUri(containedUri);
     }
-    // Now check .packages.
+
+    Uri actualUri = containedUri;
+
+    // Check .packages and update target and actual URIs as appropriate.
     if (_packages != null && containedUri.scheme == 'package') {
       Uri packageUri =
           _packages.resolve(containedUri, notFound: (Uri packageUri) => null);
-      // Ensure scheme is set.
-      if (packageUri != null && packageUri.scheme == '') {
-        packageUri = packageUri.replace(scheme: 'file');
+
+      if (packageUri != null) {
+        // Ensure scheme is set.
+        if (packageUri.scheme == '') {
+          packageUri = packageUri.replace(scheme: 'file');
+        }
+        containedUri = packageUri;
       }
-      containedUri = packageUri;
     }
+
     for (UriResolver resolver in _resolvers) {
-      Source result = resolver.resolveAbsolute(containedUri);
+      Source result = resolver.resolveAbsolute(containedUri, actualUri);
       if (result != null) {
         return result;
       }
     }
+
     return null;
   }
 }
@@ -1062,16 +1085,16 @@ abstract class UriResolver {
    * resolved because the URI is invalid.
    *
    * @param uri the URI to be resolved
+   * @param actualUri the actual uri for this source -- if `null`, the value of [uri] will be used
    * @return a [Source] representing the file to which given URI was resolved
    */
-  Source resolveAbsolute(Uri uri);
+  Source resolveAbsolute(Uri uri, [Uri actualUri]);
 
   /**
-   * Return an absolute URI that represents the given source, or `null` if a valid URI cannot
-   * be computed.
+   * Return an absolute URI that represents the given [source], or `null` if a
+   * valid URI cannot be computed.
    *
-   * @param source the source to get URI for
-   * @return the absolute URI representing the given source
+   * The computation should be based solely on [source.fullName].
    */
   Uri restoreAbsolute(Source source) => null;
 }

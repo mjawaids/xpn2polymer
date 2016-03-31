@@ -5,12 +5,12 @@
 
 <!-- import polymer-element's definition -->
 <link rel="import" href="../../packages/polymer/polymer.html">
-<link rel="import" href="../../packages/core_elements/core_icon_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_input.html">
-<link rel="import" href="../../packages/paper_elements/paper_button.html">
-<link rel="import" href="../../packages/paper_elements/paper_action_dialog.html">
+<link rel="import" href="../../packages/polymer_elements/paper_icon_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_input.html">
+<link rel="import" href="../../packages/polymer_elements/paper_button.html">
+<link rel="import" href="../../packages/polymer_elements/paper_dialog.html">
 
-<polymer-element name="middle-element" attributes="model mode">
+<dom-module name="middle-element" attributes="model mode">
   <template>
     <style>
     </style>
@@ -18,8 +18,8 @@
     <template if="{{mode == 'define'}}">
       <paper-input label="New Value" value="{{model.value}}" class="vertical-text"></paper-input>
       <div class="vertical-icon">
-        <core-icon-button icon="check" on-tap="{{add}}" class="vertical-text"></core-icon-button>
-        <core-icon-button icon="highlight-remove" on-tap="{{delete}}" class="vertical-text"></core-icon-button>
+        <paper-icon-button icon="check" on-tap="{{add}}" class="vertical-text"></paper-icon-button>
+        <paper-icon-button icon="highlight-remove" on-tap="{{delete}}" class="vertical-text"></paper-icon-button>
       </div>
     </template>
     
@@ -30,4 +30,4 @@
   </template>
 
   <script type="application/dart" src="middle-element.dart"></script>
-</polymer-element>
+</dom-module>

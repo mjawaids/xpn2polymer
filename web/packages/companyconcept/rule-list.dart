@@ -1,12 +1,13 @@
 import 'package:polymer/polymer.dart';
 import 'models.dart';
 import 'dart:html' show Event, Node;
+import 'package:observable/observable.dart';
 
 /// Class to represent a collection of Codelab objects.
-@CustomTag('rule-list')
+@PolymerRegister('rule-list')
 class RuleList extends PolymerElement {
   /// Collection of rules. The source of truth for all rules in this app.
-  @observable List<Rule> rules = toObservable([]);
+  @property List<Rule> rules = new List();
 
   /// Named constructor.
   RuleList.created() : super.created() {

@@ -4,12 +4,13 @@
 import 'models.dart';
 import 'package:polymer/polymer.dart';
 import 'dart:html';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<corner-element>` element.
-@CustomTag('corner-element')
-class CornerElement extends PolymerElement with Observable {  
-  @published Model model;
-  @published String mode;
+@PolymerRegister('corner-element')
+class CornerElement extends PolymerElement {
+  @property Model model;
+  @property String mode;
   
   /// Constructor used to create instance of corner elements.
   CornerElement.created() : super.created() {

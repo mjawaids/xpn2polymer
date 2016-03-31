@@ -4,11 +4,12 @@
 import 'models.dart';
 import 'dart:html' show CustomEvent, Event, Node;
 import 'package:polymer/polymer.dart';
+import 'package:observable/observable.dart';
 
 /// A Polymer `<actor-element>` element.
-@CustomTag('actor-element')
-class ActorElement extends PolymerElement with Observable {  
-  @published Actor actor;
+@PolymerRegister('actor-element')
+class ActorElement extends PolymerElement {
+  @property Actor actor;
 
   /// Constructor used to create instance of MainApp.
   ActorElement.created() : super.created() {
